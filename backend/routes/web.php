@@ -21,3 +21,7 @@ require __DIR__ . '/auth.php';
 Route::get('/', function () {
     return view('home'); // busca el archivo resources/views/home.blade.php
 });
+
+Route::get('/', function () {
+    return view('home');
+});
