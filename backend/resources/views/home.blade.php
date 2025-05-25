@@ -19,6 +19,12 @@
       background-color: #fbbacb;
       border-bottom: 1px solid #000;
     }
+    .right-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+    
 
     .logo {
       display: flex;
@@ -71,6 +77,7 @@
 
     .sidebar {
       width: 200px;
+      height:100vh;
       background-color: #f88fa1;
       padding: 20px 10px;
       display: flex;
@@ -144,12 +151,14 @@
         <span>(Importaciones)</span>
       </div>
     </div>
+    <div class="right-section">
     <div class="actions">
       <button class="login">Iniciar sesión</button>
       <button class="register">Registrarse</button>
     </div>
     <div class="cart">
       🛒
+    </div>
     </div>
   </header>
 
