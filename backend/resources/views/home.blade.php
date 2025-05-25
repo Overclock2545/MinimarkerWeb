@@ -211,4 +211,23 @@
     </main>
   </div>
 </body>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    fetch("http://localhost:8000/api/productos")
+      .then(res => res.json())
+      .then(data => {
+        const container = document.querySelector(".products");
+        container.innerHTML = ""; // Limpiar productos estáticos
+        data.forEach(p => {
+          container.innerHTML += `
+            <div class="product-card">
+              <img src="${p.imagen || 'https://via.placeholder.com/150'}" alt="Producto" />
+              <div>${p.nombre}<br><strong>S/. ${p.precio}</strong></div>
+            </div>`;
+        });
+      });
+  });
+</script>
+
 </html>
