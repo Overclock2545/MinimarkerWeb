@@ -4,7 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('home'); // Página principal
 });
 
 Route::get('/dashboard', function () {
@@ -17,11 +17,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__ . '/auth.php';
-Route::get('/', function () {
-    return view('home'); // busca el archivo resources/views/home.blade.php
-});
+// Página de registro personalizada
+Route::get('/registro', function () {
+    return view('registro');
+})->name('registro');
 
-Route::get('/', function () {
-    return view('home');
-});
+require __DIR__ . '/auth.php';
+
