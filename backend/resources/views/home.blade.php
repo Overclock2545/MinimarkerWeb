@@ -11,14 +11,20 @@
       background-color: #ffe6ea;
     }
 
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 20px;
-      background-color: #fbbacb;
-      border-bottom: 1px solid #000;
-    }
+   header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #fbbacb;
+  border-bottom: 1px solid #000;
+}
+
 
     .logo {
       display: flex;
@@ -62,18 +68,28 @@
     }
 
     .container {
-      display: flex;
-    }
+  display: flex;
+  margin-top: 70px; /* Debe ser igual o mayor que el alto del header */
+}
 
-    .sidebar {
-      width: 200px;
-      background-color: #f88fa1;
-      padding: 20px 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      color: #000;
-    }
+
+ .sidebar {
+  position: sticky;
+  top: 80px; /* La misma altura que el header */
+  left: 0;
+  width: 200px;
+  height: calc(100vh - 80px); /* Altura de la pantalla menos el header */
+  overflow-y: auto;
+  background-color: #f88fa1;
+  padding: 20px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: #000;
+}
+
+
+
 
     .sidebar input[type="text"] {
       width: 100%;
@@ -98,9 +114,14 @@
     }
 
     main {
-      flex-grow: 1;
-      padding: 20px;
-    }
+  margin-left: 8px; /* Ancho de la sidebar */
+  margin-top: 8px; /* Altura del header */
+  padding: 20px;
+  flex-grow: 1;
+  height: calc(100vh - 80px);
+  overflow-y: auto;
+}
+
 
     .products-title {
       text-align: center;
@@ -155,26 +176,69 @@
 
   <div class="container">
     <aside class="sidebar">
-      <h3>Nuestro catálogo</h3>
-      <input type="text" placeholder="Buscar" />
-      <button>🔍</button>
-      <button>Sección</button>
-      <button>Sección</button>
-      <button>Sección</button>
-      <button>Sección</button>
-      <button>Sección</button>
-      <button>Sección</button>
-      <div class="social">
-        <span>📷</span>
-        <span>🎵</span>
-        <span>📘</span>
-      </div>
-    </aside>
+  <h3 style="text-align: center;">Nuestro catálogo</h3>
+
+  <!-- Contenedor centrado -->
+  <div style="display: flex; justify-content: center; gap: 5px; margin-bottom: 10px;">
+    <input type="text" placeholder="Buscar" style="flex: 1;" />
+    <button>🔍</button>
+  </div>
+
+  <button>Sección</button>
+  <button>Sección</button>
+  <button>Sección</button>
+  <button>Sección</button>
+  <button>Sección</button>
+  <button>Sección</button>
+
+  <div class="social">
+    <span>📷</span>
+    <span>🎵</span>
+    <span>📘</span>
+  </div>
+</aside>
+
 
     <main id="main-content">
       <div class="products-title">GRANDES OFERTAS</div>
       <div class="products">
         <!-- 18 productos -->
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+         <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+         <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+         <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+         <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+         <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+         <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+         <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+         <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
         <div class="product-card"></div>
         <div class="product-card"></div>
         <div class="product-card"></div>
