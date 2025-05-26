@@ -166,7 +166,7 @@
       </div>
     </aside>
 
-    <main>
+    <main id="main-content">
       <div class="products-title">GRANDES OFERTAS</div>
       <div class="products">
         <!-- 18 productos -->
@@ -191,5 +191,23 @@
       </div>
     </main>
   </div>
+<script>
+  document.querySelector('.register').addEventListener('click', function () {
+    const main = document.getElementById('main-content');
+    main.innerHTML = `
+      <h2 style="text-align: center;">Registro de nuevo usuario</h2>
+      <div style="margin: 30px auto; max-width: 400px; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="Registre un email" style="width: 100%; margin: 10px 0; padding: 12px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px;" />
+        
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" placeholder="Cree una contraseña" style="width: 100%; margin: 10px 0; padding: 12px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px;" />
+        
+        <button style="background-color: #333; color: white; padding: 12px; width: 100%; font-size: 16px; border: none; border-radius: 5px; cursor: pointer;">Registrarse</button>
+      </div>
+    `;
+  });
+</script>
+
 </body>
 </html>
