@@ -7,11 +7,14 @@ use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
+
     /**
      * Este valor define el espacio de nombres de los controladores.
      * Laravel lo usará para agrupar rutas que usan controladores.
      */
     protected $namespace = 'App\Http\Controllers';
+    public const HOME = '/inicio';
+
 
     /**
      * Define los bindings de rutas, filtros de patrones y rutas personalizadas.
