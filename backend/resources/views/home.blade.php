@@ -134,13 +134,18 @@
 </head>
 <body>
   <header>
-    <div class="logo">
-      <img src="https://via.placeholder.com/60" alt="Logo" />
-      <div class="logo-text">
-        <h1>I LIKE YOU</h1>
-        <span>(Importaciones)</span>
-      </div>
-    </div>
+ <div class="logo" id="logo-click" style="cursor: pointer; display: flex; align-items: center; gap: 10px;">
+  <img src="https://via.placeholder.com/60" alt="Logo" />
+  <div class="logo-text">
+    <h1 style="margin: 0;">I LIKE YOU</h1>
+    <span>(Importaciones)</span>
+  </div>
+</div>
+
+
+
+
+  
     <div class="actions">
       <button class="login">Iniciar sesión</button>
       <button class="register">Registrarse</button>
@@ -170,24 +175,42 @@
       <div class="products-title">GRANDES OFERTAS</div>
       <div class="products">
         <!-- 18 productos -->
-        <div class="product-card"><img alt="Producto" /><div>Producto 1<br><strong>S/. 10</strong></div></div>
-        <div class="product-card"><img alt="Producto" /><div>Producto 2<br><strong>S/. 12</strong></div></div>
-        <div class="product-card"><img alt="Producto" /><div>Producto 3<br><strong>S/. 15</strong></div></div>
-        <div class="product-card"><img alt="Producto" /><div>Producto 4<br><strong>S/. 18</strong></div></div>
-        <div class="product-card"><img alt="Producto" /><div>Producto 5<br><strong>S/. 20</strong></div></div>
-        <div class="product-card"><img alt="Producto" /><div>Producto 6<br><strong>S/. 22</strong></div></div>
-        <div class="product-card"><img alt="Producto" /><div>Producto 7<br><strong>S/. 25</strong></div></div>
-        <div class="product-card"><img alt="Producto" /><div>Producto 8<br><strong>S/. 28</strong></div></div>
-        <div class="product-card"><img alt="Producto" /><div>Producto 9<br><strong>S/. 30</strong></div></div>
-        <div class="product-card"><img alt="Producto" /><div>Producto 10<br><strong>S/. 32</strong></div></div>
-        <div class="product-card"><img alt="Producto" /><div>Producto 11<br><strong>S/. 34</strong></div></div>
-        <div class="product-card"><img alt="Producto" /><div>Producto 12<br><strong>S/. 36</strong></div></div>
-        <div class="product-card"><img alt="Producto" /><div>Producto 13<br><strong>S/. 38</strong></div></div>
-        <div class="product-card"><img alt="Producto" /><div>Producto 14<br><strong>S/. 40</strong></div></div>
-        <div class="product-card"><img alt="Producto" /><div>Producto 15<br><strong>S/. 42</strong></div></div>
-        <div class="product-card"><img alt="Producto" /><div>Producto 16<br><strong>S/. 45</strong></div></div>
-        <div class="product-card"><img alt="Producto" /><div>Producto 17<br><strong>S/. 48</strong></div></div>
-        <div class="product-card"><img alt="Producto" /><div>Producto 18<br><strong>S/. 50</strong></div></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+         <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+         <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+         <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+         <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+         <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+         <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+         <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+         <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
+        <div class="product-card"></div>
       </div>
     </main>
   </div>
@@ -225,7 +248,12 @@
       </form>
     `;
   });
-</script>
+  
+// Recargar página al hacer clic en el logo
+  document.getElementById('logo-click').addEventListener('click', function () {
+    location.reload();
+  });
+  </script>
 
 </body>
 </html>
