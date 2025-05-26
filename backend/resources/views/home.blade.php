@@ -19,12 +19,6 @@
       background-color: #fbbacb;
       border-bottom: 1px solid #000;
     }
-    .right-section {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-    
 
     .logo {
       display: flex;
@@ -35,10 +29,6 @@
     .logo img {
       width: 60px;
       height: 60px;
-    }
-
-    .logo-text {
-      line-height: 1.2;
     }
 
     .logo-text h1 {
@@ -77,7 +67,6 @@
 
     .sidebar {
       width: 200px;
-      height:100vh;
       background-color: #f88fa1;
       padding: 20px 10px;
       display: flex;
@@ -121,21 +110,22 @@
 
     .products {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 20px;
     }
 
     .product-card {
       background-color: white;
       border-radius: 6px;
-      padding: 10px;
+      padding: 20px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       text-align: center;
+      font-size: 18px;
     }
 
     .product-card img {
       width: 100%;
-      height: 120px;
+      height: 200px;
       background-color: #eee;
       border-radius: 4px;
       margin-bottom: 8px;
@@ -151,15 +141,11 @@
         <span>(Importaciones)</span>
       </div>
     </div>
-    <div class="right-section">
     <div class="actions">
       <button class="login">Iniciar sesión</button>
       <button class="register">Registrarse</button>
     </div>
-    <div class="cart">
-      🛒
-    </div>
-    </div>
+    <div class="cart">🛒</div>
   </header>
 
   <div class="container">
@@ -183,51 +169,27 @@
     <main>
       <div class="products-title">GRANDES OFERTAS</div>
       <div class="products">
-        <div class="product-card">
-          <img alt="Producto" />
-          <div>Producto<br><strong>S/.</strong></div>
-        </div>
-        <div class="product-card">
-          <img alt="Producto" />
-          <div>Producto<br><strong>S/.</strong></div>
-        </div>
-        <div class="product-card">
-          <img alt="Producto" />
-          <div>Producto<br><strong>S/.</strong></div>
-        </div>
-        <div class="product-card">
-          <img alt="Producto" />
-          <div>Producto<br><strong>S/.</strong></div>
-        </div>
-        <div class="product-card">
-          <img alt="Producto" />
-          <div>Producto<br><strong>S/.</strong></div>
-        </div>
-        <div class="product-card">
-          <img alt="Producto" />
-          <div>Producto<br><strong>S/.</strong></div>
-        </div>
+        <!-- 18 productos -->
+        <div class="product-card"><img alt="Producto" /><div>Producto 1<br><strong>S/. 10</strong></div></div>
+        <div class="product-card"><img alt="Producto" /><div>Producto 2<br><strong>S/. 12</strong></div></div>
+        <div class="product-card"><img alt="Producto" /><div>Producto 3<br><strong>S/. 15</strong></div></div>
+        <div class="product-card"><img alt="Producto" /><div>Producto 4<br><strong>S/. 18</strong></div></div>
+        <div class="product-card"><img alt="Producto" /><div>Producto 5<br><strong>S/. 20</strong></div></div>
+        <div class="product-card"><img alt="Producto" /><div>Producto 6<br><strong>S/. 22</strong></div></div>
+        <div class="product-card"><img alt="Producto" /><div>Producto 7<br><strong>S/. 25</strong></div></div>
+        <div class="product-card"><img alt="Producto" /><div>Producto 8<br><strong>S/. 28</strong></div></div>
+        <div class="product-card"><img alt="Producto" /><div>Producto 9<br><strong>S/. 30</strong></div></div>
+        <div class="product-card"><img alt="Producto" /><div>Producto 10<br><strong>S/. 32</strong></div></div>
+        <div class="product-card"><img alt="Producto" /><div>Producto 11<br><strong>S/. 34</strong></div></div>
+        <div class="product-card"><img alt="Producto" /><div>Producto 12<br><strong>S/. 36</strong></div></div>
+        <div class="product-card"><img alt="Producto" /><div>Producto 13<br><strong>S/. 38</strong></div></div>
+        <div class="product-card"><img alt="Producto" /><div>Producto 14<br><strong>S/. 40</strong></div></div>
+        <div class="product-card"><img alt="Producto" /><div>Producto 15<br><strong>S/. 42</strong></div></div>
+        <div class="product-card"><img alt="Producto" /><div>Producto 16<br><strong>S/. 45</strong></div></div>
+        <div class="product-card"><img alt="Producto" /><div>Producto 17<br><strong>S/. 48</strong></div></div>
+        <div class="product-card"><img alt="Producto" /><div>Producto 18<br><strong>S/. 50</strong></div></div>
       </div>
     </main>
   </div>
 </body>
-
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    fetch("http://localhost:8000/api/productos")
-      .then(res => res.json())
-      .then(data => {
-        const container = document.querySelector(".products");
-        container.innerHTML = ""; // Limpiar productos estáticos
-        data.forEach(p => {
-          container.innerHTML += `
-            <div class="product-card">
-              <img src="${p.imagen || 'https://via.placeholder.com/150'}" alt="Producto" />
-              <div>${p.nombre}<br><strong>S/. ${p.precio}</strong></div>
-            </div>`;
-        });
-      });
-  });
-</script>
-
 </html>
