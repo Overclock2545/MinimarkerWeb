@@ -192,6 +192,7 @@
     </main>
   </div>
 <script>
+  // Botón REGISTRARSE
   document.querySelector('.register').addEventListener('click', function () {
     const main = document.getElementById('main-content');
     main.innerHTML = `
@@ -205,6 +206,23 @@
         
         <button style="background-color: #333; color: white; padding: 12px; width: 100%; font-size: 16px; border: none; border-radius: 5px; cursor: pointer;">Registrarse</button>
       </div>
+    `;
+  });
+  // Botón INICIAR SESIÓN
+  document.querySelector('.login').addEventListener('click', function () {
+    const main = document.getElementById('main-content');
+    main.innerHTML = `
+      <h2 style="text-align: center;">Inicio de sesión</h2>
+      <form style="max-width: 500px; margin: auto; display: flex; flex-direction: column; gap: 10px; background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.2);">
+        <label>Email
+          <input type="email" placeholder="Ingrese su email" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" />
+        </label>
+        <label>Contraseña
+          <input type="password" placeholder="Ingrese contraseña" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" />
+        </label>
+        <button type="submit" style="background-color: #333; padding: 10px; border: none; border-radius: 4px; color: white;">Iniciar sesión</button>
+        <small><a href="#" style="text-align: right; display: block; margin-top: 5px; color: #666;">¿Olvidaste tu contraseña?</a></small>
+      </form>
     `;
   });
 </script>
