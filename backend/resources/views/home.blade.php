@@ -208,12 +208,23 @@
       </div>
     </div>
     <div class="right-section">
-      <div class="actions">
-        <button class="login">Iniciar sesión</button>
-        <button class="register">Registrarse</button>
-      </div>
-      <div class="cart">🛒</div>
+  @auth
+    <div class="user-info">
+      👤 {{ Auth::user()->name }}
+      <form method="POST" action="{{ route('logout') }}" style="display:inline;">
+        @csrf
+        <button type="submit" style="margin-left: 10px;">Cerrar sesión</button>
+      </form>
     </div>
+  @else
+    <div class="actions">
+      <a href="{{ route('login') }}"><button class="login">Iniciar sesión</button></a>
+      <a href="{{ route('register') }}"><button class="register">Registrarse</button></a>
+    </div>
+  @endauth
+  <div class="cart">🛒</div>
+</div>
+
   </header>
 
   <div class="container">
@@ -268,3 +279,4 @@
 
 </body>
 </html>
+
