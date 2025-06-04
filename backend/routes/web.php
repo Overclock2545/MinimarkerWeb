@@ -2,10 +2,11 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Redirect;
 
 // Ruta pública para la página de bienvenida (puedes mantenerla o eliminarla)
 Route::get('/', function () {
-    return view('welcome');
+    return Redirect::to('/inicio');
 });
 
 // Ruta pública para la pantalla principal

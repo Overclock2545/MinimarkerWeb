@@ -75,6 +75,19 @@
       background-color: #333;
       color: #fff;
     }
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.user-info button {
+  background-color: #333;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
 
     .actions .register:hover {
       background-color: #222;
