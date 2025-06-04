@@ -5,26 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>I LIKE YOU - Inicio</title>
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #ffe6ea;
+    * {
+      box-sizing: border-box;
     }
 
-   header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
-  background-color: #fbbacb;
-  border-bottom: 1px solid #000;
-}
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #010101;
+      color: #333;
+    }
 
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: #fbbacb;
+      border-bottom: 1px solid #000;
+    }
 
     .logo {
       display: flex;
@@ -35,67 +34,81 @@
     .logo img {
       width: 60px;
       height: 60px;
+      border-radius: 50%;
     }
 
     .logo-text h1 {
-      font-size: 24px;
       margin: 0;
+      font-size: 24px;
     }
 
     .logo-text span {
-      font-size: 14px;
+      font-size: 13px;
+      color: #555;
+    }
+
+    .right-section {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .actions button {
-      margin: 0 5px;
-      padding: 8px 12px;
+      padding: 8px 14px;
       border: none;
       border-radius: 4px;
+      font-weight: bold;
       cursor: pointer;
+      transition: background 0.3s;
     }
 
     .actions .login {
-      background-color: #eee;
+      background-color: #fff;
+      color: #333;
+    }
+
+    .actions .login:hover {
+      background-color: #ddd;
     }
 
     .actions .register {
       background-color: #333;
-      color: white;
+      color: #fff;
+    }
+
+    .actions .register:hover {
+      background-color: #222;
     }
 
     .cart {
       font-size: 24px;
+      cursor: pointer;
     }
 
     .container {
-  display: flex;
-  margin-top: 70px; /* Debe ser igual o mayor que el alto del header */
-}
+      display: flex;
+      min-height: calc(100vh - 70px);
+    }
 
+    .sidebar {
+      width: 220px;
+      background-color: #f88fa1;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
 
- .sidebar {
-  position: sticky;
-  top: 80px; /* La misma altura que el header */
-  left: 0;
-  width: 200px;
-  height: calc(100vh - 80px); /* Altura de la pantalla menos el header */
-  overflow-y: auto;
-  background-color: #f88fa1;
-  padding: 20px 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  color: #000;
-}
-
-
-
+    .sidebar h3 {
+      margin-top: 0;
+    }
 
     .sidebar input[type="text"] {
       width: 100%;
-      padding: 6px;
+      padding: 6px 10px;
       border: none;
       border-radius: 4px;
+      margin-bottom: 10px;
     }
 
     .sidebar button {
@@ -104,219 +117,153 @@
       padding: 10px;
       border-radius: 4px;
       cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .sidebar button:hover {
+      background-color: #fba0bc;
     }
 
     .social {
       display: flex;
-      justify-content: space-around;
-      margin-top: 20px;
-      font-size: 20px;
+      justify-content: space-between;
+      font-size: 22px;
+      margin-top: auto;
     }
 
     main {
-  margin-left: 8px; /* Ancho de la sidebar */
-  margin-top: 8px; /* Altura del header */
-  padding: 20px;
-  flex-grow: 1;
-  height: calc(100vh - 80px);
-  overflow-y: auto;
-}
-
+      flex: 1;
+      padding: 20px;
+      background-color: #fff;
+    }
 
     .products-title {
       text-align: center;
-      font-size: 24px;
+      font-size: 26px;
+      font-weight: bold;
       margin-bottom: 20px;
+      color: #d9195b;
     }
 
     .products {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
       gap: 20px;
     }
 
     .product-card {
-      background-color: white;
+      background-color: #fff;
       border-radius: 6px;
-      padding: 20px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       text-align: center;
-      font-size: 18px;
+      transition: transform 0.2s;
+    }
+
+    .product-card:hover {
+      transform: translateY(-4px);
     }
 
     .product-card img {
       width: 100%;
-      height: 200px;
-      background-color: #eee;
+      height: 140px;
+      object-fit: cover;
       border-radius: 4px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        padding: 10px;
+      }
+
+      .sidebar button,
+      .sidebar input {
+        width: 45%;
+        margin: 5px 0;
+      }
+
+      main {
+        padding: 10px;
+      }
     }
   </style>
 </head>
 <body>
+
   <header>
- <div class="logo" id="logo-click" style="cursor: pointer; display: flex; align-items: center; gap: 10px;">
-  <img src="https://via.placeholder.com/60" alt="Logo" />
-  <div class="logo-text">
-    <h1 style="margin: 0;">I LIKE YOU</h1>
-    <span>(Importaciones)</span>
-  </div>
-</div>
-
-
-
-
-  
-    <div class="actions">
-      <button class="login">Iniciar sesión</button>
-      <button class="register">Registrarse</button>
+    <div class="logo">
+      <img src="https://via.placeholder.com/60" alt="Logo" />
+      <div class="logo-text">
+        <h1>I LIKE YOU</h1>
+        <span>(Importaciones)</span>
+      </div>
     </div>
-    <div class="cart">🛒</div>
+    <div class="right-section">
+      <div class="actions">
+        <button class="login">Iniciar sesión</button>
+        <button class="register">Registrarse</button>
+      </div>
+      <div class="cart">🛒</div>
+    </div>
   </header>
 
   <div class="container">
     <aside class="sidebar">
-  <h3 style="text-align: center;">Nuestro catálogo</h3>
+      <h3>Nuestro catálogo</h3>
+      <input type="text" placeholder="Buscar..." />
+      <button>🔍 Buscar</button>
+      <button>Ropa</button>
+      <button>Accesorios</button>
+      <button>Regalos</button>
+      <button>Nuevos</button>
+      <button>Ofertas</button>
+      <div class="social">
+        <span>📷</span>
+        <span>🎵</span>
+        <span>📘</span>
+      </div>
+    </aside>
 
-  <!-- Contenedor centrado -->
-  <div style="display: flex; justify-content: center; gap: 5px; margin-bottom: 10px;">
-    <input type="text" placeholder="Buscar" style="flex: 1;" />
-    <button>🔍</button>
-  </div>
-
-  <button>Sección</button>
-  <button>Sección</button>
-  <button>Sección</button>
-  <button>Sección</button>
-  <button>Sección</button>
-  <button>Sección</button>
-
-  <div class="social">
-    <span>📷</span>
-    <span>🎵</span>
-    <span>📘</span>
-  </div>
-</aside>
-
-
-    <main id="main-content">
+    <main>
       <div class="products-title">GRANDES OFERTAS</div>
       <div class="products">
-        <!-- 18 productos -->
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-         <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-         <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-         <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-         <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-         <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-         <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-         <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-         <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-         <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-         <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-         <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-         <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-         <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-         <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-         <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-         <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
-        <div class="product-card"></div>
+        <div class="product-card">
+          <img alt="Producto" />
+          <div>Producto<br><strong>S/.</strong></div>
+        </div>
+        <div class="product-card">
+          <img alt="Producto" />
+          <div>Producto<br><strong>S/.</strong></div>
+        </div>
       </div>
     </main>
   </div>
-<script>
-  // Botón REGISTRARSE
-  document.querySelector('.register').addEventListener('click', function () {
-    const main = document.getElementById('main-content');
-    main.innerHTML = `
-      <h2 style="text-align: center;">Registro de nuevo usuario</h2>
-      <div style="margin: 30px auto; max-width: 400px; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
-        <label for="email">Email</label>
-        <input type="email" id="email" placeholder="Registre un email" style="width: 100%; margin: 10px 0; padding: 12px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px;" />
-        
-        <label for="password">Contraseña</label>
-        <input type="password" id="password" placeholder="Cree una contraseña" style="width: 100%; margin: 10px 0; padding: 12px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px;" />
-        
-        <button style="background-color: #333; color: white; padding: 12px; width: 100%; font-size: 16px; border: none; border-radius: 5px; cursor: pointer;">Registrarse</button>
-      </div>
-    `;
-  });
-  // Botón INICIAR SESIÓN
-  document.querySelector('.login').addEventListener('click', function () {
-    const main = document.getElementById('main-content');
-    main.innerHTML = `
-      <h2 style="text-align: center;">Inicio de sesión</h2>
-      <form style="max-width: 500px; margin: auto; display: flex; flex-direction: column; gap: 10px; background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.2);">
-        <label>Email
-          <input type="email" placeholder="Ingrese su email" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" />
-        </label>
-        <label>Contraseña
-          <input type="password" placeholder="Ingrese contraseña" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" />
-        </label>
-        <button type="submit" style="background-color: #333; padding: 10px; border: none; border-radius: 4px; color: white;">Iniciar sesión</button>
-        <small><a href="#" style="text-align: right; display: block; margin-top: 5px; color: #666;">¿Olvidaste tu contraseña?</a></small>
-      </form>
-    `;
-  });
-  
-// Recargar página al hacer clic en el logo
-  document.getElementById('logo-click').addEventListener('click', function () {
-    location.reload();
-  });
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      fetch("http://localhost:8000/api/productos")
+        .then(res => res.json())
+        .then(data => {
+          const container = document.querySelector(".products");
+          container.innerHTML = "";
+          data.forEach(p => {
+            container.innerHTML += `
+              <div class="product-card">
+                <img src="${p.imagen || 'https://via.placeholder.com/150'}" alt="${p.nombre}" />
+                <div>${p.nombre}<br><strong>S/. ${p.precio}</strong></div>
+              </div>`;
+          });
+        });
+    });
   </script>
 
 </body>
