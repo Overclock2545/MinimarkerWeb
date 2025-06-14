@@ -3,9 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Categoria;
 
 class Product extends Model
 {
-    // Esto fuerza a Laravel a usar la tabla 'product'
     protected $table = 'product';
+
+    public function categoria()
+    {
+        return $this->belongsTo(Categoria::class, 'categoria_id');
+        // 👆 aclaramos que la FK es 'categoria_id'
+    }
 }

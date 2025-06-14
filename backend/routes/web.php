@@ -3,29 +3,30 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Redirect;
+use App\Models\Product;
 
-// Ruta pública para la página de bienvenida (puedes mantenerla o eliminarla)
+// Ruta principal del sistema que carga los productos
+Route::get('/inicio', function () {
+    $products = Product::with('categoria')->get();
+    return view('home', compact('products'));
+})->name('inicio');
+
+// Redirecciona la raíz al inicio
 Route::get('/', function () {
     return Redirect::to('/inicio');
 });
 
-// Ruta pública para la pantalla principal
-Route::get('/inicio', function () {
-    return view('home'); // resources/views/home.blade.php
-})->name('inicio');
-
-// Ruta protegida para el dashboard (si lo usas)
+// Ruta protegida para el dashboard (opcional)
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// Agrupación de rutas que requieren login
+// Rutas protegidas que requieren autenticación
 Route::middleware(['auth'])->group(function () {
-    // Perfil de usuario
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Auth routes (login, register, etc.)
+// Rutas de autenticación (login, register, etc.)
 require __DIR__ . '/auth.php';

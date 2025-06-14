@@ -9,6 +9,7 @@ class ProductController extends Controller
 {
     public function index()
     {
-        return Product::all();
+        $products = Product::all(); // Asegúrate de tener esto bien
+        return view('home', ['products' => $products]); // 👈 clave: 'products'
     }
 }

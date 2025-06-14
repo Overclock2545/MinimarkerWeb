@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+
+
+
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -214,7 +217,7 @@
 
   <header>
     <div class="logo">
-      <img src="https://via.placeholder.com/60" alt="Logo" />
+      <img src="{{ asset('images/logo.png') }}" alt="Logo" />
       <div class="logo-text">
         <h1>I LIKE YOU</h1>
         <span>(Importaciones)</span>
@@ -257,38 +260,27 @@
       </div>
     </aside>
 
-    <main>
-      <div class="products-title">GRANDES OFERTAS</div>
-      <div class="products">
-        <div class="product-card">
-          <img alt="Producto" />
-          <div>Producto<br><strong>S/.</strong></div>
-        </div>
-        <div class="product-card">
-          <img alt="Producto" />
-          <div>Producto<br><strong>S/.</strong></div>
-        </div>
-      </div>
-    </main>
+   <main>
+  <div class="products-title">GRANDES OFERTAS</div>
+  <div class="products">
+     {{-- aquí se usa la clase correcta del grid --}}
+     
+    @foreach($products as $product)
+  <div class="product-card">
+    <img src="{{ $product->imagen ?? 'https://via.placeholder.com/150' }}" alt="{{ $product->nombre }}">
+    <div>
+      {{ $product->nombre }}<br>
+      <strong>S/. {{ $product->precio }}</strong><br>
+      <small>
+        Categoría: {{ $product->categoria->nombre ?? 'Sin categoría' }}
+      </small>
+    </div>
   </div>
+@endforeach
 
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      fetch("http://localhost:8000/api/productos")
-        .then(res => res.json())
-        .then(data => {
-          const container = document.querySelector(".products");
-          container.innerHTML = "";
-          data.forEach(p => {
-            container.innerHTML += `
-              <div class="product-card">
-                <img src="${p.imagen || 'https://via.placeholder.com/150'}" alt="${p.nombre}" />
-                <div>${p.nombre}<br><strong>S/. ${p.precio}</strong></div>
-              </div>`;
-          });
-        });
-    });
-  </script>
+  </div>
+</main>
+  </div>
 
 </body>
 </html>
