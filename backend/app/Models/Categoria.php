@@ -10,7 +10,8 @@ class Categoria extends Model
 
     // Opcional: si tienes relación inversa
     public function productos()
-    {
-        return $this->hasMany(Product::class);
-    }
+{
+    return $this->hasMany(Product::class, 'categoria_id');
+}
+
 }

@@ -12,4 +12,11 @@ class ProductController extends Controller
         $products = Product::all(); // Asegúrate de tener esto bien
         return view('home', ['products' => $products]); // 👈 clave: 'products'
     }
+    public function mostrar($id)
+{
+    $producto = Product::with('categoria')->findOrFail($id);
+
+    return view('home', ['producto' => $producto ]);
+}
+
 }

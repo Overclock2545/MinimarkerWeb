@@ -34,20 +34,10 @@ Route::middleware(['auth'])->group(function () {
 
 // Rutas de autenticación (login, register, etc.)
 require __DIR__ . '/auth.php';
-// Ruta para una categoría genérica (se puede duplicar para otras)
-Route::get('/categoria-generica', function () {
-    $productos = [
-        (object)[
-            'nombre' => 'Lámpara LED',
-            'precio' => 25.50,
-            'imagen_url' => 'https://via.placeholder.com/200'
-        ],
-        (object)[
-            'nombre' => 'Organizador de cables',
-            'precio' => 12.00,
-            'imagen_url' => 'https://via.placeholder.com/200'
-        ],
-    ];
+use App\Http\Controllers\CategoriaController;
 
-    return view('categorias.categoria-generica', compact('productos'));
-});
+Route::get('/categorias/id/{id}', [CategoriaController::class, 'mostrarPorId'])->name('categorias.porId');
+//
+use App\Http\Controllers\ProductController;
+
+Route::get('/producto/{id}', [ProductController::class, 'mostrar'])->name('producto.ver');
