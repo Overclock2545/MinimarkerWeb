@@ -18,5 +18,19 @@ class ProductController extends Controller
 
     return view('home', ['producto' => $producto ]);
 }
+public function buscar(Request $request)
+{
+    $query = $request->input('query');
+
+    $products = Product::with('categoria')
+        ->where('nombre', 'LIKE', '%' . $query . '%') // búsqueda parcial
+        ->get();
+
+    return view('home', [
+        'products' => $products,
+        'titulo' => "Resultados para: \"$query\""
+    ]);
+}
+
 
 }

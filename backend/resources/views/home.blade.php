@@ -216,13 +216,16 @@
 <body>
 
   <header>
-    <div class="logo">
-      <img src="{{ asset('images/logo.png') }}" alt="Logo" />
-      <div class="logo-text">
-        <h1>I LIKE YOU</h1>
-        <span>(Importaciones)</span>
-      </div>
+    <a href="{{ url('/inicio') }}" style="text-decoration: none; color: inherit;">
+  <div class="logo">
+    <img src="{{ asset('images/logo.png') }}" alt="Logo" />
+    <div class="logo-text">
+      <h1>I LIKE YOU</h1>
+      <span>(Importaciones)</span>
     </div>
+  </div>
+</a>
+
     <div class="right-section">
   @auth
     <div class="user-info">
@@ -246,9 +249,24 @@
   <div class="container">
     <aside class="sidebar">
       <h3>Nuestro catálogo</h3>
-      <input type="text" placeholder="Buscar..." />
-      <button>🔍 Buscar</button>
-      <a href="{{ url('/categorias/id/101') }}"><button>Escolar</button></a>
+      <form action="{{ route('buscar.productos') }}" method="GET" style="display: flex; gap: 5px; flex-direction: column;">
+  <input type="text" name="query" placeholder="Buscar..." required>
+
+  <button type="submit">🔍 Buscar</button>
+</form>
+
+      <a href="{{ url('/categorias/id/10') }}"><button>Accesorios Varios</button></a>
+<a href="{{ url('/categorias/id/5') }}"><button>Artículos de Belleza</button></a>
+<a href="{{ url('/categorias/id/1') }}"><button>Carteras y Morrales</button></a>
+<a href="{{ url('/categorias/id/12') }}"><button>Cartucheras y Monederos</button></a>
+<a href="{{ url('/categorias/id/7') }}"><button>Llaveros</button></a>
+<a href="{{ url('/categorias/id/3') }}"><button>Mochilas</button></a>
+<a href="{{ url('/categorias/id/4') }}"><button>Papelería Kawaii</button></a>
+<a href="{{ url('/categorias/id/9') }}"><button>Prendas y Calzados</button></a>
+<a href="{{ url('/categorias/id/11') }}"><button>Servicios</button></a>
+<a href="{{ url('/categorias/id/8') }}"><button>Tomatodos y Tazas</button></a>
+<a href="{{ url('/categorias/id/13') }}"><button>Utensilios de Cocina</button></a>
+
 
       <div class="social">
         <span>📷</span>
@@ -307,13 +325,8 @@
     </div>
   @endisset
 </main>
+</div>
 
-
-
-
-  </div>
-</main>
-  </div>
 
 </body>
 </html>
