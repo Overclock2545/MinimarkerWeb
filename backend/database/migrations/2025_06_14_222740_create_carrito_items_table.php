@@ -14,9 +14,12 @@ return new class extends Migration
         Schema::create('carrito_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('product_id')->constrained('product')->onDelete('cascade');
+            $table->string('product_id');
             $table->integer('cantidad')->default(1);
             $table->timestamps();
+
+
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
         });
     }
 

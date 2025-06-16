@@ -73,11 +73,13 @@
             object-fit: cover;
         }
     </style>
+<link rel="stylesheet" href="{{ asset('css/estilos.css') }}">
 </head>
+
 <body>
     <header>
         <div class="logo">
-            <img src="https://via.placeholder.com/60" alt="Logo" />
+      <img src="{{ asset('images/logo.png') }}" alt="Logo" />
             <div class="logo-text">
                 <h1>I LIKE YOU</h1>
                 <span>(Importaciones)</span>

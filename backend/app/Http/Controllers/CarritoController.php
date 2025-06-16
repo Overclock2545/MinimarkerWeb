@@ -33,5 +33,19 @@ class CarritoController extends Controller
 
         return redirect()->back()->with('success', 'Producto agregado al carrito');
     }
+    public function index()
+    {
+        $user = Auth::user();
+
+        // Carga los items del carrito con sus productos asociados
+        $carrito = CarritoItem::where('user_id', $user->id)
+            ->with('product') // Asegúrate que CarritoItem tenga esta relación
+            ->get();
+
+        return view('carrito', compact('carrito'));
+    }
+
+
+
     //
 }
