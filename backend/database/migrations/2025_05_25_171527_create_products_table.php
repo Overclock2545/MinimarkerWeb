@@ -12,7 +12,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->id();
+            $table->string('id')();
             $table->string('nombre');
             $table->decimal('precio', 8, 2);
             $table->string('imagen')->nullable(); // URL de la imagen
