@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Redirect;
 use App\Models\Product;
+use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\ProductController; 
 
 Route::get('/inicio', function () {
     $products = Product::with('categoria')->get();
@@ -27,7 +29,6 @@ Route::middleware(['auth'])->group(function () {
 });
 
 require __DIR__ . '/auth.php';
-use App\Http\Controllers\CategoriaController;
 
 Route::get('/categorias/id/{id}', [CategoriaController::class, 'mostrarPorId'])->name('categorias.porId');
 
