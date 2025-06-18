@@ -4,7 +4,9 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Redirect;
 use App\Models\Product;
 use App\Http\Controllers\CategoriaController;
-use App\Http\Controllers\ProductController; 
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CarritoController;
+use App\Http\Controllers\ProfileController;
 
 Route::get('/inicio', function () {
     $products = Product::with('categoria')->get();
