@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Redirect;
 use App\Models\Product;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CarritoController;
 
@@ -39,6 +38,3 @@ Route::get('/categorias/id/{id}', [CategoriaController::class, 'mostrarPorId'])-
 Route::get('/producto/{id}', [ProductController::class, 'mostrar'])->name('producto.ver');
 
 Route::get('/buscar', [ProductController::class, 'buscar'])->name('buscar.productos');
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/admin', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-});
