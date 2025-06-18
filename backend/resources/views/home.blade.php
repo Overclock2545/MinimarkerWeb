@@ -1,7 +1,5 @@
 <!DOCTYPE html>
 
-
-
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -241,7 +239,7 @@
       <a href="{{ route('register') }}"><button class="register">Registrarse</button></a>
     </div>
   @endauth
-  <div class="cart">🛒</div>
+  <a href="{{ route('carrito') }}" class="cart">🛒</a>
 </div>
 
   </header>
