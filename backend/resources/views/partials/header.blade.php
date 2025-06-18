@@ -1,12 +1,14 @@
-<!-- resources/views/partials/header.blade.php -->
 <header>
-    <div class="logo">
-      <img src="{{ asset('imagenes/logo.png') }}" alt="Logo" />
-      <div class="logo-text">
-        <h1>I LIKE YOU</h1>
-        <span>(Importaciones)</span>
-      </div>
+    <a href="{{ url('/inicio') }}" style="text-decoration: none; color: inherit;">
+  <div class="logo">
+    <img src="{{ asset('images/logo.png') }}" alt="Logo" />
+    <div class="logo-text">
+      <h1>I LIKE YOU</h1>
+      <span>(Importaciones)</span>
     </div>
+  </div>
+</a>
+
     <div class="right-section">
   @auth
     <div class="user-info">
@@ -22,7 +24,7 @@
       <a href="{{ route('register') }}"><button class="register">Registrarse</button></a>
     </div>
   @endauth
-  <div class="cart">🛒</div>
+  <a href="{{ route('carrito') }}" class="cart">🛒</a>
 </div>
 
   </header>
