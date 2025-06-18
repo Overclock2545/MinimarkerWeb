@@ -45,6 +45,12 @@
                 Categoría: {{ $product->categoria->nombre ?? 'Sin categoría' }}
               </small>
             </div>
+             @auth
+       <form method="POST" action="{{ route('carrito.agregar', $product->id) }}" class="card-footer">
+      @csrf
+      <button type="submit" class="add-to-cart-btn">Agregar al carrito 🛒</button>
+    </form>
+    @endauth
           </div>
         </a>
       @endforeach

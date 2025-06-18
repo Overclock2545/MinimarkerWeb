@@ -202,3 +202,35 @@
         padding: 10px;
       }
     }
+
+.product-card {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 280px;
+}
+
+.card-footer {
+  height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.product-card:hover .card-footer {
+  height: auto;
+  opacity: 1;
+}
+
+.add-to-cart-btn {
+  background-color: #222;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+}
