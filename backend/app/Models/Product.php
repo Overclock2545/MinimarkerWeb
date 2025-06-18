@@ -9,9 +9,12 @@ class Product extends Model
 {
     protected $table = 'product';
 
+    protected $primaryKey = 'id';
+    public $incrementing = false;
+    protected $keyType = 'string';
+
     public function categoria()
     {
         return $this->belongsTo(Categoria::class, 'categoria_id');
-        // 👆 aclaramos que la FK es 'categoria_id'
     }
 }
