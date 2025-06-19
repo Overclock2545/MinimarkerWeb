@@ -8,6 +8,9 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\FavoritoController;
+use App\Http\Middleware\EsAdmin;
+use App\Http\Controllers\AdminController;
+
 
 
 Route::get('/inicio', function () {
@@ -36,6 +39,15 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/favoritos/toggle/{productId}', [FavoritoController::class, 'toggle'])->name('favoritos.toggle');
     Route::get('/favoritos', [FavoritoController::class, 'index'])->name('favoritos.index');
 });
+
+
+Route::middleware(['auth', EsAdmin::class])->group(function () {
+    Route::get('/admin', [AdminController::class, 'index'])->name('admin.panel');
+    Route::post('/admin/stock/agregar', [AdminController::class, 'agregarStock'])->name('admin.agregar.stock');
+    // etc.
+});
+
+
 
 require __DIR__ . '/auth.php';
 
