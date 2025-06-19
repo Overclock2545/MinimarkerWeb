@@ -7,6 +7,7 @@ use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CarritoController;
+use App\Http\Controllers\FavoritoController;
 
 
 Route::get('/inicio', function () {
@@ -32,6 +33,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/carrito/eliminar/{id}', [CarritoController::class, 'remove'])->name('carrito.eliminar');
     Route::post('/carrito/incrementar/{id}', [CarritoController::class, 'incrementar'])->name('carrito.incrementar');
     Route::post('/carrito/disminuir/{id}', [CarritoController::class, 'disminuir'])->name('carrito.disminuir');
+    Route::post('/favoritos/toggle/{productId}', [FavoritoController::class, 'toggle'])->name('favoritos.toggle');
+    Route::get('/favoritos', [FavoritoController::class, 'index'])->name('favoritos.index');
 });
 
 require __DIR__ . '/auth.php';

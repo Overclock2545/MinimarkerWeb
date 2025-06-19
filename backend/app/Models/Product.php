@@ -17,4 +17,9 @@ class Product extends Model
     {
         return $this->belongsTo(Categoria::class, 'categoria_id');
     }
+
+    public function favoritos()
+    {
+        return $this->belongsToMany(User::class, 'favoritos')->withTimestamps();
+    }
 }
