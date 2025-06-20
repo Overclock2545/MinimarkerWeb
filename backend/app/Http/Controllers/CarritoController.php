@@ -21,15 +21,17 @@ class CarritoController extends Controller
 
         if ($item) {
             // Si ya existe, aumenta la cantidad
-            $item->cantidad += 1;
+            $item->cantidad += $request->input('cantidad', 1);
+
             $item->save();
         } else {
             // Si no, crea una nueva entrada
             CarritoItem::create([
-                'user_id' => $user->id,
-                'product_id' => $productId,
-                'cantidad' => 1,
-            ]);
+    'user_id' => $user->id,
+    'product_id' => $productId,
+    'cantidad' => $request->input('cantidad', 1),
+]);
+
         }
 
         return redirect()->back()->with('success', 'Producto agregado al carrito');

@@ -14,13 +14,34 @@
         <div style="font-size: 18px;"><strong>S/. {{ $producto->precio }}</strong></div>
         <div style="margin-top: 10px;">Categoría: {{ $producto->categoria->nombre ?? 'Sin categoría' }}</div>
 
-        <div style="margin-top: 20px; display: flex; align-items: center; gap: 10px;">
-          <button>-</button>
-          <input type="number" value="1" min="1" style="width: 50px; text-align: center;">
-          <button>+</button>
-        </div>
+        
 
-        <button style="margin-top: 15px; background-color: #222; color: white; padding: 10px; border: none; border-radius: 4px;">Agregar al carrito 🛒</button>
+        <form action="{{ route('carrito.agregar', $producto->id) }}" method="POST" style="margin-top: 15px;">
+  @csrf
+  <input type="hidden" name="cantidad" value="1" id="cantidad-input">
+<div style="margin-top: 20px; display: flex; align-items: center; gap: 10px;">
+    <button type="button" onclick="cambiarCantidad(-1)">-</button>
+    <input type="number" id="cantidad" value="1" min="1" style="width: 50px; text-align: center;" readonly>
+    <button type="button" onclick="cambiarCantidad(1)">+</button>
+  </div>
+
+  <button type="submit" style="margin-top: 15px; background-color: #222; color: white; padding: 10px; border: none; border-radius: 4px;">
+    Agregar al carrito 🛒
+  </button>
+</form>
+
+<script>
+  function cambiarCantidad(cambio) {
+    const inputVisible = document.getElementById('cantidad');
+    const inputOculto = document.getElementById('cantidad-input');
+    let valor = parseInt(inputVisible.value) || 1;
+    valor += cambio;
+    if (valor < 1) valor = 1;
+    inputVisible.value = valor;
+    inputOculto.value = valor;
+  }
+</script>
+
         <button style="margin-top: 10px; background-color: #fbbacb; border: none; padding: 10px; border-radius: 4px;">Agregar a favoritos ⭐</button>
       </div>
 
