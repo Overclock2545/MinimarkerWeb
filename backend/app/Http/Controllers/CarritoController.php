@@ -27,11 +27,10 @@ class CarritoController extends Controller
         } else {
             // Si no, crea una nueva entrada
             CarritoItem::create([
-    'user_id' => $user->id,
-    'product_id' => $productId,
-    'cantidad' => $request->input('cantidad', 1),
-]);
-
+                'user_id' => $user->id,
+                'product_id' => $productId,
+                'cantidad' => $request->input('cantidad', 1),
+            ]);
         }
 
         return redirect()->back()->with('success', 'Producto agregado al carrito');

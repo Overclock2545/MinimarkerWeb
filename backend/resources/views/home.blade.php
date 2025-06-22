@@ -65,6 +65,10 @@
               <small>
                 Categoría: {{ $product->categoria->nombre ?? 'Sin categoría' }}
               </small>
+                            <form method="POST" action="{{ route('favoritos.agregar', $product->id) }}">
+              @csrf
+              <button type="submit" class="fav-btn"> ❤ </button>
+              </form>
             </div>
              @auth
        <form method="POST" action="{{ route('carrito.agregar', $product->id) }}" class="card-footer">

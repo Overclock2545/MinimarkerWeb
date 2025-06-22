@@ -22,9 +22,10 @@
     <div class="actions">
       <a href="{{ route('login') }}"><button class="login">Iniciar sesión</button></a>
       <a href="{{ route('register') }}"><button class="register">Registrarse</button></a>
+      
     </div>
   @endauth
+  <a href="{{ route('favoritos') }}" class="favorites">⭐</a>
   <a href="{{ route('carrito') }}" class="cart">🛒</a>
 </div>
-
   </header>

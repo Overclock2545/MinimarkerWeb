@@ -24,18 +24,14 @@ class CategoriaController extends Controller
             'productos' => $productos
         ]);
     }
-public function mostrarPorId($id)
-{
-    $categoria = Categoria::findOrFail($id);
-    $productos = $categoria->productos;
+    public function mostrarPorId($id)
+    {
+        $categoria = Categoria::findOrFail($id);
+        $productos = $categoria->productos;
 
-    return view('home', [ // 👈 usamos la misma vista
-        'titulo' => $categoria->nombre,
-        'products' => $productos
-    ]);
+        return view('home', [ // 👈 usamos la misma vista
+            'titulo' => $categoria->nombre,
+            'products' => $productos
+        ]);
+    }
 }
-
-
-}
-
-

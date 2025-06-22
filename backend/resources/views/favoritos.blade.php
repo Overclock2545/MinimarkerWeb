@@ -10,28 +10,30 @@
 @else
   <div class="products">
     @foreach($favoritos as $favorito)
-      @php
-        $product = $favorito->producto;
-      @endphp
-      <div class="product-card">
-        <img src="{{ $product->imagen ?? 'https://via.placeholder.com/150' }}" alt="{{ $product->nombre }}">
-        <div>
-          {{ $product->nombre }}<br>
-          <strong>S/. {{ $product->precio }}</strong><br>
-          <small>
-            Categoría: {{ $product->categoria->nombre ?? 'Sin categoría' }}
-          </small>
-        </div>
+      @if ($favorito->producto)
+        @php $product = $favorito->producto; @endphp
+        <div class="product-card">
+          <img src="{{ $product->imagen ?? 'https://via.placeholder.com/150' }}" alt="{{ $product->nombre }}">
+          <div>
+            {{ $product->nombre }}<br>
+            <strong>S/. {{ $product->precio }}</strong><br>
+            <small>
+              Categoría: {{ $product->categoria->nombre ?? 'Sin categoría' }}
+            </small>
+          </div>
 
-        <form action="{{ route('favoritos.eliminar', $product->id) }}" method="POST" style="margin-top: 10px;">
+          <form action="{{ route('favoritos.eliminar', $product->id) }}" method="POST">
           @csrf
           @method('DELETE')
-          <button style="padding: 6px 12px; background-color: #d9195b; color: white; border: none; border-radius: 4px;">
-            ❌ Quitar de favoritos
-          </button>
-        </form>
-      </div>
+          <button class="btn-rojo">❌ Quitar de favoritos</button>
+          </form>
+
+        </div>
+      @else
+        <p style="color: red;">⚠️ Un producto de tu lista fue eliminado.</p>
+      @endif
     @endforeach
   </div>
 @endif
 @endsection
+

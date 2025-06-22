@@ -234,3 +234,26 @@
   border-radius: 4px;
   cursor: pointer;
 }
+
+.favoritos{
+  font-size: 24px;
+  margin-left: 10px;
+  cursor: pointer;
+  text-decoration: none;
+  color: #000;
+}
+
+.fav-btn {
+  margin-top: 8px;
+  background-color: #fbbacb;
+  color: #9e1212;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s;
+}
+.fav-btn:hover {
+  background-color: #fba0bc;
+}

@@ -9,8 +9,17 @@ use Illuminate\Support\Facades\Auth;
 
 class FavoritoController extends Controller
 {
+    // Muestra la lista de productos favoritos del usuario autenticado
+    public function index()
+    {
+        $favoritos = Favorito::with('producto')
+            ->where('user_id', Auth::id())
+            ->get();
+        return view('favoritos', compact('favoritos'));
+    }
 
-    public function toggle($productId)
+    // Agrega o elimina un producto de los favoritos del usuario autenticado
+    public function agregar($productId)
     {
         $user = Auth::user();
 
@@ -30,10 +39,15 @@ class FavoritoController extends Controller
         return redirect()->back()->with('success', 'Producto actualizado en favoritos');
     }
 
-    public function index()
+    // Elimina un producto de los favoritos del usuario autenticado
+    public function eliminar($productId)
     {
-        $favoritos = Auth::user()->favoritos;
-        return view('favoritos', compact('favoritos'));
+        Favorito::where('user_id', Auth::id())
+            ->where('product_id', $productId)
+            ->delete();
+
+        return redirect()->back()->with('success', 'Producto eliminado de favoritos');
     }
+
     //
 }
