@@ -119,6 +119,7 @@
     }
 
     .sidebar button {
+      width: 100%;
       background-color: #fbbacb;
       border: none;
       padding: 10px;
