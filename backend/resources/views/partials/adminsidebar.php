@@ -4,7 +4,7 @@
         <a href="#">🕒 Pedidos Pendientes</a>
         <a href="#">🚚 Pedidos en Curso</a>
         <a href="#">📜 Historial de Pedidos</a>
-        <a href="#">👥 Administrar Usuarios</a>
+        <a href="/admin/usuarios">👥 Administrar Usuarios</a>
         <a href="#">📊 Análisis de Ventas</a>
     </nav>
 </aside>

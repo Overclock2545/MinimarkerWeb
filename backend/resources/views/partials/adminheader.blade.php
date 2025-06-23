@@ -1,5 +1,5 @@
 <header class="admin-header">
-    <a href="{{ url('/inicio') }}" class="admin-logo">
+    <a href="{{ url('/admin') }}" class="admin-logo">
         <img src="{{ asset('images/logo.png') }}" alt="Logo">
         <div class="logo-text">
             <h1>I LIKE YOU</h1>

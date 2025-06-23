@@ -72,7 +72,16 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth', EsAdmin::class])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.panel');
     Route::post('/admin/stock/agregar', [AdminController::class, 'agregarStock'])->name('admin.agregar.stock');
+
+    // Rutas para administrar usuarios
+    Route::get('/admin/usuarios', [AdminController::class, 'gestionarUsuarios'])->name('admin.usuarios');
+    Route::get('/admin/usuarios/{id}', [AdminController::class, 'verUsuario'])->name('admin.usuarios.ver');
+    Route::get('/admin/usuarios/{id}/editar', [AdminController::class, 'editarUsuario'])->name('admin.usuarios.editar');
+    Route::put('/admin/usuarios/{id}', [AdminController::class, 'actualizarUsuario'])->name('admin.usuarios.actualizar');
+    Route::delete('/admin/usuarios/{id}', [AdminController::class, 'eliminarUsuario'])->name('admin.usuarios.eliminar');
+    Route::get('/admin/usuarios/{id}/carrito', [AdminController::class, 'verCarrito'])->name('admin.usuarios.carrito');
 });
+
 
 /*
 |--------------------------------------------------------------------------

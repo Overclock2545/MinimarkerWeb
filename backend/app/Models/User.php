@@ -18,11 +18,14 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'rol', // Puede ser 'admin'
-    ];
+    'name',
+    'email',
+    'password',
+    'rol', // ya lo tienes
+    'celular',
+    'documento_identidad',
+];
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -46,10 +49,11 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    public function carrritoItems()
-    {
-        return $this->hasMany(CarritoItem::class);
-    }
+    public function carritoItems()
+{
+    return $this->hasMany(\App\Models\CarritoItem::class);
+}
+
 
     public function favoritos()
     {
