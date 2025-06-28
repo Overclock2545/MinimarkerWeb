@@ -9,23 +9,35 @@ use Illuminate\Support\Facades\Auth;
 
 class CarritoController extends Controller
 {
-    // Agregar producto al carrito desde la vista de productos
+    /**
+     * Mostrar los productos del carrito del usuario autenticado.
+     */
+    public function index()
+    {
+        $user = Auth::user();
+
+        $carrito = CarritoItem::where('user_id', $user->id)
+            ->with('product') // Asegúrate que CarritoItem tenga esta relación
+            ->get();
+
+        return view('carrito', compact('carrito'));
+    }
+
+    /**
+     * Agregar un producto al carrito.
+     */
     public function add(Request $request, $productId)
     {
         $user = Auth::user();
 
-        // Verifica si ya está en el carrito
         $item = CarritoItem::where('user_id', $user->id)
             ->where('product_id', $productId)
             ->first();
 
         if ($item) {
-            // Si ya existe, aumenta la cantidad
             $item->cantidad += $request->input('cantidad', 1);
-
             $item->save();
         } else {
-            // Si no, crea una nueva entrada
             CarritoItem::create([
                 'user_id' => $user->id,
                 'product_id' => $productId,
@@ -36,20 +48,20 @@ class CarritoController extends Controller
         return redirect()->back()->with('success', 'Producto agregado al carrito');
     }
 
+    /**
+     * Eliminar un producto del carrito.
+     */
     public function remove($id)
     {
-        // Busca el ítem del carrito por su ID
-        $item = \App\Models\CarritoItem::findOrFail($id);
-
-
-        // Elimina el ítem del carrito
+        $item = CarritoItem::findOrFail($id);
         $item->delete();
 
-        // Redirige de vuelta al carrito con un mensaje de éxito
         return redirect()->back()->with('status', 'Producto eliminado del carrito.');
     }
 
-    // Aumentar cantidad desde la vista del carrito
+    /**
+     * Aumentar la cantidad de un producto en el carrito.
+     */
     public function incrementar($id)
     {
         $item = CarritoItem::findOrFail($id);
@@ -59,7 +71,9 @@ class CarritoController extends Controller
         return redirect()->route('carrito');
     }
 
-    // Disminuir cantidad desde la vista del carrito
+    /**
+     * Disminuir la cantidad de un producto en el carrito.
+     */
     public function disminuir($id)
     {
         $item = CarritoItem::findOrFail($id);
@@ -68,27 +82,9 @@ class CarritoController extends Controller
             $item->cantidad -= 1;
             $item->save();
         } else {
-            $item->delete(); // si la cantidad es 1 y se disminuye, se elimina
+            $item->delete();
         }
 
         return redirect()->route('carrito');
     }
-
-
-
-    public function index()
-    {
-        $user = Auth::user();
-
-        // Carga los items del carrito con sus productos asociados
-        $carrito = CarritoItem::where('user_id', $user->id)
-            ->with('product') // Asegúrate que CarritoItem tenga esta relación
-            ->get();
-
-        return view('carrito', compact('carrito'));
-    }
-
-
-
-    //
 }
