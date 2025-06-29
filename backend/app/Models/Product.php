@@ -24,6 +24,7 @@ class Product extends Model
     }
 
     protected $fillable = [
+        'id', // Asegúrate de que este campo sea único y se genere correctamente
         'nombre',
         'categoria_id',
         'precio',

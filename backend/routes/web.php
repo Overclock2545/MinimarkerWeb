@@ -86,6 +86,18 @@ Route::middleware(['auth', EsAdmin::class])->group(function () {
     Route::get('/admin/productos/{id}/editar', [AdminController::class, 'formularioEditarProducto'])->name('admin.productos.editar');
     Route::put('/admin/productos/{id}', [AdminController::class, 'actualizarProducto'])->name('admin.productos.actualizar');
 
+    // Rutas para agregar nuevos productos
+    Route::get('/admin/productos/nuevo', [AdminController::class, 'formularioNuevoProducto'])->name('admin.productos.nuevo');
+    Route::post('/admin/productos', [AdminController::class, 'guardarNuevoProducto'])->name('admin.productos.guardar');
+
+    // Rutas para gestionar categorías
+    Route::get('/admin/categorias', [AdminController::class, 'gestionarCategorias'])->name('admin.categorias');
+    Route::post('/admin/categorias/guardar', [AdminController::class, 'guardarCategoria'])->name('admin.categorias.guardar');
+    Route::delete('/admin/categorias/eliminar/{id}', [AdminController::class, 'eliminarCategoria'])->name('admin.categorias.eliminar');
+    Route::get('/admin/categorias/{id}/editar', [AdminController::class, 'formularioEditarCategoria'])->name('admin.categorias.editar');
+    Route::put('/admin/categorias/{id}', [AdminController::class, 'actualizarCategoria'])->name('admin.categorias.actualizar');
+
+
 
     // Rutas para administrar usuarios
     Route::get('/admin/usuarios', [AdminController::class, 'gestionarUsuarios'])->name('admin.usuarios');

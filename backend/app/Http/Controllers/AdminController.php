@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\CarritoItem;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Models\Categoria; // Asegúrate de que el modelo Categoria esté correctamente importado
 
 class AdminController extends Controller
 {
@@ -88,6 +89,96 @@ class AdminController extends Controller
 
         return redirect()->route('admin.productos.gestionar')->with('success', 'Producto actualizado correctamente.');
     }
+
+    //Metodo para crear nuevos productos
+    public function formularioNuevoProducto()
+    {
+        $categorias = Categoria::all();
+        return view('admin.productos.nuevo', compact('categorias'));
+    }
+
+    public function guardarNuevoProducto(Request $request)
+    {
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'categoria_id' => 'required|exists:categorias,id',
+            'precio' => 'required|numeric|min:0',
+            'descripcion' => 'nullable|string',
+            'stock' => 'required|integer|min:0',
+            'imagen' => 'nullable|image|max:2048',
+        ]);
+
+        $producto = new Product();
+        $producto->id = strtoupper(Str::random(6)); // ID personalizado
+        $producto->nombre = $request->nombre;
+        $producto->categoria_id = $request->categoria_id;
+        $producto->precio = $request->precio;
+        $producto->descripcion = $request->descripcion;
+        $producto->stock = $request->stock;
+
+        // Subida de imagen
+        if ($request->hasFile('imagen')) {
+            $imagen = $request->file('imagen');
+            $nombreArchivo = Str::uuid() . '.' . $imagen->getClientOriginalExtension();
+            $imagen->storeAs('productos', $nombreArchivo, 'public');
+            $producto->imagen = 'storage/productos/' . $nombreArchivo;
+        }
+
+        $producto->save();
+
+        return redirect()->route('admin.productos.gestionar')->with('success', 'Producto creado exitosamente.');
+    }
+
+
+    //Metodo para gestionar categorias
+    public function gestionarCategorias()
+    {
+        $categorias = Categoria::orderBy('nombre')->get();
+        return view('admin.categorias', compact('categorias'));
+    }
+
+    public function guardarCategoria(Request $request)
+    {
+        $request->validate([
+            'nombre' => 'required|string|max:35|unique:categorias,nombre',
+        ]);
+
+        Categoria::create([
+            'nombre' => $request->nombre,
+        ]);
+
+        return redirect()->route('admin.categorias')->with('success', 'Categoría agregada correctamente.');
+    }
+
+    public function eliminarCategoria($id)
+    {
+        $categoria = Categoria::findOrFail($id);
+        $categoria->delete();
+
+        return redirect()->route('admin.categorias')->with('success', 'Categoría eliminada.');
+    }
+
+
+    public function formularioEditarCategoria($id)
+    {
+        $categoria = Categoria::findOrFail($id);
+        return view('admin.categorias_editar', compact('categoria'));
+    }
+
+    public function actualizarCategoria(Request $request, $id)
+    {
+        $request->validate([
+            'nombre' => 'required|string|max:35|unique:categorias,nombre,' . $id,
+        ]);
+
+        $categoria = Categoria::findOrFail($id);
+        $categoria->update(['nombre' => $request->nombre]);
+
+        return redirect()->route('admin.categorias')->with('success', 'Categoría actualizada correctamente.');
+    }
+
+
+
 
 
     //Metodo para ver usuarios
