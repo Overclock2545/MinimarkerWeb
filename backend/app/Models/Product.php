@@ -22,4 +22,13 @@ class Product extends Model
     {
         return $this->belongsToMany(User::class, 'favoritos')->withTimestamps();
     }
+
+    protected $fillable = [
+        'nombre',
+        'categoria_id',
+        'precio',
+        'descripcion',
+        'stock',
+        'imagen', // Solo si planeas permitir subir/cambiar imagen desde el formulario
+    ];
 }

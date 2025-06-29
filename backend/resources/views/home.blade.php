@@ -58,7 +58,7 @@
       @foreach($products as $product)
         <a href="{{ route('producto.ver', $product->id) }}" style="text-decoration: none; color: inherit;">
           <div class="product-card">
-            <img src="{{ $product->imagen ?? 'https://via.placeholder.com/150' }}" alt="{{ $product->nombre }}">
+            <img src="{{ asset($product->imagen) }}" alt="Imagen del producto">
             <div>
               {{ $product->nombre }}<br>
               <strong>S/. {{ $product->precio }}</strong><br>

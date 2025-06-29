@@ -71,7 +71,21 @@ Route::middleware(['auth'])->group(function () {
 
 Route::middleware(['auth', EsAdmin::class])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.panel');
-    Route::post('/admin/stock/agregar', [AdminController::class, 'agregarStock'])->name('admin.agregar.stock');
+
+    // Vista con las 3 cartillas
+    Route::get('/admin/stock', function () {
+        return view('admin.stock');
+    })->name('admin.stock');
+
+    // Subrutas de cada cartilla
+    Route::get('/admin/productos', [AdminController::class, 'gestionarProductos'])->name('admin.productos.gestionar');
+    Route::get('/admin/productos/nuevo', [AdminController::class, 'formularioNuevoProducto'])->name('admin.productos.nuevo');
+    Route::get('/admin/categorias', [AdminController::class, 'gestionarCategorias'])->name('admin.categorias');
+
+    // Rutas para editar productos
+    Route::get('/admin/productos/{id}/editar', [AdminController::class, 'formularioEditarProducto'])->name('admin.productos.editar');
+    Route::put('/admin/productos/{id}', [AdminController::class, 'actualizarProducto'])->name('admin.productos.actualizar');
+
 
     // Rutas para administrar usuarios
     Route::get('/admin/usuarios', [AdminController::class, 'gestionarUsuarios'])->name('admin.usuarios');
