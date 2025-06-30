@@ -52,21 +52,34 @@
         </div>
 
         <button type="submit" class="btn btn-primary">💾 Guardar Cambios</button>
-            <form id="formEliminar" action="{{ route('admin.productos.eliminar', $producto->id) }}" method="POST" style="margin-top: 20px;">
-    @csrf
-    @method('DELETE')
-    <button type="submit" class="btn btn-danger">🗑 Eliminar Producto</button>
-</form>
 
-<script>
-    document.getElementById('formEliminar').addEventListener('submit', function(e) {
-        if (!confirm('¿Estás seguro de eliminar este producto? Esta acción no se puede deshacer.')) {
-            e.preventDefault();
-        }
-    });
-</script>
-
-                    
+        <!-- Botón para abrir el modal -->
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmarEliminar" style="margin-left: 10px;">
+            🗑 Eliminar Producto
+        </button>
     </form>
+</div>
+
+<!-- Modal de confirmación -->
+<div class="modal fade" id="confirmarEliminar" tabindex="-1" aria-labelledby="confirmarEliminarLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmarEliminarLabel">Confirmar eliminación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        ¿Estás seguro de eliminar este producto? Esta acción no se puede deshacer.
+      </div>
+      <div class="modal-footer">
+        <form action="{{ route('admin.productos.eliminar', $producto->id) }}" method="POST">
+          @csrf
+          @method('DELETE')
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-danger">Sí, eliminar</button>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
 @endsection
