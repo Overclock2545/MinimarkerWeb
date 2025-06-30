@@ -52,6 +52,21 @@
         </div>
 
         <button type="submit" class="btn btn-primary">💾 Guardar Cambios</button>
+            <form id="formEliminar" action="{{ route('admin.productos.eliminar', $producto->id) }}" method="POST" style="margin-top: 20px;">
+    @csrf
+    @method('DELETE')
+    <button type="submit" class="btn btn-danger">🗑 Eliminar Producto</button>
+</form>
+
+<script>
+    document.getElementById('formEliminar').addEventListener('submit', function(e) {
+        if (!confirm('¿Estás seguro de eliminar este producto? Esta acción no se puede deshacer.')) {
+            e.preventDefault();
+        }
+    });
+</script>
+
+                    
     </form>
 </div>
 @endsection

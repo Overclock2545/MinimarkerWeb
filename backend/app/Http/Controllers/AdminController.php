@@ -89,6 +89,20 @@ class AdminController extends Controller
 
         return redirect()->route('admin.productos.gestionar')->with('success', 'Producto actualizado correctamente.');
     }
+    public function eliminarProducto($id)
+{
+    $producto = Product::findOrFail($id);
+
+    // Elimina imagen si existe
+    if ($producto->imagen) {
+        $rutaVieja = str_replace('storage/', '', $producto->imagen);
+        Storage::disk('public')->delete($rutaVieja);
+    }
+
+    $producto->delete();
+
+    return redirect()->route('admin.productos.gestionar')->with('success', 'Producto eliminado correctamente.');
+}
 
     //Metodo para crear nuevos productos
     public function formularioNuevoProducto()
