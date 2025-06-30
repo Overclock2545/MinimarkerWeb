@@ -46,26 +46,6 @@
                             <a href="{{ route('admin.productos.editar', $producto->id) }}" class="btn btn-sm btn-outline-primary">
                             <i class="bi bi-pencil-square"></i>
                             </a>
-
-
-                            {{-- Aumentar stock --}}
-                            <form action="#" method="POST">
-                                @csrf
-                                <button class="btn btn-sm btn-primary" title="Aumentar">➕</button>
-                            </form>
-
-                            {{-- Disminuir stock --}}
-                            <form action="#" method="POST">
-                                @csrf
-                                <button class="btn btn-sm btn-warning" title="Disminuir">➖</button>
-                            </form>
-
-                            {{-- Eliminar producto --}}
-                            <form action="#" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar este producto?');">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-sm btn-danger" title="Eliminar">🗑️</button>
-                            </form>
                         </div>
                     </td>
                 </tr>
