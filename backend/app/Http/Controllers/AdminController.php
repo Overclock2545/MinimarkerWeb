@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 use App\Models\Product; // Asegúrate de que el modelo Product esté correctamente importado
 use App\Models\User;
 use App\Models\CarritoItem;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use App\Models\Categoria; // Asegúrate de que el modelo Categoria esté correctamente importado
+
 class AdminController extends Controller
 {
     public function index()
@@ -15,72 +19,215 @@ class AdminController extends Controller
         // asegúrate de tener la vista correspondiente
     }
 
-    public function agregarStock(Request $request)
+    //Metodo para ver productos
+
+    public function gestionarProductos(Request $request)
     {
+        $busqueda = $request->input('q');
+        $productos = Product::with('categoria')
+            ->when($busqueda, function ($query, $busqueda) {
+                $query->where('nombre', 'like', "%$busqueda%")
+                    ->orWhere('id', 'like', "%$busqueda%");
+            })
+            ->paginate(10);
+
+        return view('admin.productos.index', compact('productos', 'busqueda'));
+    }
+
+    // Metodo para editar productos
+    public function formularioEditarProducto($id)
+    {
+        $producto = Product::findOrFail($id);
+        $categorias = \App\Models\Categoria::all();
+
+        return view('admin.productos.editar', compact('producto', 'categorias'));
+    }
+
+    public function actualizarProducto(Request $request, $id)
+    {
+        $producto = Product::findOrFail($id);
+
         $request->validate([
-            'product_id' => 'required|string|exists:product,id',
-            'cantidad' => 'required|integer|min:1',
+            'nombre' => 'required|string|max:255',
+            'categoria_id' => 'required|exists:categorias,id',
+            'precio' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0',
+            'descripcion' => 'nullable|string',
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
-        $producto = Product::findOrFail($request->product_id);
-        $producto->stock += $request->cantidad;
+        // Actualiza campos
+        $producto->update([
+            'nombre' => $request->nombre,
+            'categoria_id' => $request->categoria_id,
+            'precio' => $request->precio,
+            'stock' => $request->stock,
+            'descripcion' => $request->descripcion,
+        ]);
+
+        // Si sube una nueva imagen
+        if ($request->hasFile('imagen')) {
+            $imagen = $request->file('imagen');
+
+            // Nombre único
+            $nombreArchivo = Str::uuid() . '.' . $imagen->getClientOriginalExtension();
+
+            // Guarda en storage/app/public/productos
+            $ruta = $imagen->storeAs('productos', $nombreArchivo, 'public');
+
+            // Elimina imagen anterior
+            if ($producto->imagen) {
+                $rutaVieja = str_replace('storage/', '', $producto->imagen); // convierte 'storage/productos/...' a 'productos/...'
+                Storage::disk('public')->delete($rutaVieja);
+            }
+
+            // Guarda nueva ruta accesible públicamente
+            $producto->imagen = 'storage/productos/' . $nombreArchivo;
+            $producto->save();
+        }
+
+
+        return redirect()->route('admin.productos.gestionar')->with('success', 'Producto actualizado correctamente.');
+    }
+
+    //Metodo para crear nuevos productos
+    public function formularioNuevoProducto()
+    {
+        $categorias = Categoria::all();
+        return view('admin.productos.nuevo', compact('categorias'));
+    }
+
+    public function guardarNuevoProducto(Request $request)
+    {
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'categoria_id' => 'required|exists:categorias,id',
+            'precio' => 'required|numeric|min:0',
+            'descripcion' => 'nullable|string',
+            'stock' => 'required|integer|min:0',
+            'imagen' => 'nullable|image|max:2048',
+        ]);
+
+        $producto = new Product();
+        $producto->id = strtoupper(Str::random(6)); // ID personalizado
+        $producto->nombre = $request->nombre;
+        $producto->categoria_id = $request->categoria_id;
+        $producto->precio = $request->precio;
+        $producto->descripcion = $request->descripcion;
+        $producto->stock = $request->stock;
+
+        // Subida de imagen
+        if ($request->hasFile('imagen')) {
+            $imagen = $request->file('imagen');
+            $nombreArchivo = Str::uuid() . '.' . $imagen->getClientOriginalExtension();
+            $imagen->storeAs('productos', $nombreArchivo, 'public');
+            $producto->imagen = 'storage/productos/' . $nombreArchivo;
+        }
+
         $producto->save();
 
-        return redirect()->route('admin.panel')->with('success', 'Stock actualizado correctamente.');
-
-        // lógica para actualizar el stock
+        return redirect()->route('admin.productos.gestionar')->with('success', 'Producto creado exitosamente.');
     }
-    
-
-       
 
 
-public function gestionarUsuarios()
-{
-    $usuarios = User::all();
-    return view('admin.usuarios', compact('usuarios'));
-}
+    //Metodo para gestionar categorias
+    public function gestionarCategorias()
+    {
+        $categorias = Categoria::orderBy('nombre')->get();
+        return view('admin.categorias', compact('categorias'));
+    }
+
+    public function guardarCategoria(Request $request)
+    {
+        $request->validate([
+            'nombre' => 'required|string|max:35|unique:categorias,nombre',
+        ]);
+
+        Categoria::create([
+            'nombre' => $request->nombre,
+        ]);
+
+        return redirect()->route('admin.categorias')->with('success', 'Categoría agregada correctamente.');
+    }
+
+    public function eliminarCategoria($id)
+    {
+        $categoria = Categoria::findOrFail($id);
+        $categoria->delete();
+
+        return redirect()->route('admin.categorias')->with('success', 'Categoría eliminada.');
+    }
 
 
-public function editarUsuario($id)
-{
-    $usuario = User::findOrFail($id);
-    return view('admin.editar_usuario', compact('usuario'));
-}
+    public function formularioEditarCategoria($id)
+    {
+        $categoria = Categoria::findOrFail($id);
+        return view('admin.categorias_editar', compact('categoria'));
+    }
 
-public function actualizarUsuario(Request $request, $id)
-{
-    $usuario = User::findOrFail($id);
+    public function actualizarCategoria(Request $request, $id)
+    {
+        $request->validate([
+            'nombre' => 'required|string|max:35|unique:categorias,nombre,' . $id,
+        ]);
 
-    $request->validate([
-        'name' => 'required|string',
-        'email' => 'required|email',
-        'rol' => 'required|string',
-        'celular' => 'nullable|string',
-        'documento_identidad' => 'nullable|string',
-    ]);
+        $categoria = Categoria::findOrFail($id);
+        $categoria->update(['nombre' => $request->nombre]);
 
-    $usuario->update($request->all());
-
-    return redirect()->route('admin.usuarios')->with('success', 'Usuario actualizado correctamente.');
-}
-
-public function eliminarUsuario($id)
-{
-    $usuario = User::findOrFail($id);
-    $usuario->delete();
-
-    return redirect()->route('admin.usuarios')->with('success', 'Usuario eliminado correctamente.');
-}
+        return redirect()->route('admin.categorias')->with('success', 'Categoría actualizada correctamente.');
+    }
 
 
 
-public function verCarrito($id)
-{
-    $usuario = User::findOrFail($id);
-    $carrito = $usuario->carritoItems()->with('product')->get();
 
-    return view('admin.carrito_usuario', compact('usuario', 'carrito'));
-}
 
+    //Metodo para ver usuarios
+
+    public function gestionarUsuarios()
+    {
+        $usuarios = User::all();
+        return view('admin.usuarios', compact('usuarios'));
+    }
+
+
+    public function editarUsuario($id)
+    {
+        $usuario = User::findOrFail($id);
+        return view('admin.editar_usuario', compact('usuario'));
+    }
+
+    public function actualizarUsuario(Request $request, $id)
+    {
+        $usuario = User::findOrFail($id);
+
+        $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|email',
+            'rol' => 'required|string',
+            'celular' => 'nullable|string',
+            'documento_identidad' => 'nullable|string',
+        ]);
+
+        $usuario->update($request->all());
+
+        return redirect()->route('admin.usuarios')->with('success', 'Usuario actualizado correctamente.');
+    }
+
+    public function eliminarUsuario($id)
+    {
+        $usuario = User::findOrFail($id);
+        $usuario->delete();
+
+        return redirect()->route('admin.usuarios')->with('success', 'Usuario eliminado correctamente.');
+    }
+
+
+
+    public function verCarrito($id)
+    {
+        $usuario = User::findOrFail($id);
+        $carrito = $usuario->carritoItems()->with('product')->get();
+
+        return view('admin.carrito_usuario', compact('usuario', 'carrito'));
+    }
 }

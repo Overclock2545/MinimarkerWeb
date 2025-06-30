@@ -80,31 +80,26 @@
                 </button>
             </div>
 
-            <div style="flex: 2; min-width: 300px;">
-                <h3>Descripción:</h3>
-                <p style="max-height: 300px; overflow-y: auto;">
-                    {{ $producto->descripcion ?? 'Este producto no tiene una descripción.' }}
-                </p>
-            </div>
-        </div>
-    @else
-        {{-- Mostrar lista de productos --}}
-        <div class="products">
-            @foreach ($products as $product)
-                <a href="{{ route('producto.ver', $product->id) }}" style="text-decoration: none; color: inherit;">
-                    <div class="product-card">
-                        <img
-                            src="{{ $product->imagen ?? 'https://via.placeholder.com/150' }}"
-                            alt="{{ $product->nombre }}"
-                        >
-
-                        <div>
-                            {{ $product->nombre }}<br>
-                            <strong>S/. {{ $product->precio }}</strong><br>
-                            <small>
-                                Categoría: {{ $product->categoria->nombre ?? 'Sin categoría' }}
-                            </small>
-
+      <div style="flex: 2; min-width: 300px;">
+        <h3>Descripción:</h3>
+        <p style="max-height: 300px; overflow-y: auto;">
+          {{ $producto->descripcion ?? 'Este producto no tiene una descripción.' }}
+        </p>
+      </div>
+    </div>
+  @else
+    {{-- Mostrar lista de productos --}}
+    <div class="products">
+      @foreach($products as $product)
+        <a href="{{ route('producto.ver', $product->id) }}" style="text-decoration: none; color: inherit;">
+          <div class="product-card">
+            <img src="{{ $product->imagen ?? 'https://via.placeholder.com/150' }}" alt="{{ $product->nombre }}">
+            <div>
+              {{ $product->nombre }}<br>
+              <strong>S/. {{ $product->precio }}</strong><br>
+              <small>
+                Categoría: {{ $product->categoria->nombre ?? 'Sin categoría' }}
+              </small>
                             <form method="POST" action="{{ route('favoritos.agregar', $product->id) }}">
                                 @csrf
                                 <button type="submit" class="fav-btn">❤</button>
