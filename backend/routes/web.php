@@ -50,12 +50,15 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+
     // Carrito de compras
     Route::get('/carrito', [CarritoController::class, 'index'])->name('carrito');
     Route::post('/carrito/agregar/{product}', [CarritoController::class, 'add'])->name('carrito.agregar');
     Route::post('/carrito/eliminar/{id}', [CarritoController::class, 'remove'])->name('carrito.eliminar');
     Route::post('/carrito/incrementar/{id}', [CarritoController::class, 'incrementar'])->name('carrito.incrementar');
     Route::post('/carrito/disminuir/{id}', [CarritoController::class, 'disminuir'])->name('carrito.disminuir');
+    Route::post('/carrito/confirmar', [CarritoController::class, 'confirmarPedido'])->name('carrito.confirmar');
+
 
     // Favoritos
     Route::get('/favoritos', [FavoritoController::class, 'index'])->name('favoritos');
