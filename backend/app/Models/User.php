@@ -2,61 +2,62 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
+
+    /**
+     * Propiedad ficticia para evitar el error de Intelephense
+     *
+     * @var \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    protected $factory;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
      */
+
     protected $fillable = [
-    'name',
-    'email',
-    'password',
-    'rol', // ya lo tienes
-    'celular',
-    'documento_identidad',
-];
+        'name',
+        'email',
+        'password',
+        'rol',
+        'celular',
+        'documento_identidad',
+    ];
 
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    // ✅ Así debe estar
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
+
+    public function carritoItems(): HasMany
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->hasMany(CarritoItem::class);
     }
-    public function carritoItems()
-{
-    return $this->hasMany(\App\Models\CarritoItem::class);
-}
 
-
-    public function favoritos()
+    public function favoritos(): BelongsToMany
     {
         return $this->belongsToMany(Product::class, 'favoritos')->withTimestamps();
+    }
+
+    public function pedidos(): HasMany
+    {
+        return $this->hasMany(Pedido::class);
     }
 }

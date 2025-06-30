@@ -32,4 +32,9 @@ class Product extends Model
         'stock',
         'imagen', // Solo si planeas permitir subir/cambiar imagen desde el formulario
     ];
+
+    public function pedidoItems()
+    {
+        return $this->hasMany(PedidoItem::class);
+    }
 }

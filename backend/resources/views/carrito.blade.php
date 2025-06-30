@@ -3,6 +3,19 @@
 @section('title', 'Tu Carrito de Compras')
 
 @section('content')
+
+  @if (session('success'))
+    <div class="alert alert-success text-center">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if (session('error'))
+    <div class="alert alert-danger text-center">
+        {{ session('error') }}
+    </div>
+  @endif
+
   <div class="products-title">🛒 Tu Carrito</div>
 
   @if($carrito->isEmpty())
@@ -50,6 +63,13 @@
           </form>
         </div>
       @endforeach
+
+      <form action="{{ route('carrito.confirmar') }}" method="POST" style="text-align: center; margin-top: 20px;">
+    @csrf
+    <button class="btn btn-success">
+        ✅ Confirmar y Coordinar por WhatsApp
+    </button>
+      </form>
 
       <div style="text-align: right; font-size: 20px; font-weight: bold; margin-top: 20px;">
         Total: S/. {{ number_format($total, 2) }}

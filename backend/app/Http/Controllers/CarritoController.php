@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\CarritoItem;
-use App\Models\Product;
+use App\Models\Pedido;
+use App\Models\PedidoItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CarritoController extends Controller
 {
@@ -17,7 +19,7 @@ class CarritoController extends Controller
         $user = Auth::user();
 
         $carrito = CarritoItem::where('user_id', $user->id)
-            ->with('product') // Asegúrate que CarritoItem tenga esta relación
+            ->with('product')
             ->get();
 
         return view('carrito', compact('carrito'));
@@ -86,5 +88,63 @@ class CarritoController extends Controller
         }
 
         return redirect()->route('carrito');
+    }
+
+    /**
+     * Confirmar el pedido del carrito y redirigir a WhatsApp.
+     */
+    public function confirmarPedido()
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $carritoItems = $user->carritoItems()->with('product')->get();
+
+        if ($carritoItems->isEmpty()) {
+            return redirect()->back()->with('error', 'Tu carrito está vacío.');
+        }
+
+        DB::beginTransaction();
+        try {
+            // Generar código único
+            $ultimoPedidoId = Pedido::max('id') ?? 0;
+            $codigo = 'PED-' . str_pad($ultimoPedidoId + 1, 5, '0', STR_PAD_LEFT);
+
+            // Calcular total
+            $total = $carritoItems->sum(function ($item) {
+                return $item->product->precio * $item->cantidad;
+            });
+
+            // Crear pedido
+            $pedido = Pedido::create([
+                'user_id' => $user->id,
+                'codigo_pedido' => $codigo,
+                'total' => $total,
+                'estado' => 'pendiente_pago',
+            ]);
+
+            // Crear items del pedido
+            foreach ($carritoItems as $item) {
+                PedidoItem::create([
+                    'pedido_id' => $pedido->id,
+                    'product_id' => $item->product->id,
+                    'cantidad' => $item->cantidad,
+                    'precio_unitario' => $item->product->precio,
+                ]);
+            }
+
+            // Vaciar carrito
+            $user->carritoItems()->delete();
+
+            DB::commit();
+
+            // Redirección a WhatsApp
+            $mensaje = urlencode("Hola, acabo de realizar el pedido {$codigo}. Quisiera coordinar el pago.");
+            $urlWhatsApp = "https://wa.me/51944770988?text={$mensaje}"; // Reemplaza con tu número real
+
+            return redirect($urlWhatsApp)->with('success', 'Pedido registrado. Redirigiendo a WhatsApp.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Error al procesar tu pedido.');
+        }
     }
 }
