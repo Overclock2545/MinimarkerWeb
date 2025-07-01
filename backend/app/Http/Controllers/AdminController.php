@@ -8,7 +8,8 @@ use App\Models\User;
 use App\Models\CarritoItem;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use App\Models\Categoria; // Asegúrate de que el modelo Categoria esté correctamente importado
+use App\Models\Categoria;
+use App\Models\Pedido; // Asegúrate de que el modelo Categoria esté correctamente importado
 
 class AdminController extends Controller
 {
@@ -90,19 +91,19 @@ class AdminController extends Controller
         return redirect()->route('admin.productos.gestionar')->with('success', 'Producto actualizado correctamente.');
     }
     public function eliminarProducto($id)
-{
-    $producto = Product::findOrFail($id);
+    {
+        $producto = Product::findOrFail($id);
 
-    // Elimina imagen si existe
-    if ($producto->imagen) {
-        $rutaVieja = str_replace('storage/', '', $producto->imagen);
-        Storage::disk('public')->delete($rutaVieja);
+        // Elimina imagen si existe
+        if ($producto->imagen) {
+            $rutaVieja = str_replace('storage/', '', $producto->imagen);
+            Storage::disk('public')->delete($rutaVieja);
+        }
+
+        $producto->delete();
+
+        return redirect()->route('admin.productos.gestionar')->with('success', 'Producto eliminado correctamente.');
     }
-
-    $producto->delete();
-
-    return redirect()->route('admin.productos.gestionar')->with('success', 'Producto eliminado correctamente.');
-}
 
     //Metodo para crear nuevos productos
     public function formularioNuevoProducto()
@@ -192,6 +193,30 @@ class AdminController extends Controller
     }
 
 
+
+    // Metodo para ver pedidos
+    public function verPedidos()
+    {
+        $pedidos = Pedido::with('usuario')->latest()->paginate(10);
+        return view('admin.pedidos.index', compact('pedidos'));
+    }
+
+    public function confirmarPago($id)
+    {
+        $pedido = Pedido::findOrFail($id);
+
+        if ($pedido->estado === 'pendiente_pago') {
+            $pedido->estado = 'pago_confirmado';
+            $pedido->save();
+
+            // TODO: Generar boleta PDF (siguiente paso)
+            // TODO: Descontar stock
+
+            return back()->with('success', 'Pago confirmado y boleta generada.');
+        }
+
+        return back()->with('info', 'Este pedido ya está confirmado.');
+    }
 
 
 

@@ -64,6 +64,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/favoritos', [FavoritoController::class, 'index'])->name('favoritos');
     Route::post('/favoritos/agregar/{productId}', [FavoritoController::class, 'agregar'])->name('favoritos.agregar');
     Route::delete('/favoritos/eliminar/{product_id}', [FavoritoController::class, 'eliminar'])->name('favoritos.eliminar');
+
+
+    // Mis Pedidos
+    Route::get('/mis-pedidos', [\App\Http\Controllers\PedidoController::class, 'misPedidos'])->name('pedidos');
+    Route::get('/mis-pedidos/{id}/boleta', [\App\Http\Controllers\PedidoController::class, 'descargarBoleta'])->name('cliente.boleta');
 });
 
 /*
@@ -101,6 +106,9 @@ Route::middleware(['auth', EsAdmin::class])->group(function () {
     Route::get('/admin/categorias/{id}/editar', [AdminController::class, 'formularioEditarCategoria'])->name('admin.categorias.editar');
     Route::put('/admin/categorias/{id}', [AdminController::class, 'actualizarCategoria'])->name('admin.categorias.actualizar');
 
+    // Rutas para administrar pedidos
+    Route::get('/admin/pedidos', [AdminController::class, 'verPedidos'])->name('admin.pedidos');
+    Route::post('/admin/pedidos/{id}/confirmar', [AdminController::class, 'confirmarPago'])->name('admin.pedido.confirmar');
 
 
     // Rutas para administrar usuarios
