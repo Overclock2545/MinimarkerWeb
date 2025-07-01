@@ -4,11 +4,13 @@
     }
 
     body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #010101;
-      color: #333;
-    }
+  margin: 0;
+  background-color: #fdfcff;  /* blanco con un tinte suave pastel */
+  color: #333;
+  font-family: 'Poppins', sans-serif;
+}
+
+
 
     header {
       display: flex;
@@ -214,13 +216,45 @@
 }
 
 .card-footer {
-  height: 0;
-  opacity: 0;
-  overflow: hidden;
-  transition: all 0.3s ease;
+  height: auto;
+  opacity: 1;
+  overflow: visible;
   text-align: center;
   margin-top: 10px;
 }
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+}
+.product-card-fixed {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 420px; /* Ajusta este número si necesitas más espacio */
+}
+
+.product-card-fixed .card-body {
+    flex-grow: 1;
+}
+
+.product-card-fixed h6 {
+    font-size: 0.9rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.product-card-fixed small {
+    font-size: 0.75rem;
+}
+.btn:hover {
+  filter: brightness(95%);
+  transition: all 0.2s ease-in-out;
+}
+
+
 
 .product-card:hover .card-footer {
   height: auto;

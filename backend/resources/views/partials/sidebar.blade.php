@@ -1,27 +1,48 @@
-<aside class="sidebar">
-      <h3>Nuestro catálogo</h3>
-      <form action="{{ route('buscar.productos') }}" method="GET" style="display: flex; gap: 5px; flex-direction: column;">
-  <input type="text" name="query" placeholder="Buscar..." required>
+<aside class="p-3 shadow-sm rounded-bottom border-bottom" style="width: 250px; max-height: 100vh; overflow-y: auto; background-color: #f7efff; border-top: none; border-left: none; border-right: none;">
+    <h5 class="text-center mb-4 text-dark fw-semibold">Nuestro catálogo</h5>
 
-  <button type="submit">🔍 Buscar</button>
+    {{-- Buscador --}}
+    <form action="{{ route('buscar.productos') }}" method="GET" class="d-grid gap-2 mb-4">
+    <input type="text" name="query" class="form-control form-control-sm rounded-pill" placeholder="Buscar..." required>
+    <button type="submit" class="btn btn-sm w-100 d-flex align-items-center justify-content-center fw-semibold" style="background-color: #d8b4f8; color: #212529;">
+    <i class="bi bi-search me-2" style="font-size: 1rem;"></i>
+    Buscar
+</button>
+
+
 </form>
 
-      <a href="{{ url('/categorias/id/10') }}"><button>Accesorios Varios</button></a>
-<a href="{{ url('/categorias/id/5') }}"><button>Artículos de Belleza</button></a>
-<a href="{{ url('/categorias/id/1') }}"><button>Carteras y Morrales</button></a>
-<a href="{{ url('/categorias/id/12') }}"><button>Cartucheras y Monederos</button></a>
-<a href="{{ url('/categorias/id/7') }}"><button>Llaveros</button></a>
-<a href="{{ url('/categorias/id/3') }}"><button>Mochilas</button></a>
-<a href="{{ url('/categorias/id/4') }}"><button>Papelería Kawaii</button></a>
-<a href="{{ url('/categorias/id/9') }}"><button>Prendas y Calzados</button></a>
-<a href="{{ url('/categorias/id/11') }}"><button>Servicios</button></a>
-<a href="{{ url('/categorias/id/8') }}"><button>Tomatodos y Tazas</button></a>
-<a href="{{ url('/categorias/id/13') }}"><button>Utensilios de Cocina</button></a>
 
 
-      <div class="social">
-        <span>📷</span>
-        <span>🎵</span>
-        <span>📘</span>
-      </div>
-    </aside>
+    {{-- Categorías --}}
+    <div class="d-grid gap-2 mb-4">
+        @php
+            $categorias = [
+                'Accesorios Varios' => 10,
+                'Artículos de Belleza' => 5,
+                'Carteras y Morrales' => 1,
+                'Cartucheras y Monederos' => 12,
+                'Llaveros' => 7,
+                'Mochilas' => 3,
+                'Papelería Kawaii' => 4,
+                'Prendas y Calzados' => 9,
+                'Servicios' => 11,
+                'Tomatodos y Tazas' => 8,
+                'Utensilios de Cocina' => 13,
+            ];
+        @endphp
+
+        @foreach ($categorias as $nombre => $id)
+            <a href="{{ url('/categorias/id/' . $id) }}" class="btn btn-sm rounded-pill text-dark" style="background-color: #fbe9ff; border: none;">
+                {{ $nombre }}
+            </a>
+        @endforeach
+    </div>
+
+    {{-- Redes sociales --}}
+    <div class="d-flex justify-content-center gap-3">
+        <span class="fs-5 text-muted">📷</span>
+        <span class="fs-5 text-muted">🎵</span>
+        <span class="fs-5 text-muted">📘</span>
+    </div>
+</aside>

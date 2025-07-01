@@ -31,4 +31,10 @@ class ProductController extends Controller
             'titulo' => "Resultados para: \"$query\""
         ]);
     }
+    public function inicio()
+{
+    $products = Product::with('categoria')->get();
+    return view('home', compact('products'));
+}
+
 }
