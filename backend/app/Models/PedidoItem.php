@@ -12,6 +12,7 @@ class PedidoItem extends Model
         'product_id',
         'cantidad',
         'precio_unitario',
+        'subtotal',
     ];
 
     public function producto()

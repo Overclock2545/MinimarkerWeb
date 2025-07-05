@@ -10,9 +10,11 @@
     <div class="d-flex align-items-center gap-3">
         @auth
             @auth
-    <button class="btn btn-sm" style="background-color: #e0ccff; color: #4b2765;" disabled data-bs-toggle="tooltip" title="Próximamente">
-        📦 Mis Pedidos
-    </button>
+
+        <a href="{{ route('pedidos') }}" class="btn btn-sm" style="background-color: #e0ccff; color: #4b2765;" data-bs-toggle="tooltip" title="Ver tus pedidos">
+    📦 Mis Pedidos
+        </a>
+
 @endauth
 
             <div class="d-flex align-items-center gap-2">
@@ -43,6 +45,8 @@
         <a href="{{ route('carrito') }}" class="btn btn-sm text-dark">
             <i class="bi bi-cart-fill" style="color: #b68df1;"></i>
         </a>
+
+        
     </div>
 </header>
 

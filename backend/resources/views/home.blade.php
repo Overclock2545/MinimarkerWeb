@@ -67,7 +67,7 @@
                         <img src="{{ $product->imagen ?? 'https://via.placeholder.com/150' }}"
                              alt="{{ $product->nombre }}"
                              class="card-img-top"
-                             style="height: 160px; object-fit: cover;">
+                             style="height: 250px; object-fit: contain;">
                         <div class="card-body text-center">
                             <h6 class="mb-1">{{ $product->nombre }}</h6>
                             <p class="mb-1 text-success"><strong>S/. {{ $product->precio }}</strong></p>

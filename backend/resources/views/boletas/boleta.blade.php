@@ -42,8 +42,8 @@
             <tr>
                 <td>{{ $item->producto->nombre }}</td>
                 <td>{{ $item->cantidad }}</td>
-                <td>S/ {{ number_format($item->precio, 2) }}</td>
-                <td>S/ {{ number_format($item->cantidad * $item->precio, 2) }}</td>
+                <td>S/ {{ number_format($item->precio_unitario, 2) }}</td>
+                <td>S/ {{ number_format($item->subtotal, 2) }}</td>
             </tr>
         @endforeach
     </tbody>

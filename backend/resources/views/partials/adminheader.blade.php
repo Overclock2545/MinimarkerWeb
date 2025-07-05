@@ -11,6 +11,8 @@
 
     <div class="admin-user">
         👤 {{ Auth::user()->name }}
+
+        
         <form method="POST" action="{{ route('logout') }}">
             @csrf
             <button>Cerrar sesión</button>

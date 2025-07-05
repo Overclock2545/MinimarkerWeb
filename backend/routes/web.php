@@ -80,6 +80,7 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth', EsAdmin::class])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.panel');
 
+
     // Vista con las 3 cartillas
     Route::get('/admin/stock', function () {
         return view('admin.stock');

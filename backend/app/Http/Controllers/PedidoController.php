@@ -18,6 +18,7 @@ class PedidoController extends Controller
         return view('pedidos', compact('pedidos'));
     }
 
+
     public function descargarBoleta($id)
     {
         $pedido = Pedido::with(['items.producto', 'usuario'])

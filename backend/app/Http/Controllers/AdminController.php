@@ -209,11 +209,22 @@ class AdminController extends Controller
             $pedido->estado = 'pago_confirmado';
             $pedido->save();
 
-            // TODO: Generar boleta PDF (siguiente paso)
-            // TODO: Descontar stock
+            foreach ($pedido->items as $item) {
+                $producto = $item->producto;
+
+                if ($producto && $producto->stock >= $item->cantidad) {
+                    $producto->stock -= $item->cantidad;
+                    $producto->save();
+                } else {
+                    // Opción: cancelar el proceso si hay falta de stock (seguridad adicional)
+                    return back()->with('error', 'No hay suficiente stock para el producto: ' . $producto->nombre);
+                }
+            }
 
             return back()->with('success', 'Pago confirmado y boleta generada.');
         }
+
+
 
         return back()->with('info', 'Este pedido ya está confirmado.');
     }

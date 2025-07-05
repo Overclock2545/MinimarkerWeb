@@ -60,4 +60,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Pedido::class);
     }
+
+    public function esAdmin()
+    {
+        return $this->rol === 'admin'; // o cualquier valor booleano o numérico que uses
+    }
 }

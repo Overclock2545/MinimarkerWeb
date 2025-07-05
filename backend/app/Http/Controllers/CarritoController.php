@@ -103,6 +103,14 @@ class CarritoController extends Controller
             return redirect()->back()->with('error', 'Tu carrito está vacío.');
         }
 
+        // Validar stock antes de procesar
+        foreach ($carritoItems as $item) {
+            if ($item->cantidad > $item->product->stock) {
+                return redirect()->back()->with('error', 'No hay suficiente stock para el producto: ' . $item->product->nombre);
+            }
+        }
+
+
         DB::beginTransaction();
         try {
             // Generar código único
@@ -124,11 +132,16 @@ class CarritoController extends Controller
 
             // Crear items del pedido
             foreach ($carritoItems as $item) {
+                $precio = $item->product->precio;
+                $cantidad = $item->cantidad;
+                $subtotal = $precio * $cantidad;
+
                 PedidoItem::create([
                     'pedido_id' => $pedido->id,
                     'product_id' => $item->product->id,
                     'cantidad' => $item->cantidad,
                     'precio_unitario' => $item->product->precio,
+                    'subtotal' => $subtotal,
                 ]);
             }
 
