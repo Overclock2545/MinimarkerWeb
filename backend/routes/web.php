@@ -11,6 +11,7 @@ use App\Http\Controllers\FavoritoController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 
+
 use App\Http\Middleware\EsAdmin;
 
 /*
@@ -119,6 +120,11 @@ Route::middleware(['auth', EsAdmin::class])->group(function () {
     Route::put('/admin/usuarios/{id}', [AdminController::class, 'actualizarUsuario'])->name('admin.usuarios.actualizar');
     Route::delete('/admin/usuarios/{id}', [AdminController::class, 'eliminarUsuario'])->name('admin.usuarios.eliminar');
     Route::get('/admin/usuarios/{id}/carrito', [AdminController::class, 'verCarrito'])->name('admin.usuarios.carrito');
+
+    //Rutas para analisi de ventas
+    Route::get('/admin/analisis', [AdminController::class, 'analisisVentas'])->name('admin.analisis');
+
+
 });
 
 

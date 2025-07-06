@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Models\Categoria;
 use App\Models\Pedido; // Asegúrate de que el modelo Categoria esté correctamente importado
+use Carbon\Carbon;
+use App\Models\PedidoItem;
 
 class AdminController extends Controller
 {
@@ -280,4 +282,67 @@ class AdminController extends Controller
 
         return view('admin.carrito_usuario', compact('usuario', 'carrito'));
     }
+
+
+
+
+    public function analisisVentas(Request $request)
+{
+    $desde = $request->input('desde') ?? Carbon::now()->subMonth()->toDateString();
+    $hasta = $request->input('hasta') ?? Carbon::now()->toDateString();
+
+    // Filtrar pedidos confirmados por fecha
+    $pedidos = Pedido::with('items.producto')
+        ->where('estado', 'pago_confirmado')
+        ->whereBetween('created_at', [$desde . ' 00:00:00', $hasta . ' 23:59:59'])
+        ->get();
+
+    // Agrupar productos vendidos
+    $productos = [];
+
+    foreach ($pedidos as $pedido) {
+        foreach ($pedido->items as $item) {
+            $id = $item->product_id;
+            if (!isset($productos[$id])) {
+                $productos[$id] = [
+                    'nombre' => $item->producto->nombre ?? 'Producto eliminado',
+                    'cantidad_total' => 0,
+                    'suma_total' => 0,
+                    'precio_promedio' => 0,
+                ];
+            }
+
+            $productos[$id]['cantidad_total'] += $item->cantidad;
+            $productos[$id]['suma_total'] += $item->subtotal;
+        }
+    }
+
+    // Calcular precio promedio
+    foreach ($productos as &$prod) {
+        $prod['precio_promedio'] = $prod['cantidad_total'] > 0
+            ? $prod['suma_total'] / $prod['cantidad_total']
+            : 0;
+    }
+    $orden = $request->input('orden', 'desc'); // 'desc' por defecto
+    $productos = collect($productos)
+    ->sortBy($orden === 'asc' ? 'cantidad_total' : function ($item) {
+        return -$item['cantidad_total'];
+    })
+    ->values()
+    ->all();
+    $totalVentas = $pedidos->sum('total');
+    $totalPedidos = $pedidos->count();
+    $totalProductosVendidos = array_sum(array_column($productos, 'cantidad_total'));
+    $clientesUnicos = $pedidos->pluck('usuario_id')->unique()->count();
+
+    return view('admin.analisis', [
+        'desde' => $desde,
+        'hasta' => $hasta,
+        'productosVendidos' => $productos,
+        'totalVentas' => $totalVentas,
+        'totalPedidos' => $totalPedidos,
+        'totalProductosVendidos' => $totalProductosVendidos,
+        'clientesUnicos' => $clientesUnicos,
+    ]);
+}
 }
