@@ -13,18 +13,7 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    /**
-     * Propiedad ficticia para evitar el error de Intelephense
-     *
-     * @var \Illuminate\Database\Eloquent\Factories\Factory
-     */
     protected $factory;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
 
     protected $fillable = [
         'name',
@@ -40,7 +29,6 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    // ✅ Así debe estar
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
@@ -63,6 +51,6 @@ class User extends Authenticatable
 
     public function esAdmin()
     {
-        return $this->rol === 'admin'; // o cualquier valor booleano o numérico que uses
+        return $this->rol === 'admin';
     }
 }

@@ -50,6 +50,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    // Vista de perfil del usuario
+    Route::get('/perfil', function () {
+    return view('perfil');
+})->middleware('auth')->name('perfil');
+    Route::put('/perfil', [App\Http\Controllers\PerfilController::class, 'actualizar'])->name('perfil.actualizar');
+
+
+
+
 
 
     // Carrito de compras

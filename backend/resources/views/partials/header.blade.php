@@ -12,6 +12,8 @@
         @if(Auth::user()->rol === 'admin')
     <a href="{{ url('/admin') }}" class="btn btn-sm btn-outline-dark" style="background-color: #d6c4f0;">
         🛠️ Panel de Administración
+        
+
     </a>
 @endif
 
@@ -24,24 +26,35 @@
 @endauth
 
             <div class="d-flex align-items-center gap-2">
-                <span class="text-dark">
-                    <i class="bi bi-person-circle" style="color: #7b4295;"></i> {{ Auth::user()->name }}
-                </span>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button class="btn btn-sm btn-outline-secondary">
-                        Cerrar sesión
-                    </button>
-                </form>
-            </div>
+
+        <a href="{{ route('perfil') }}" class="perfil-hover text-dark text-decoration-none" id="linkPerfil">
+        <i class="bi bi-person-circle" style="color: #7b4295;"></i>
+        <span id="perfilNombre">{{ Auth::user()->name }}</span>
+        </a>
+
+
+
+
+    <form method="POST" action="{{ route('logout') }}">
+        @csrf
+        <button class="btn btn-sm btn-outline-secondary">
+            Cerrar sesión
+        </button>
+    </form>
+</div>
+
         @else
             <div class="d-flex gap-2">
-                <a href="{{ route('login') }}" class="btn btn-sm btn-outline-primary">
-                    Iniciar sesión
-                </a>
-                <a href="{{ route('register') }}" class="btn btn-sm btn-primary" style="background-color: #e4c5f5; border-color: #e4c5f5;">
-                    Registrarse
-                </a>
+                <!-- Botón que abre el modal de inicio de sesión -->
+            <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#loginModal">
+            Iniciar sesión
+            </button>
+
+                <!-- Botón que abre el modal de registro -->
+        <button class="btn btn-sm btn-primary" style="background-color: #e4c5f5; border-color: #e4c5f5;" data-bs-toggle="modal" data-bs-target="#registerModal">
+            Registrarse
+        </button>
+
             </div>
         @endauth
 
@@ -55,4 +68,3 @@
         
     </div>
 </header>
-
