@@ -9,6 +9,12 @@
 
     <div class="d-flex align-items-center gap-3">
         @auth
+        @if(Auth::user()->rol === 'admin')
+    <a href="{{ url('/admin') }}" class="btn btn-sm btn-outline-dark" style="background-color: #d6c4f0;">
+        🛠️ Panel de Administración
+    </a>
+@endif
+
             @auth
 
         <a href="{{ route('pedidos') }}" class="btn btn-sm" style="background-color: #e0ccff; color: #4b2765;" data-bs-toggle="tooltip" title="Ver tus pedidos">
