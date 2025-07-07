@@ -23,7 +23,7 @@
         </div>
 
         <!-- Contenido principal -->
-<main class="col-md-9 col-lg-10 col-xl-10 py-3" style="margin-left: -20px;">
+<main class="col-md-9 col-lg-10 col-xl-10 py-3" style="margin-left: -11px;">
             @yield('content')
         </main>
     </div>
