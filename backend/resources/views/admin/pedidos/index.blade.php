@@ -3,7 +3,7 @@
 @section('titulo', 'Pedidos')
 
 @section('content')
-<h2 class="mb-4">📦 Lista de Pedidos</h2>
+<h2 class="mb-4">📦 Pedidos pendientes por confirmar</h2>
 
 @if (session('success'))
     <div class="alert alert-success">{{ session('success') }}</div>
@@ -40,10 +40,33 @@
                 <td>{{ $pedido->created_at->format('d/m/Y') }}</td>
                 <td>
                     @if ($pedido->estado === 'pendiente_pago')
-                        <form method="POST" action="{{ route('admin.pedido.confirmar', $pedido->id) }}">
-                            @csrf
-                            <button class="btn btn-sm btn-primary">✅ Confirmar pago</button>
-                        </form>
+                        <!-- Botón que abre el modal -->
+<button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#confirmarPagoModal{{ $pedido->id }}">
+    ✅ Confirmar pago
+</button>
+
+<!-- Modal de confirmación -->
+<div class="modal fade" id="confirmarPagoModal{{ $pedido->id }}" tabindex="-1" aria-labelledby="confirmarPagoLabel{{ $pedido->id }}" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmarPagoLabel{{ $pedido->id }}">¿Confirmar pago?</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        ¿Estás seguro de que deseas confirmar el pago del pedido <strong>{{ $pedido->codigo_pedido }}</strong>?
+      </div>
+      <div class="modal-footer">
+        <form method="POST" action="{{ route('admin.pedido.confirmar', $pedido->id) }}">
+            @csrf
+            <button type="submit" class="btn btn-primary">Sí, confirmar</button>
+        </form>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
                     @else
                         <a href="#" class="btn btn-sm btn-secondary">📄 Ver boleta</a>
                     @endif
@@ -107,7 +130,7 @@
             </tr>
         @empty
             <tr>
-                <td colspan="6">No hay pedidos registrados.</td>
+                <td colspan="6">Aqui estaran los pedidos pendientes por aceptar! (Cuando halla uno...).</td>
             </tr>
         @endforelse
     </tbody>

@@ -47,7 +47,9 @@
         </div>
 
         <div class="mb-3">
-            <label for="imagen" class="form-label">Cambiar imagen:</label>
+            <label for="imagen" class="form-label">Cambiar imagen: (Recomendable tamaño: Ancho: 800 px  
+Alto: 800 px
+            )</label>
             <input type="file" name="imagen" id="imagen" class="form-control">
         </div>
 

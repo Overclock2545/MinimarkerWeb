@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Notifications\ResetPasswordNotification;
 
 class User extends Authenticatable
 {
@@ -53,4 +54,8 @@ class User extends Authenticatable
     {
         return $this->rol === 'admin';
     }
+    public function sendPasswordResetNotification($token)
+{
+    $this->notify(new ResetPasswordNotification($token));
+}
 }

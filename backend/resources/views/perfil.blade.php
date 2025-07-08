@@ -46,6 +46,18 @@
                         <input type="text" name="documento_identidad" class="form-control" value="{{ Auth::user()->documento_identidad }}" disabled>
                     </div>
                 </div>
+                <div class="row mb-4">
+               <div class="col-md-6">
+                 <a href="{{ route('favoritos') }}" class="btn btn-outline-warning w-100">
+            ⭐ Ver Favoritos
+                </a>
+                </div>
+                 <div class="col-md-6">
+                <a href="{{ route('pedidos') }}" class="btn btn-outline-primary w-100">
+            📦 Ver Mis Pedidos
+             </a>
+             </div>
+            </div>
 
                 <div class="text-end">
                     <button type="button" id="btn-editar" class="btn btn-primary">✏️ Editar</button>

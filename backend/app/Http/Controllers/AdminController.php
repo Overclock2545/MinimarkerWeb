@@ -70,24 +70,21 @@ class AdminController extends Controller
 
         // Si sube una nueva imagen
         if ($request->hasFile('imagen')) {
-            $imagen = $request->file('imagen');
+    $imagen = $request->file('imagen');
 
-            // Nombre único
-            $nombreArchivo = Str::uuid() . '.' . $imagen->getClientOriginalExtension();
+    $nombreArchivo = Str::uuid() . '.' . $imagen->getClientOriginalExtension();
+    $ruta = $imagen->storeAs('productos', $nombreArchivo, 'public');
 
-            // Guarda en storage/app/public/productos
-            $ruta = $imagen->storeAs('productos', $nombreArchivo, 'public');
+    // Elimina la imagen anterior si existe
+    if ($producto->imagen) {
+        $rutaVieja = str_replace('storage/', '', $producto->imagen);
+        Storage::disk('public')->delete($rutaVieja);
+    }
 
-            // Elimina imagen anterior
-            if ($producto->imagen) {
-                $rutaVieja = str_replace('storage/', '', $producto->imagen); // convierte 'storage/productos/...' a 'productos/...'
-                Storage::disk('public')->delete($rutaVieja);
-            }
-
-            // Guarda nueva ruta accesible públicamente
-            $producto->imagen = 'storage/productos/' . $nombreArchivo;
-            $producto->save();
-        }
+    // ✅ Guarda ruta correcta en BD
+    $producto->imagen = 'storage/productos/' . $nombreArchivo;
+    $producto->save();
+}
 
 
         return redirect()->route('admin.productos.gestionar')->with('success', 'Producto actualizado correctamente.');
@@ -198,38 +195,56 @@ class AdminController extends Controller
 
     // Metodo para ver pedidos
     public function verPedidos()
-    {
-        $pedidos = Pedido::with('usuario')->latest()->paginate(10);
-        return view('admin.pedidos.index', compact('pedidos'));
+{
+    $pedidos = Pedido::with('usuario')
+        ->where('estado', 'pendiente_pago') // ← FILTRAMOS SOLO LOS PENDIENTES
+        ->latest()
+        ->paginate(10);
+
+    return view('admin.pedidos.index', compact('pedidos'));
+}
+
+
+    public function confirmarPedido($id)
+{
+    $pedido = Pedido::findOrFail($id);
+
+    if ($pedido->estado !== 'pendiente_pago') {
+        return back()->with('info', 'Este pedido ya fue procesado.');
     }
 
-    public function confirmarPago($id)
-    {
-        $pedido = Pedido::findOrFail($id);
+    $pedido->estado = 'en_curso';
+    $pedido->save();
 
-        if ($pedido->estado === 'pendiente_pago') {
-            $pedido->estado = 'pago_confirmado';
-            $pedido->save();
+    return back()->with('success', '✅ Pedido confirmado y ahora está en curso.');
+}
+//metodo para ver pedidos en curso
+public function pedidosEnCurso()
+{
+    $pedidos = Pedido::where('estado', 'en_curso')->paginate(10);
+    return view('admin.pedidos_en_curso', compact('pedidos'));
+}
+//metodo para entregar pedidos
+public function entregarPedido($id)
+{
+    $pedido = Pedido::findOrFail($id);
 
-            foreach ($pedido->items as $item) {
-                $producto = $item->producto;
-
-                if ($producto && $producto->stock >= $item->cantidad) {
-                    $producto->stock -= $item->cantidad;
-                    $producto->save();
-                } else {
-                    // Opción: cancelar el proceso si hay falta de stock (seguridad adicional)
-                    return back()->with('error', 'No hay suficiente stock para el producto: ' . $producto->nombre);
-                }
-            }
-
-            return back()->with('success', 'Pago confirmado y boleta generada.');
-        }
-
-
-
-        return back()->with('info', 'Este pedido ya está confirmado.');
+    if ($pedido->estado !== 'en_curso') {
+        return back()->with('info', 'Este pedido no está en curso.');
     }
+
+    $pedido->estado = 'entregado';
+    $pedido->save();
+
+    return back()->with('success', '📦 Pedido marcado como entregado.');
+}
+// metodo historial de pedidos entregados
+public function historialPedidos()
+{
+    $pedidos = Pedido::where('estado', 'entregado')->paginate(10);
+    return view('admin.pedidos_historial', compact('pedidos'));
+}
+
 
 
 

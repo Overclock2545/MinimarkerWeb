@@ -18,11 +18,6 @@
 @endif
 
             @auth
-
-        <a href="{{ route('pedidos') }}" class="btn btn-sm" style="background-color: #e0ccff; color: #4b2765;" data-bs-toggle="tooltip" title="Ver tus pedidos">
-    📦 Mis Pedidos
-        </a>
-
 @endauth
 
             <div class="d-flex align-items-center gap-2">
@@ -58,9 +53,6 @@
             </div>
         @endauth
 
-        <a href="{{ route('favoritos') }}" class="btn btn-sm text-dark">
-            <i class="bi bi-star-fill" style="color: #ff9edb;"></i>
-        </a>
         <a href="{{ route('carrito') }}" class="btn btn-sm text-dark">
             <i class="bi bi-cart-fill" style="color: #b68df1;"></i>
         </a>

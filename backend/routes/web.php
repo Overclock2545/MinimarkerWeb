@@ -119,7 +119,11 @@ Route::middleware(['auth', EsAdmin::class])->group(function () {
 
     // Rutas para administrar pedidos
     Route::get('/admin/pedidos', [AdminController::class, 'verPedidos'])->name('admin.pedidos');
-    Route::post('/admin/pedidos/{id}/confirmar', [AdminController::class, 'confirmarPago'])->name('admin.pedido.confirmar');
+    Route::post('/admin/pedido/confirmar/{id}', [AdminController::class, 'confirmarPedido'])->name('admin.pedido.confirmar');
+    Route::get('/admin/pedidos/curso', [AdminController::class, 'pedidosEnCurso'])->name('admin.pedidos.curso');
+    Route::post('/admin/pedido/entregar/{id}', [AdminController::class, 'entregarPedido'])->name('admin.pedido.entregar');
+    // Rutas para pedidos entregados
+    Route::get('/admin/pedidos/historial', [AdminController::class, 'historialPedidos'])->name('admin.pedidos.historial');
 
 
     // Rutas para administrar usuarios

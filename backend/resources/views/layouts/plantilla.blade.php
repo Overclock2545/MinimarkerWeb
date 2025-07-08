@@ -9,6 +9,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <link rel="stylesheet" href="{{ asset('css/estilos.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+
 
 
 </head>
@@ -59,7 +61,14 @@
             <div class="d-flex justify-content-between align-items-center">
                 <button type="submit" class="btn btn-primary">Ingresar</button>
                 @if (Route::has('password.request'))
-                    <a class="text-muted small" href="{{ route('password.request') }}">¿Olvidaste tu contraseña?</a>
+                    <a href="#" onclick="abrirModalRecuperar()" class="text-decoration-none">
+    ¿Olvidaste tu contraseña?
+</a>
+
+
+
+
+
                 @endif
             </div>
         </form>
@@ -76,6 +85,11 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
       </div>
       <div class="modal-body">
+        <!-- Modal: Recuperar contraseña -->
+
+
+
+
         <!-- Formulario de registro -->
         <form method="POST" action="{{ route('register') }}">
             @csrf
@@ -106,6 +120,60 @@
     </div>
   </div>
 </div>
+<!-- Modal: Olvidé mi contraseña -->
+<div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="forgotPasswordLabel">🔒 Recuperar contraseña</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <form method="POST" action="{{ route('password.email') }}">
+        @csrf
+        <div class="modal-body">
+          <p class="mb-2">Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.</p>
+          <div class="mb-3">
+            <label for="forgotEmail" class="form-label">Correo electrónico</label>
+            <input type="email" class="form-control" id="forgotEmail" name="email" required autofocus>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">📩 Enviar enlace</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+    function abrirModalRecuperar() {
+        // Cierra el modal de login correctamente
+        const loginModalEl = document.getElementById('loginModal');
+        const loginModal = bootstrap.Modal.getInstance(loginModalEl);
+        if (loginModal) {
+            loginModal.hide();
+        }
+
+        // Espera que termine de cerrarse y luego abre el de recuperación
+        loginModalEl.addEventListener('hidden.bs.modal', function () {
+            const forgotModalEl = document.getElementById('forgotPasswordModal');
+            const forgotModal = new bootstrap.Modal(forgotModalEl);
+            forgotModal.show();
+        }, { once: true });
+    }
+
+    // 🔧 Solución para el botón "Cancelar" del modal de recuperación
+    document.addEventListener('DOMContentLoaded', function () {
+        const forgotModalEl = document.getElementById('forgotPasswordModal');
+        forgotModalEl.addEventListener('hidden.bs.modal', function () {
+            document.body.classList.remove('modal-open');
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) backdrop.remove();
+        });
+    });
+</script>
+
 
 
 </body>
