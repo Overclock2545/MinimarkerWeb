@@ -21,10 +21,11 @@ class AgregarOfertaAProductos extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
-    {
-        Schema::table('products', function (Blueprint $table) {
-            $table->dropColumn(['precio_oferta', 'oferta_activa', 'fecha_fin_oferta']);
-        });
-    }
+   public function down(): void
+{
+    Schema::table('product', function (Blueprint $table) {
+        $table->dropColumn(['precio_oferta', 'oferta_activa', 'fecha_fin_oferta']);
+    });
+}
+
 }

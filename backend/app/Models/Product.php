@@ -46,4 +46,9 @@ protected $casts = [
     {
         return $this->hasMany(PedidoItem::class);
     }
+    public function imagenes()
+{
+    return $this->hasMany(ImagenProducto::class, 'product_id', 'id');
+}
+
 }

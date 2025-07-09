@@ -12,6 +12,7 @@ use App\Models\Categoria;
 use App\Models\Pedido; // Asegúrate de que el modelo Categoria esté correctamente importado
 use Carbon\Carbon;
 use App\Models\PedidoItem;
+use App\Models\ImagenProducto;
 
 class AdminController extends Controller
 {
@@ -93,7 +94,18 @@ class AdminController extends Controller
             $producto->save();
         }
 
+// Subir imágenes adicionales
+if ($request->hasFile('imagenes_adicionales')) {
+    foreach ($request->file('imagenes_adicionales') as $imagenExtra) {
+        $nombreArchivo = Str::uuid() . '.' . $imagenExtra->getClientOriginalExtension();
+        $ruta = $imagenExtra->storeAs('productos/adicionales', $nombreArchivo, 'public');
 
+        ImagenProducto::create([
+            'product_id' => $producto->id,
+            'ruta' => 'storage/productos/adicionales/' . $nombreArchivo,
+        ]);
+    }
+}
         return redirect()->route('admin.productos.gestionar')->with('success', 'Producto actualizado correctamente.');
     }
     public function eliminarProducto($id)

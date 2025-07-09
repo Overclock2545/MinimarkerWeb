@@ -67,18 +67,36 @@
         </div>
 
         <div class="mb-3">
-            <label for="imagen" class="form-label">Imagen actual:</label><br>
+            <label for="imagen" class="form-label">Imagen Principal actual:</label><br>
             <img src="{{ asset($producto->imagen) }}" alt="Imagen actual" width="150" class="mb-2 rounded">
         </div>
-
+        @if($producto->imagenes && $producto->imagenes->count())
+    <div class="mb-3">
+        <label class="form-label">Imágenes adicionales actuales:</label>
+        <div class="d-flex flex-wrap gap-2">
+            @foreach($producto->imagenes as $img)
+                <div style="position: relative;">
+                    <img src="{{ asset($img->ruta) }}" alt="Imagen adicional" width="100" class="rounded">
+                    <!-- Aquí podrías agregar opción de eliminar -->
+                </div>
+            @endforeach
+        </div>
+    </div>
+@endif
         <div class="mb-3">
-            <label for="imagen" class="form-label">Cambiar imagen: (Recomendable tamaño: Ancho: 800 px  
-Alto: 800 px
-            )</label>
+            <label for="imagen" class="form-label">Cambiar imagen principal:</label>
             <input type="file" name="imagen" id="imagen" class="form-control">
         </div>
 
-        <button type="submit" class="btn btn-primary">💾 Guardar Cambios</button>
+        
+<div class="mb-3">
+    <label for="imagenes_adicionales" class="form-label">Imágenes adicionales (puedes subir varias):</label>
+    <input type="file" name="imagenes_adicionales[]" id="imagenes_adicionales" class="form-control" multiple>
+    <small class="text-muted">Formato recomendado: JPG, PNG. Tamaño recomendado: 800x800 px</small>
+</div>
+
+
+<button type="submit" class="btn btn-primary">💾 Guardar Cambios</button>
 
         <!-- Botón para abrir el modal -->
         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmarEliminar" style="margin-left: 10px;">
