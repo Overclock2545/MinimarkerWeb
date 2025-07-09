@@ -24,7 +24,7 @@ class AdminController extends Controller
     }
 
     //Metodo para ver productos
-    
+
 
     public function gestionarProductos(Request $request)
     {
@@ -59,7 +59,7 @@ class AdminController extends Controller
             'stock' => 'required|integer|min:0',
             'descripcion' => 'nullable|string',
             'imagen' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-            
+
         ]);
 
         // Actualiza campos
@@ -94,18 +94,18 @@ class AdminController extends Controller
             $producto->save();
         }
 
-// Subir imágenes adicionales
-if ($request->hasFile('imagenes_adicionales')) {
-    foreach ($request->file('imagenes_adicionales') as $imagenExtra) {
-        $nombreArchivo = Str::uuid() . '.' . $imagenExtra->getClientOriginalExtension();
-        $ruta = $imagenExtra->storeAs('productos/adicionales', $nombreArchivo, 'public');
+        // Subir imágenes adicionales
+        if ($request->hasFile('imagenes_adicionales')) {
+            foreach ($request->file('imagenes_adicionales') as $imagenExtra) {
+                $nombreArchivo = Str::uuid() . '.' . $imagenExtra->getClientOriginalExtension();
+                $ruta = $imagenExtra->storeAs('productos/adicionales', $nombreArchivo, 'public');
 
-        ImagenProducto::create([
-            'product_id' => $producto->id,
-            'ruta' => 'storage/productos/adicionales/' . $nombreArchivo,
-        ]);
-    }
-}
+                ImagenProducto::create([
+                    'product_id' => $producto->id,
+                    'ruta' => 'storage/productos/adicionales/' . $nombreArchivo,
+                ]);
+            }
+        }
         return redirect()->route('admin.productos.gestionar')->with('success', 'Producto actualizado correctamente.');
     }
     public function eliminarProducto($id)
@@ -148,7 +148,8 @@ if ($request->hasFile('imagenes_adicionales')) {
         $producto->precio = $request->precio;
         $producto->descripcion = $request->descripcion;
         $producto->stock = $request->stock;
-        $producto->precio_oferta = $request->precio_oferta;$producto->precio_oferta = $request->precio_oferta;
+        $producto->precio_oferta = $request->precio_oferta;
+        $producto->precio_oferta = $request->precio_oferta;
         $producto->oferta_activa = $request->has('oferta_activa');
         $producto->fecha_fin_oferta = $request->fecha_fin_oferta;
 
