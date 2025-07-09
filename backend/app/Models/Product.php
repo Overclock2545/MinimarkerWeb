@@ -23,15 +23,24 @@ class Product extends Model
         return $this->belongsToMany(User::class, 'favoritos')->withTimestamps();
     }
 
-    protected $fillable = [
-        'id', // Asegúrate de que este campo sea único y se genere correctamente
-        'nombre',
-        'categoria_id',
-        'precio',
-        'descripcion',
-        'stock',
-        'imagen', // Solo si planeas permitir subir/cambiar imagen desde el formulario
-    ];
+    // App\Models\Product.php
+protected $fillable = [
+    'nombre',
+    'categoria_id',
+    'precio',
+    'stock',
+    'descripcion',
+    'imagen',
+    'precio_oferta',
+    'oferta_activa',
+    'fecha_fin_oferta',
+];
+
+protected $casts = [
+    'oferta_activa' => 'boolean',
+    'fecha_fin_oferta' => 'date',
+];
+
 
     public function pedidoItems()
     {
