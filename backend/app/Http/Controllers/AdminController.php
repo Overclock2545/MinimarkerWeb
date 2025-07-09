@@ -77,21 +77,21 @@ class AdminController extends Controller
 
         // Si sube una nueva imagen
         if ($request->hasFile('imagen')) {
-    $imagen = $request->file('imagen');
+            $imagen = $request->file('imagen');
 
-    $nombreArchivo = Str::uuid() . '.' . $imagen->getClientOriginalExtension();
-    $ruta = $imagen->storeAs('productos', $nombreArchivo, 'public');
+            $nombreArchivo = Str::uuid() . '.' . $imagen->getClientOriginalExtension();
+            $ruta = $imagen->storeAs('productos', $nombreArchivo, 'public');
 
-    // Elimina la imagen anterior si existe
-    if ($producto->imagen) {
-        $rutaVieja = str_replace('storage/', '', $producto->imagen);
-        Storage::disk('public')->delete($rutaVieja);
-    }
+            // Elimina la imagen anterior si existe
+            if ($producto->imagen) {
+                $rutaVieja = str_replace('storage/', '', $producto->imagen);
+                Storage::disk('public')->delete($rutaVieja);
+            }
 
-    // ✅ Guarda ruta correcta en BD
-    $producto->imagen = 'storage/productos/' . $nombreArchivo;
-    $producto->save();
-}
+            // ✅ Guarda ruta correcta en BD
+            $producto->imagen = 'storage/productos/' . $nombreArchivo;
+            $producto->save();
+        }
 
 
         return redirect()->route('admin.productos.gestionar')->with('success', 'Producto actualizado correctamente.');
@@ -206,55 +206,73 @@ class AdminController extends Controller
 
     // Metodo para ver pedidos
     public function verPedidos()
-{
-    $pedidos = Pedido::with('usuario')
-        ->where('estado', 'pendiente_pago') // ← FILTRAMOS SOLO LOS PENDIENTES
-        ->latest()
-        ->paginate(10);
+    {
+        $pedidos = Pedido::with('usuario')
+            ->where('estado', 'pendiente_pago') // ← FILTRAMOS SOLO LOS PENDIENTES
+            ->latest()
+            ->paginate(10);
 
-    return view('admin.pedidos.index', compact('pedidos'));
-}
+        return view('admin.pedidos.index', compact('pedidos'));
+    }
 
 
     public function confirmarPedido($id)
-{
-    $pedido = Pedido::findOrFail($id);
+    {
+        $pedido = Pedido::findOrFail($id);
 
-    if ($pedido->estado !== 'pendiente_pago') {
-        return back()->with('info', 'Este pedido ya fue procesado.');
+        if ($pedido->estado !== 'pendiente_pago') {
+            return back()->with('info', 'Este pedido ya fue procesado.');
+        }
+
+        // Validar stock antes de confirmar
+        foreach ($pedido->items as $item) {
+            $producto = $item->producto;
+            if (!$producto || $producto->stock < $item->cantidad) {
+                return back()->with('error', 'No hay suficiente stock para el producto: ' . ($producto->nombre ?? 'Producto eliminado'));
+            }
+        }
+
+        // Descontar stock
+        foreach ($pedido->items as $item) {
+            $producto = $item->producto;
+            if ($producto) {
+                $producto->stock -= $item->cantidad;
+                $producto->save();
+            }
+        }
+
+        $pedido->estado = 'en_curso';
+        $pedido->save();
+
+        return back()->with('success', '✅ Pedido confirmado, stock actualizado y ahora está en curso.');
     }
 
-    $pedido->estado = 'en_curso';
-    $pedido->save();
-
-    return back()->with('success', '✅ Pedido confirmado y ahora está en curso.');
-}
-//metodo para ver pedidos en curso
-public function pedidosEnCurso()
-{
-    $pedidos = Pedido::where('estado', 'en_curso')->paginate(10);
-    return view('admin.pedidos_en_curso', compact('pedidos'));
-}
-//metodo para entregar pedidos
-public function entregarPedido($id)
-{
-    $pedido = Pedido::findOrFail($id);
-
-    if ($pedido->estado !== 'en_curso') {
-        return back()->with('info', 'Este pedido no está en curso.');
+    //metodo para ver pedidos en curso
+    public function pedidosEnCurso()
+    {
+        $pedidos = Pedido::where('estado', 'en_curso')->paginate(10);
+        return view('admin.pedidos_en_curso', compact('pedidos'));
     }
+    //metodo para entregar pedidos
+    public function entregarPedido($id)
+    {
+        $pedido = Pedido::findOrFail($id);
 
-    $pedido->estado = 'entregado';
-    $pedido->save();
+        if ($pedido->estado !== 'en_curso') {
+            return back()->with('info', 'Este pedido no está en curso.');
+        }
 
-    return back()->with('success', '📦 Pedido marcado como entregado.');
-}
-// metodo historial de pedidos entregados
-public function historialPedidos()
-{
-    $pedidos = Pedido::where('estado', 'entregado')->paginate(10);
-    return view('admin.pedidos_historial', compact('pedidos'));
-}
+        $pedido->estado = 'entregado';
+        $pedido->save();
+
+        return back()->with('success', '📦 Pedido marcado como entregado.');
+    }
+    // metodo historial de pedidos entregados
+    public function historialPedidos()
+    {
+        $pedidos = Pedido::where('estado', 'entregado')->paginate(10);
+        return view('admin.pedidos_historial', compact('pedidos'));
+    }
 
 
 
@@ -313,63 +331,62 @@ public function historialPedidos()
 
 
     public function analisisVentas(Request $request)
-{
-    $desde = $request->input('desde') ?? Carbon::now()->subMonth()->toDateString();
-    $hasta = $request->input('hasta') ?? Carbon::now()->toDateString();
+    {
+        $desde = $request->input('desde') ?? Carbon::now()->subMonth()->toDateString();
+        $hasta = $request->input('hasta') ?? Carbon::now()->toDateString();
 
-    // Filtrar pedidos confirmados por fecha
-    $pedidos = Pedido::with('items.producto')
-        ->where('estado', 'pago_confirmado')
-        ->whereBetween('created_at', [$desde . ' 00:00:00', $hasta . ' 23:59:59'])
-        ->get();
+        // Filtrar pedidos confirmados por fecha
+        $pedidos = Pedido::with('items.producto')
+            ->where('estado', 'pago_confirmado')
+            ->whereBetween('created_at', [$desde . ' 00:00:00', $hasta . ' 23:59:59'])
+            ->get();
 
-    // Agrupar productos vendidos
-    $productos = [];
+        // Agrupar productos vendidos
+        $productos = [];
 
-    foreach ($pedidos as $pedido) {
-        foreach ($pedido->items as $item) {
-            $id = $item->product_id;
-            if (!isset($productos[$id])) {
-                $productos[$id] = [
-                    'nombre' => $item->producto->nombre ?? 'Producto eliminado',
-                    'cantidad_total' => 0,
-                    'suma_total' => 0,
-                    'precio_promedio' => 0,
-                ];
+        foreach ($pedidos as $pedido) {
+            foreach ($pedido->items as $item) {
+                $id = $item->product_id;
+                if (!isset($productos[$id])) {
+                    $productos[$id] = [
+                        'nombre' => $item->producto->nombre ?? 'Producto eliminado',
+                        'cantidad_total' => 0,
+                        'suma_total' => 0,
+                        'precio_promedio' => 0,
+                    ];
+                }
+
+                $productos[$id]['cantidad_total'] += $item->cantidad;
+                $productos[$id]['suma_total'] += $item->subtotal;
             }
-
-            $productos[$id]['cantidad_total'] += $item->cantidad;
-            $productos[$id]['suma_total'] += $item->subtotal;
         }
+
+        // Calcular precio promedio
+        foreach ($productos as &$prod) {
+            $prod['precio_promedio'] = $prod['cantidad_total'] > 0
+                ? $prod['suma_total'] / $prod['cantidad_total']
+                : 0;
+        }
+        $orden = $request->input('orden', 'desc'); // 'desc' por defecto
+        $productos = collect($productos)
+            ->sortBy($orden === 'asc' ? 'cantidad_total' : function ($item) {
+                return -$item['cantidad_total'];
+            })
+            ->values()
+            ->all();
+        $totalVentas = $pedidos->sum('total');
+        $totalPedidos = $pedidos->count();
+        $totalProductosVendidos = array_sum(array_column($productos, 'cantidad_total'));
+        $clientesUnicos = $pedidos->pluck('usuario_id')->unique()->count();
+
+        return view('admin.analisis', [
+            'desde' => $desde,
+            'hasta' => $hasta,
+            'productosVendidos' => $productos,
+            'totalVentas' => $totalVentas,
+            'totalPedidos' => $totalPedidos,
+            'totalProductosVendidos' => $totalProductosVendidos,
+            'clientesUnicos' => $clientesUnicos,
+        ]);
     }
-
-    // Calcular precio promedio
-    foreach ($productos as &$prod) {
-        $prod['precio_promedio'] = $prod['cantidad_total'] > 0
-            ? $prod['suma_total'] / $prod['cantidad_total']
-            : 0;
-    }
-    $orden = $request->input('orden', 'desc'); // 'desc' por defecto
-    $productos = collect($productos)
-    ->sortBy($orden === 'asc' ? 'cantidad_total' : function ($item) {
-        return -$item['cantidad_total'];
-    })
-    ->values()
-    ->all();
-    $totalVentas = $pedidos->sum('total');
-    $totalPedidos = $pedidos->count();
-    $totalProductosVendidos = array_sum(array_column($productos, 'cantidad_total'));
-    $clientesUnicos = $pedidos->pluck('usuario_id')->unique()->count();
-
-    return view('admin.analisis', [
-        'desde' => $desde,
-        'hasta' => $hasta,
-        'productosVendidos' => $productos,
-        'totalVentas' => $totalVentas,
-        'totalPedidos' => $totalPedidos,
-        'totalProductosVendidos' => $totalProductosVendidos,
-        'clientesUnicos' => $clientesUnicos,
-    ]);
-}
-
 }
