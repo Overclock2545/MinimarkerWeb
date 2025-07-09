@@ -26,12 +26,21 @@
                     <td>{{ $pedido->created_at->format('d/m/Y') }}</td>
                     <td>S/ {{ number_format($pedido->total, 2) }}</td>
                     <td>
-                        @if ($pedido->estado === 'pago_confirmado')
-                            <span class="badge bg-success">Pago confirmado</span>
-                        @else
-                            <span class="badge bg-warning text-dark">Pendiente de pago</span>
-                        @endif
-                    </td>
+    @switch($pedido->estado)
+        @case('pendiente_pago')
+            <span class="badge bg-warning text-dark">Pago pendiente</span>
+            @break
+        @case('en_curso')
+            <span class="badge bg-primary">En curso</span>
+            @break
+        @case('entregado')
+            <span class="badge bg-success">Entregado</span>
+            @break
+        @default
+            <span class="badge bg-secondary">Desconocido</span>
+    @endswitch
+</td>
+
                     <td>
                         @if ($pedido->estado === 'pago_confirmado')
                             <a href="{{ route('cliente.boleta', $pedido->id) }}" class="btn btn-sm btn-outline-primary">
