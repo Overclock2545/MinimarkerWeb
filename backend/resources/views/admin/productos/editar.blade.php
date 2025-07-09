@@ -30,6 +30,31 @@
             <label for="precio" class="form-label">Precio:</label>
             <input type="number" step="0.01" name="precio" id="precio" class="form-control" value="{{ old('precio', $producto->precio) }}" required>
         </div>
+        <hr>
+<h5 class="mt-4">📢 Oferta (opcional)</h5>
+
+<div class="mb-3">
+    <label for="precio_oferta" class="form-label">Precio en oferta:</label>
+    <input type="number" step="0.01" name="precio_oferta" id="precio_oferta"
+           class="form-control"
+           value="{{ old('precio_oferta', $producto->precio_oferta) }}">
+</div>
+
+<div class="mb-3">
+    <label for="fecha_fin_oferta" class="form-label">Fecha fin de oferta:</label>
+    <input type="date" name="fecha_fin_oferta" id="fecha_fin_oferta"
+           class="form-control"
+           value="{{ old('fecha_fin_oferta', $producto->fecha_fin_oferta) }}">
+</div>
+
+<div class="form-check mb-3">
+    <input class="form-check-input" type="checkbox" name="oferta_activa" id="oferta_activa"
+           {{ old('oferta_activa', $producto->oferta_activa) ? 'checked' : '' }}>
+    <label class="form-check-label" for="oferta_activa">
+        Activar oferta
+    </label>
+</div>
+
 
         <div class="mb-3">
             <label for="stock" class="form-label">Stock:</label>
