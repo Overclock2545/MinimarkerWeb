@@ -21,19 +21,16 @@
 
     <div class="container mb-5">
         <div class="row justify-content-center align-items-start g-4">
-
             <!-- Columna de imágenes -->
             <div class="col-md-5 d-flex flex-column align-items-center">
                 <!-- Miniaturas -->
                 @if($producto->imagenes && $producto->imagenes->count())
                     <div class="d-flex flex-wrap justify-content-center mb-3 gap-2">
-                        <!-- Miniatura principal -->
                         <img src="{{ asset($producto->imagen) }}"
                              alt="Imagen principal"
                              class="img-thumbnail border border-primary"
                              style="width: 70px; height: 70px; object-fit: cover; cursor: pointer;"
                              onclick="cambiarImagen('{{ asset($producto->imagen) }}')">
-                        <!-- Miniaturas adicionales -->
                         @foreach($producto->imagenes as $img)
                             <img src="{{ asset($img->ruta) }}"
                                  alt="Miniatura"
@@ -54,10 +51,10 @@
 
                 <!-- Nombre y precio -->
                 <div class="text-center mt-3">
-                    <h4 class="mb-1 d-flex align-items-center justify-content-center gap-2">
+                    <h4 class="mb-1">
                         {{ $producto->nombre }}
                         @if($producto->stock == 0)
-                            <span class="badge bg-secondary">Sin existencias</span>
+                            <span class="badge bg-secondary ms-2">Sin existencias</span>
                         @endif
                     </h4>
 
@@ -73,7 +70,7 @@
                 </div>
             </div>
 
-            <!-- Columna de descripción y botones -->
+            <!-- Descripción y botones -->
             <div class="col-md-7">
                 <div class="bg-white border rounded shadow-sm p-4">
                     <h5>Descripción del producto</h5>
@@ -105,7 +102,6 @@
                     </form>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -126,7 +122,7 @@
     </script>
 
 @else
-    {{-- Vista en modo lista --}}
+    {{-- Vista en lista --}}
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
         @foreach($products as $product)
             @php
@@ -145,10 +141,10 @@
                         </div>
 
                         <div class="card-body text-center">
-                            <h6 class="mb-1 d-flex align-items-center justify-content-center gap-2">
+                            <h6 class="mb-1">
                                 {{ $product->nombre }}
                                 @if($product->stock == 0)
-                                    <span class="badge bg-secondary">Sin existencias</span>
+                                    <span class="badge bg-secondary ms-2">Sin existencias</span>
                                 @endif
                             </h6>
 
