@@ -8,21 +8,25 @@ RUN apt-get update && apt-get install -y \
 # Instala Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copia el código de la app
+# Copia el código fuente
 COPY . /var/www/html
 
-# Establece permisos
+# Establece permisos adecuados
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
 
-# Habilita mod_rewrite
+# Habilita mod_rewrite de Apache
 RUN a2enmod rewrite
 
-# Configura Apache
+# Copia configuración de Apache
 COPY ./apache.conf /etc/apache2/sites-available/000-default.conf
 
-# Crea enlace simbólico
-RUN php artisan storage:link
+# ⚠️ NUEVO: comandos a ejecutar en build (no fallarán porque composer ya estará antes)
+RUN cd /var/www/html && \
+    composer install --no-dev --optimize-autoloader && \
+    php artisan config:clear && \
+    php artisan config:cache && \
+    php artisan storage:link
 
-# ⚠️ Comando de arranque final
-CMD composer install && php artisan config:cache && apache2-foreground
+# Comando para arrancar Apache
+CMD ["apache2-foreground"]
