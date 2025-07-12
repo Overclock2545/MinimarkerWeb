@@ -22,8 +22,6 @@
     </h2>
 </div>
 
-
-
 @if($carrito->isEmpty())
     <p style="text-align: center; font-size: 18px;">Tu carrito está vacío.</p>
 @else
@@ -43,14 +41,16 @@
             <div style="display: flex; justify-content: space-between; align-items: center; background-color: #fff0f5; padding: 15px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
                 <div style="display: flex; align-items: center; gap: 15px;">
                     <a href="{{ route('producto.ver', $producto->id) }}">
-    <img src="{{ $producto->imagen ?? 'https://via.placeholder.com/80' }}" alt="{{ $producto->nombre }}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 4px;">
-</a>
+                        <img src="{{ $producto->imagen ?? 'https://via.placeholder.com/80' }}" alt="{{ $producto->nombre }}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 4px;">
+                    </a>
 
                     <div>
                         <a href="{{ route('producto.ver', $producto->id) }}" style="font-weight: bold; text-decoration: none; color: #000;">
-    {{ $producto->nombre }}
-</a>
-
+                            {{ $producto->nombre }}
+                            @if($producto->stock == 0)
+                                <span class="badge bg-secondary ms-2">Sin existencias</span>
+                            @endif
+                        </a>
 
                         {{-- Precio --}}
                         @if($enOferta)
@@ -63,23 +63,31 @@
                             <div class="text-dark">Precio: S/. {{ number_format($producto->precio, 2) }}</div>
                         @endif
 
-                        {{-- Cantidad y botones --}}
-                        <div style="display: flex; align-items: center; gap: 10px; margin-top: 8px;">
-                            <form action="{{ route('carrito.disminuir', $item->id) }}" method="POST" style="display:inline;">
-                                @csrf
-                                <button type="submit" style="background-color: #ddd; border: none; padding: 5px 10px;">-</button>
-                            </form>
+                        {{-- Cantidad y stock --}}
+                        @if($producto->stock > 0)
+                            <div style="display: flex; align-items: center; gap: 10px; margin-top: 8px; flex-wrap: wrap;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <form action="{{ route('carrito.disminuir', $item->id) }}" method="POST" style="display:inline;">
+                                        @csrf
+                                        <button type="submit" style="background-color: #ddd; border: none; padding: 5px 10px;">-</button>
+                                    </form>
 
-                            <span>{{ $item->cantidad }}</span>
+                                    <span>{{ $item->cantidad }}</span>
 
-                            <form action="{{ route('carrito.incrementar', $item->id) }}" method="POST" style="display:inline;">
-                                @csrf
-                                <button type="submit" style="background-color: #ddd; border: none; padding: 5px 10px;">+</button>
-                            </form>
-                        </div>
+                                    <form action="{{ route('carrito.incrementar', $item->id) }}" method="POST" style="display:inline;">
+                                        @csrf
+                                        <button type="submit" style="background-color: #ddd; border: none; padding: 5px 10px;">+</button>
+                                    </form>
+                                </div>
 
-                        <div>Cantidad: {{ $item->cantidad }}</div>
-                        <div>Subtotal: S/. {{ number_format($subtotal, 2) }}</div>
+                                <span class="text-muted small">({{ $producto->stock }} existencias)</span>
+                            </div>
+
+                            <div>Cantidad: {{ $item->cantidad }}</div>
+                            <div>Subtotal: S/. {{ number_format($subtotal, 2) }}</div>
+                        @else
+                            <div class="text-muted mt-2">No disponible actualmente. Elimina este producto para poder continuar con la compra.</div>
+                        @endif
                     </div>
                 </div>
                 <form method="POST" action="{{ route('carrito.eliminar', $item->id) }}">
