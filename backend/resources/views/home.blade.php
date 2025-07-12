@@ -13,6 +13,7 @@
 </h2>
 
 @if(isset($producto))
+    {{-- VISTA DE PRODUCTO INDIVIDUAL --}}
     @php
         $enOferta = $producto->oferta_activa &&
                     is_numeric($producto->precio_oferta) &&
@@ -21,30 +22,18 @@
 
     <div class="container mb-5">
         <div class="row justify-content-center align-items-start g-4">
-            <!-- Columna de imágenes -->
             <div class="col-md-5 d-flex flex-column align-items-center">
                 @if($producto->imagenes && $producto->imagenes->count())
                     <div class="d-flex flex-wrap justify-content-center mb-3 gap-2">
-                        <img src="{{ asset($producto->imagen) }}"
-                             alt="Imagen principal"
-                             class="img-thumbnail border border-primary"
-                             style="width: 70px; height: 70px; object-fit: cover; cursor: pointer;"
-                             onclick="cambiarImagen('{{ asset($producto->imagen) }}')">
+                        <img src="{{ asset($producto->imagen) }}" alt="Imagen principal" class="img-thumbnail border border-primary" style="width: 70px; height: 70px; object-fit: cover; cursor: pointer;" onclick="cambiarImagen('{{ asset($producto->imagen) }}')">
                         @foreach($producto->imagenes as $img)
-                            <img src="{{ asset($img->ruta) }}"
-                                 alt="Miniatura"
-                                 class="img-thumbnail"
-                                 style="width: 70px; height: 70px; object-fit: cover; cursor: pointer;"
-                                 onclick="cambiarImagen('{{ asset($img->ruta) }}')">
+                            <img src="{{ asset($img->ruta) }}" alt="Miniatura" class="img-thumbnail" style="width: 70px; height: 70px; object-fit: cover; cursor: pointer;" onclick="cambiarImagen('{{ asset($img->ruta) }}')">
                         @endforeach
                     </div>
                 @endif
 
                 <div class="bg-light rounded p-3 shadow-sm" style="width: 100%; height: 350px; display: flex; align-items: center; justify-content: center;">
-                    <img id="imagenPrincipal"
-                         src="{{ $producto->imagen ? asset($producto->imagen) : 'https://via.placeholder.com/350' }}"
-                         alt="{{ $producto->nombre }}"
-                         style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                    <img id="imagenPrincipal" src="{{ $producto->imagen ? asset($producto->imagen) : 'https://via.placeholder.com/350' }}" alt="{{ $producto->nombre }}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
                 </div>
 
                 <div class="text-center mt-3">
@@ -67,7 +56,6 @@
                 </div>
             </div>
 
-            <!-- Descripción y botones -->
             <div class="col-md-7">
                 <div class="bg-white border rounded shadow-sm p-4">
                     <h5>Descripción del producto</h5>
@@ -88,26 +76,24 @@
                                 <span class="text-muted small">({{ $producto->stock }} existencias)</span>
                             </div>
 
-                            <div class="d-flex flex-wrap gap-2">
-                                <button type="submit" class="btn btn-dark flex-fill">
-    <i class="bi bi-cart-plus-fill me-1"></i> Añadir al carrito
-</button>
+                            <div class="mb-2">
+                                <button type="submit" class="btn btn-dark w-100">
+                                    <i class="bi bi-cart-plus-fill me-1"></i> Añadir al carrito
+                                </button>
                             </div>
                         </form>
                     @endif
 
-                    <form method="POST" action="{{ route('favoritos.agregar', $producto->id) }}" class="mt-2">
-    @csrf
-    <button type="submit" class="btn btn-outline-danger w-100">
-        @if(isset($favoritos) && in_array($producto->id, $favoritos))
-            <i class="bi bi-heart-fill me-1"></i> En favoritos
-        @else
-            <i class="bi bi-heart me-1"></i> Agregar a favoritos
-        @endif
-    </button>
-</form>
-
-
+                    <form method="POST" action="{{ route('favoritos.agregar', $producto->id) }}">
+                        @csrf
+                        <button type="submit" class="btn btn-outline-danger w-100">
+                            @if(isset($favoritos) && in_array($producto->id, $favoritos))
+                                <i class="bi bi-heart-fill me-1"></i> En favoritos
+                            @else
+                                <i class="bi bi-heart me-1"></i> Agregar a favoritos
+                            @endif
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -128,32 +114,41 @@
             document.getElementById('imagenPrincipal').src = ruta;
         }
     </script>
-
-@else
-    {{-- Vista en lista --}}
+@elseif(isset($products))
+    @php
+        if (!isset($favoritos)) {
+            $favoritos = auth()->check() ? auth()->user()->favoritos->pluck('id')->toArray() : [];
+        }
+    @endphp
+    <div class="container">
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
         @foreach($products as $product)
             @php
                 $enOferta = $product->oferta_activa &&
                             is_numeric($product->precio_oferta) &&
                             (!$product->fecha_fin_oferta || Carbon::parse($product->fecha_fin_oferta)->gte(Carbon::now()));
+                $isFavorito = Auth::check() && in_array($product->id, $favoritos);
             @endphp
 
             <div class="col">
-                <div class="card product-card h-100 position-relative" style="transition: transform 0.3s ease;">
-                    <div style="height: 200px; background-color: #fdf6ff; display: flex; align-items: center; justify-content: center; border-top-left-radius: .5rem; border-top-right-radius: .5rem;">
-                        <a href="{{ route('producto.ver', $product->id) }}" class="d-block w-100 h-100">
-                            <img src="{{ $product->imagen ? asset($product->imagen) : 'https://via.placeholder.com/150' }}"
-                                 alt="{{ $product->nombre }}"
-                                 style="max-height: 100%; max-width: 100%; object-fit: contain;">
-                        </a>
-                    </div>
+                <div class="card product-card h-100 position-relative">
+                    <div style="height: 200px; background-color: #fdf6ff; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+    <a href="{{ route('producto.ver', $product->id) }}" class="d-block w-100 h-100 d-flex align-items-center justify-content-center">
+        <div class="product-image-frame">
+            <img src="{{ $product->imagen ? asset($product->imagen) : 'https://via.placeholder.com/150' }}"
+                alt="{{ $product->nombre }}"
+                style="max-width: 100%; max-height: 100%; object-fit: contain; display: block;">
+        </div>
+    </a>
+</div>
 
-                    <div class="card-body text-center position-relative" style="z-index: 2;">
-                        <h6 class="mb-1 text-center">
-                            {{ $product->nombre }} 
+
+
+                    <div class="card-body text-center">
+                        <h6 class="mb-1">
+                            {{ $product->nombre }}
                             @if($product->stock == 0)
-                                <span class="badge bg-secondary align-text-top" style="font-size: 0.7rem; margin-left: 5px;">Sin existencias</span>
+                                <span class="badge bg-secondary" style="font-size: 0.7rem;">Sin existencias</span>
                             @endif
                         </h6>
 
@@ -169,47 +164,48 @@
 
                         <small class="text-muted d-block mb-2">Categoría: {{ $product->categoria->nombre ?? 'Sin categoría' }}</small>
 
-                        <div class="d-flex justify-content-center gap-2">
-                            @if($product->stock > 0)
-                                <form method="POST" action="{{ route('carrito.agregar', $product->id) }}" class="flex-grow-1" style="flex-basis: 75%;">
-                                    @csrf
-                                    <button type="submit" class="btn btn-dark w-100">
-                                        <i class="bi bi-cart-plus"></i> Agregar
-                                    </button>
-                                </form>
-                            @endif
+                        @if($product->stock > 0)
+                            <form method="POST" action="{{ route('carrito.agregar', $product->id) }}" class="mb-2">
+                                @csrf
+                                <button type="submit" class="btn btn-dark w-100">
+                                    <i class="bi bi-cart-plus-fill me-1"></i> Añadir al carrito
+                                </button>
+                            </form>
+                        @endif
 
-                            <form method="POST" action="{{ route('favoritos.agregar', $product->id) }}">
+                        <form method="POST" action="{{ route('favoritos.agregar', $product->id) }}" class="w-100">
     @csrf
-    <button type="submit" class="btn btn-outline-danger" style="padding: 6px 10px;">
-        @if(Auth::check() && isset($favoritos) && in_array($product->id, $favoritos))
-            <i class="bi bi-heart-fill text-danger"></i>
-        @else
-            <i class="bi bi-heart"></i>
-        @endif
+    <button type="submit" class="btn btn-outline-danger btn-favorito w-100">
+        <i class="bi bi-heart{{ $isFavorito ? '-fill' : '' }} me-1"></i>
+        {{ $isFavorito ? 'En favoritos' : 'Agregar a favoritos' }}
     </button>
 </form>
 
-
-                        </div>
                     </div>
                 </div>
             </div>
         @endforeach
     </div>
+    </div>
+@else
+    <p class="text-center text-muted">No hay productos disponibles.</p>
 @endif
-
 
 <style>
     .product-card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        border: none;
-    }
+    border: 1px solid #d1d5db;
+    border-radius: 12px;
+    background-color: #fff;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
 
     .product-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
     }
+
+
 
     .img-thumbnail:hover {
         border-color: #9333ea !important;
@@ -243,12 +239,32 @@
     .btn-dark:hover {
         background-color: #6d28d9;
     }
+
     .btn i {
-    transition: transform 0.2s ease;
+        transition: transform 0.2s ease;
+    }
+
+    .btn:hover i {
+        transform: scale(1.2);
+    }
+
+    .btn-favorito {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.9rem;
+    padding: 6px 10px;
+    }
+
+    .product-image-frame {
+    border: 2px solid #e0d7ff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(147, 51, 234, 0.1);
+    padding: 10px;
+    background-color: white;
 }
 
 
 </style>
-
 
 @endsection
