@@ -5,6 +5,14 @@
 @section('content')
 
 @php
+    $logFile = storage_path('logs/laravel.log');
+    if (file_exists($logFile)) {
+        echo '<pre style="white-space: pre-wrap; font-size: 12px;">' . file_get_contents($logFile) . '</pre>';
+    }
+@endphp
+
+
+@php
     use Carbon\Carbon;
 @endphp
 
