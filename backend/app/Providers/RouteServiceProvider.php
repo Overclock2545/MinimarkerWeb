@@ -4,17 +4,26 @@ namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\VerificarRol; // Asegúrate de tener este use
 
 class RouteServiceProvider extends ServiceProvider
 {
-
     /**
      * Este valor define el espacio de nombres de los controladores.
-     * Laravel lo usará para agrupar rutas que usan controladores.
      */
     protected $namespace = 'App\Http\Controllers';
+
+    /**
+     * Redirección después del login.
+     */
     public const HOME = '/inicio';
 
+    /**
+     * Aliases de middlewares personalizados.
+     */
+    protected $middlewareAliases = [
+        'verificarRol' => VerificarRol::class,
+    ];
 
     /**
      * Define los bindings de rutas, filtros de patrones y rutas personalizadas.

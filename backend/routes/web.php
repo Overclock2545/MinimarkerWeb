@@ -10,9 +10,8 @@ use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\FavoritoController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
-
-
-use App\Http\Middleware\EsAdmin;
+use App\Http\Controllers\PedidoController;
+use App\Http\Controllers\PerfilController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,48 +19,33 @@ use App\Http\Middleware\EsAdmin;
 |--------------------------------------------------------------------------
 */
 
-// Redirección desde "/" a "/inicio"
 Route::get('/', fn() => Redirect::to('/inicio'));
 
-// Vista de inicio con productos
 Route::get('/inicio', function () {
     $products = Product::with('categoria')->get();
     return view('home', compact('products'));
 })->name('inicio');
 
-// Vista de un producto individual
 Route::get('/producto/{id}', [ProductController::class, 'mostrar'])->name('producto.ver');
-
-// Búsqueda de productos
 Route::get('/buscar', [ProductController::class, 'buscar'])->name('buscar.productos');
-
-// Categorías por ID
 Route::get('/categorias/id/{id}', [CategoriaController::class, 'mostrarPorId'])->name('categorias.porId');
 
 /*
 |--------------------------------------------------------------------------
-| Rutas Protegidas por Inicio de Sesión
+| Rutas Protegidas (Usuarios Autenticados)
 |--------------------------------------------------------------------------
 */
 
 Route::middleware(['auth'])->group(function () {
-
-    // Perfil de usuario
+    // Perfil
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    // Vista de perfil del usuario
-    Route::get('/perfil', function () {
-    return view('perfil');
-})->middleware('auth')->name('perfil');
-    Route::put('/perfil', [App\Http\Controllers\PerfilController::class, 'actualizar'])->name('perfil.actualizar');
 
+    Route::get('/perfil', fn() => view('perfil'))->name('perfil');
+    Route::put('/perfil', [PerfilController::class, 'actualizar'])->name('perfil.actualizar');
 
-
-
-
-
-    // Carrito de compras
+    // Carrito
     Route::get('/carrito', [CarritoController::class, 'index'])->name('carrito');
     Route::post('/carrito/agregar/{product}', [CarritoController::class, 'add'])->name('carrito.agregar');
     Route::post('/carrito/eliminar/{id}', [CarritoController::class, 'remove'])->name('carrito.eliminar');
@@ -69,98 +53,84 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/carrito/disminuir/{id}', [CarritoController::class, 'disminuir'])->name('carrito.disminuir');
     Route::post('/carrito/confirmar', [CarritoController::class, 'confirmarPedido'])->name('carrito.confirmar');
 
-
     // Favoritos
     Route::get('/favoritos', [FavoritoController::class, 'index'])->name('favoritos');
     Route::post('/favoritos/agregar/{productId}', [FavoritoController::class, 'agregar'])->name('favoritos.agregar');
     Route::delete('/favoritos/eliminar/{product_id}', [FavoritoController::class, 'eliminar'])->name('favoritos.eliminar');
 
-
-    // Mis Pedidos
-    Route::get('/mis-pedidos', [\App\Http\Controllers\PedidoController::class, 'misPedidos'])->name('pedidos');
-    Route::get('/mis-pedidos/{id}/boleta', [\App\Http\Controllers\PedidoController::class, 'descargarBoleta'])->name('cliente.boleta');
+    // Pedidos del cliente
+    Route::get('/mis-pedidos', [PedidoController::class, 'misPedidos'])->name('pedidos');
+    Route::get('/mis-pedidos/{id}/boleta', [PedidoController::class, 'descargarBoleta'])->name('cliente.boleta');
 });
 
 /*
 |--------------------------------------------------------------------------
-| Rutas para Administradores
+| Rutas para Administradores (Exclusivo)
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', EsAdmin::class])->group(function () {
-    Route::get('/admin', [AdminController::class, 'index'])->name('admin.panel');
-
-
-    // Vista con las 3 cartillas
-    Route::get('/admin/stock', function () {
-        return view('admin.stock');
-    })->name('admin.stock');
-
-    // Subrutas de cada cartilla
+Route::middleware(['auth', 'verificarRol:admin'])->group(function () {
+    // Stock y productos
+    Route::get('/admin/stock', fn() => view('admin.stock'))->name('admin.stock');
     Route::get('/admin/productos', [AdminController::class, 'gestionarProductos'])->name('admin.productos.gestionar');
     Route::get('/admin/productos/nuevo', [AdminController::class, 'formularioNuevoProducto'])->name('admin.productos.nuevo');
-    Route::get('/admin/categorias', [AdminController::class, 'gestionarCategorias'])->name('admin.categorias');
-
-    // Rutas para editar productos
+    Route::post('/admin/productos', [AdminController::class, 'guardarNuevoProducto'])->name('admin.productos.guardar');
     Route::get('/admin/productos/{id}/editar', [AdminController::class, 'formularioEditarProducto'])->name('admin.productos.editar');
     Route::put('/admin/productos/{id}', [AdminController::class, 'actualizarProducto'])->name('admin.productos.actualizar');
     Route::delete('/admin/productos/{id}', [AdminController::class, 'eliminarProducto'])->name('admin.productos.eliminar');
-    //Ruta para eliminar imagen de producto adicional
     Route::delete('/admin/imagenes/{id}/eliminar', [AdminController::class, 'eliminarImagenAdicional'])->name('admin.imagen.eliminar');
 
-
-
-    // Rutas para agregar nuevos productos
-    Route::get('/admin/productos/nuevo', [AdminController::class, 'formularioNuevoProducto'])->name('admin.productos.nuevo');
-    Route::post('/admin/productos', [AdminController::class, 'guardarNuevoProducto'])->name('admin.productos.guardar');
-
-    // Rutas para gestionar categorías
+    // Categorías
     Route::get('/admin/categorias', [AdminController::class, 'gestionarCategorias'])->name('admin.categorias');
     Route::post('/admin/categorias/guardar', [AdminController::class, 'guardarCategoria'])->name('admin.categorias.guardar');
     Route::delete('/admin/categorias/eliminar/{id}', [AdminController::class, 'eliminarCategoria'])->name('admin.categorias.eliminar');
     Route::get('/admin/categorias/{id}/editar', [AdminController::class, 'formularioEditarCategoria'])->name('admin.categorias.editar');
     Route::put('/admin/categorias/{id}', [AdminController::class, 'actualizarCategoria'])->name('admin.categorias.actualizar');
 
-    // Rutas para administrar pedidos
-    Route::get('/admin/pedidos', [AdminController::class, 'verPedidos'])->name('admin.pedidos');
-    Route::post('/admin/pedido/confirmar/{id}', [AdminController::class, 'confirmarPedido'])->name('admin.pedido.confirmar');
-    Route::get('/admin/pedidos/curso', [AdminController::class, 'pedidosEnCurso'])->name('admin.pedidos.curso');
-    Route::post('/admin/pedido/entregar/{id}', [AdminController::class, 'entregarPedido'])->name('admin.pedido.entregar');
-    // Rutas para pedidos entregados
-    Route::get('/admin/pedidos/historial', [AdminController::class, 'historialPedidos'])->name('admin.pedidos.historial');
-
-
-    // Rutas para administrar usuarios
-    Route::get('/admin/usuarios', [AdminController::class, 'gestionarUsuarios'])->name('admin.usuarios');
-    Route::get('/admin/usuarios/{id}', [AdminController::class, 'verUsuario'])->name('admin.usuarios.ver');
-    Route::get('/admin/usuarios/{id}/editar', [AdminController::class, 'editarUsuario'])->name('admin.usuarios.editar');
-    Route::put('/admin/usuarios/{id}', [AdminController::class, 'actualizarUsuario'])->name('admin.usuarios.actualizar');
-    Route::delete('/admin/usuarios/{id}', [AdminController::class, 'eliminarUsuario'])->name('admin.usuarios.eliminar');
-    Route::get('/admin/usuarios/{id}/carrito', [AdminController::class, 'verCarrito'])->name('admin.usuarios.carrito');
-
-    //Rutas para analisi de ventas
+    // Análisis y ofertas
     Route::get('/admin/analisis', [AdminController::class, 'analisisVentas'])->name('admin.analisis');
-    //Rutas para ofertas y marketing
-    // Vista para gestionar ofertas
-    Route::get('/admin/ofertas', [App\Http\Controllers\AdminController::class, 'verOfertas'])->name('admin.ofertas');
-
-    Route::post('/admin/ofertas/{producto}', [App\Http\Controllers\AdminController::class, 'actualizarOferta'])->name('admin.ofertas.actualizar');
+    Route::get('/admin/ofertas', [AdminController::class, 'verOfertas'])->name('admin.ofertas');
+    Route::post('/admin/ofertas/{producto}', [AdminController::class, 'actualizarOferta'])->name('admin.ofertas.actualizar');
     Route::post('/admin/ofertas/{id}/terminar', [AdminController::class, 'terminarOferta'])->name('admin.ofertas.terminar');
-
-
-
+    // Usuarios
+    Route::delete('/admin/usuarios/{id}', [AdminController::class, 'eliminarUsuario'])->name('admin.usuarios.eliminar');
+    Route::put('/admin/usuarios/{id}', [AdminController::class, 'actualizarUsuario'])->name('admin.usuarios.actualizar');
 });
-
 
 /*
 |--------------------------------------------------------------------------
-| Autenticación (Fortify / Breeze / Jetstream)
+| Rutas para Administradores y Encargados de Pedidos
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth', 'verificarRol:admin,encargado_pedidos'])->group(function () {
+    Route::get('/admin', [AdminController::class, 'index'])->name('admin.panel');
+
+    // Pedidos
+    Route::get('/admin/pedidos', [AdminController::class, 'verPedidos'])->name('admin.pedidos');
+    Route::get('/admin/pedidos/curso', [AdminController::class, 'pedidosEnCurso'])->name('admin.pedidos.curso');
+    Route::get('/admin/pedidos/historial', [AdminController::class, 'historialPedidos'])->name('admin.pedidos.historial');
+    Route::post('/admin/pedido/confirmar/{id}', [AdminController::class, 'confirmarPedido'])->name('admin.pedido.confirmar');
+    Route::post('/admin/pedido/entregar/{id}', [AdminController::class, 'entregarPedido'])->name('admin.pedido.entregar');
+
+    // Usuarios (solo lectura)
+    Route::get('/admin/usuarios', [AdminController::class, 'gestionarUsuarios'])->name('admin.usuarios');
+    Route::get('/admin/usuarios/{id}', [AdminController::class, 'verUsuario'])->name('admin.usuarios.ver');
+    Route::get('/admin/usuarios/{id}/editar', [AdminController::class, 'editarUsuario'])->name('admin.usuarios.editar');
+    Route::get('/admin/usuarios/{id}/pedidos', [AdminController::class, 'verPedidosUsuario'])->name('admin.usuarios.pedidos');
+    Route::get('/admin/usuarios/{id}/carrito', [AdminController::class, 'verCarrito'])->name('admin.usuarios.carrito');
+    
+
+});
+
+/*
+|--------------------------------------------------------------------------
+| Autenticación (Breeze / Jetstream / Fortify)
 |--------------------------------------------------------------------------
 */
 
 require __DIR__ . '/auth.php';
 
-// Dashboard (solo si usas Jetstream con verificación de correo)
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', fn() => view('dashboard'))
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');

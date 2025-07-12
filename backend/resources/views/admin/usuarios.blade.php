@@ -30,9 +30,10 @@
                         </span>
                     </td>
                     <td>
-                        <a href="{{ route('admin.usuarios.editar', $usuario->id) }}" class="btn btn-outline-primary btn-sm mb-1">✏️ Editar</a>
+                        <a href="{{ route('admin.usuarios.editar', $usuario->id) }}" class="btn btn-outline-primary btn-sm mb-1">Ver datos</a>
 
                         <a href="{{ route('admin.usuarios.carrito', $usuario->id) }}" class="btn btn-outline-info btn-sm mb-1">🛒 Ver Carrito</a>
+                        <a href="{{ route('admin.usuarios.pedidos', $usuario->id) }}" class="btn btn-outline-success btn-sm mb-1">📦 Ver Pedidos</a>
 
                         <!-- Botón que activa el modal -->
                         <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmarEliminarModal{{ $usuario->id }}">

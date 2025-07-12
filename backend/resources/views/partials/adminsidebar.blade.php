@@ -1,9 +1,19 @@
+@php
+    use Illuminate\Support\Facades\Auth;
+    $rol = Auth::user()->rol;
+@endphp
+
 <aside class="admin-sidebar p-3" style="background-color: #d9b3ff; min-height: 100vh;">
     <nav class="d-flex flex-column gap-3">
-        <a href="{{ route('admin.stock') }}" class="btn btn-sm text-start text-dark" style="background-color: #ecd9ff;">
-            <i class="bi bi-tools me-2"></i> Alterar Stock
-        </a>
 
+        {{-- Solo para admin --}}
+        @if($rol === 'admin')
+            <a href="{{ route('admin.stock') }}" class="btn btn-sm text-start text-dark" style="background-color: #ecd9ff;">
+                <i class="bi bi-tools me-2"></i> Alterar Stock
+            </a>
+        @endif
+
+        {{-- Accesible por admin y encargado_pedidos --}}
         <a href="{{ route('admin.pedidos') }}" class="btn btn-sm text-start text-dark" style="background-color: #f0d9ff;">
             <i class="bi bi-clock-history me-2"></i> Pedidos Pendientes
         </a>
@@ -20,12 +30,16 @@
             <i class="bi bi-people-fill me-2"></i> Administrar Usuarios
         </a>
 
-        <a href="{{ route('admin.analisis') }}" class="btn btn-sm text-start text-dark" style="background-color: #e5ccf9;">
-            <i class="bi bi-graph-up-arrow me-2"></i> Análisis de Ventas
-        </a>
-        <a href="{{ route('admin.ofertas') }}" class="btn btn-sm text-start text-dark" style="background-color: #f5e1ff;">
-             <i class="bi bi-tags-fill me-2"></i> Ofertas y marketing
-        </a>
+        {{-- Solo para admin --}}
+        @if($rol === 'admin')
+            <a href="{{ route('admin.analisis') }}" class="btn btn-sm text-start text-dark" style="background-color: #e5ccf9;">
+                <i class="bi bi-graph-up-arrow me-2"></i> Análisis de Ventas
+            </a>
+
+            <a href="{{ route('admin.ofertas') }}" class="btn btn-sm text-start text-dark" style="background-color: #f5e1ff;">
+                <i class="bi bi-tags-fill me-2"></i> Ofertas y marketing
+            </a>
+        @endif
 
     </nav>
 </aside>

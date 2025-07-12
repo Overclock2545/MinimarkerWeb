@@ -481,6 +481,20 @@ public function eliminarImagenAdicional($id)
 
     return back()->with('success', '🗑️ Imagen eliminada correctamente.');
 }
+public function verPedidosUsuario($id)
+{
+    $usuario = User::findOrFail($id);
+
+    $query = Pedido::where('user_id', $id)->with(['items.product']);
+
+    if (request('codigo')) {
+        $query->where('codigo_pedido', 'like', '%' . request('codigo') . '%');
+    }
+
+    $pedidos = $query->get();
+
+    return view('admin.pedidos_usuario', compact('usuario', 'pedidos'));
+}
 
 
 

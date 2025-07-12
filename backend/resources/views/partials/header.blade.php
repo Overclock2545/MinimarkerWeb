@@ -9,7 +9,8 @@
 
     <div class="d-flex align-items-center gap-3">
         @auth
-        @if(Auth::user()->rol === 'admin')
+        @if(in_array(Auth::user()->rol, ['admin', 'encargado_pedidos']))
+
     <a href="{{ url('/admin') }}" class="btn btn-sm btn-outline-dark" style="background-color: #d6c4f0;">
         🛠️ Panel de Administración
         
