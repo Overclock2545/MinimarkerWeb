@@ -22,42 +22,44 @@
     <div class="container mb-5">
         <div class="row justify-content-center align-items-start g-4">
 
-            <!-- Columna de imagenes -->
+            <!-- Columna de imágenes -->
             <div class="col-md-5 d-flex flex-column align-items-center">
-
                 <!-- Miniaturas -->
-@if($producto->imagenes && $producto->imagenes->count())
-    <div class="d-flex flex-wrap justify-content-center mb-3 gap-2">
-        <!-- Miniatura de imagen principal -->
-        <img src="{{ asset($producto->imagen) }}"
-             alt="Imagen principal"
-             class="img-thumbnail border border-primary"
-             style="width: 70px; height: 70px; cursor: pointer;"
-             onclick="cambiarImagen('{{ asset($producto->imagen) }}')">
-
-        <!-- Miniaturas adicionales -->
-        @foreach($producto->imagenes as $img)
-            <img src="{{ asset($img->ruta) }}"
-                 alt="Miniatura"
-                 class="img-thumbnail"
-                 style="width: 70px; height: 70px; cursor: pointer;"
-                 onclick="cambiarImagen('{{ asset($img->ruta) }}')">
-        @endforeach
-    </div>
-@endif
+                @if($producto->imagenes && $producto->imagenes->count())
+                    <div class="d-flex flex-wrap justify-content-center mb-3 gap-2">
+                        <!-- Miniatura principal -->
+                        <img src="{{ asset($producto->imagen) }}"
+                             alt="Imagen principal"
+                             class="img-thumbnail border border-primary"
+                             style="width: 70px; height: 70px; object-fit: cover; cursor: pointer;"
+                             onclick="cambiarImagen('{{ asset($producto->imagen) }}')">
+                        <!-- Miniaturas adicionales -->
+                        @foreach($producto->imagenes as $img)
+                            <img src="{{ asset($img->ruta) }}"
+                                 alt="Miniatura"
+                                 class="img-thumbnail"
+                                 style="width: 70px; height: 70px; object-fit: cover; cursor: pointer;"
+                                 onclick="cambiarImagen('{{ asset($img->ruta) }}')">
+                        @endforeach
+                    </div>
+                @endif
 
                 <!-- Imagen principal -->
-                <div class="bg-light rounded p-3 shadow-sm" style="width: 100%; max-height: 350px; display: flex; align-items: center; justify-content: center;">
+                <div class="bg-light rounded p-3 shadow-sm" style="width: 100%; height: 350px; display: flex; align-items: center; justify-content: center;">
                     <img id="imagenPrincipal"
                          src="{{ $producto->imagen ? asset($producto->imagen) : 'https://via.placeholder.com/350' }}"
                          alt="{{ $producto->nombre }}"
-                         class="img-fluid"
-                         style="object-fit: contain; max-height: 300px;">
+                         style="max-width: 100%; max-height: 100%; object-fit: contain;">
                 </div>
 
                 <!-- Nombre y precio -->
                 <div class="text-center mt-3">
-                    <h4 class="mb-1">{{ $producto->nombre }}</h4>
+                    <h4 class="mb-1 d-flex align-items-center justify-content-center gap-2">
+                        {{ $producto->nombre }}
+                        @if($producto->stock == 0)
+                            <span class="badge bg-secondary">Sin existencias</span>
+                        @endif
+                    </h4>
 
                     @if ($enOferta)
                         <p class="mb-1 fs-5">
@@ -79,21 +81,23 @@
                         {{ $producto->descripcion ?? 'Este producto no tiene una descripción.' }}
                     </p>
 
-                    <form action="{{ route('carrito.agregar', $producto->id) }}" method="POST" class="mt-4">
-                        @csrf
-                        <input type="hidden" name="cantidad" value="1" id="cantidad-input">
+                    @if($producto->stock > 0)
+                        <form action="{{ route('carrito.agregar', $producto->id) }}" method="POST" class="mt-4">
+                            @csrf
+                            <input type="hidden" name="cantidad" value="1" id="cantidad-input">
 
-                        <div class="d-flex align-items-center gap-2 mb-3">
-                            <label class="form-label mb-0">Cantidad:</label>
-                            <button type="button" class="btn btn-outline-secondary" onclick="cambiarCantidad(-1)">-</button>
-                            <input type="number" id="cantidad" value="1" min="1" class="form-control text-center" style="width: 70px;" readonly>
-                            <button type="button" class="btn btn-outline-secondary" onclick="cambiarCantidad(1)">+</button>
-                        </div>
+                            <div class="d-flex align-items-center gap-2 mb-3">
+                                <label class="form-label mb-0">Cantidad:</label>
+                                <button type="button" class="btn btn-outline-secondary" onclick="cambiarCantidad(-1)">-</button>
+                                <input type="number" id="cantidad" value="1" min="1" class="form-control text-center" style="width: 70px;" readonly>
+                                <button type="button" class="btn btn-outline-secondary" onclick="cambiarCantidad(1)">+</button>
+                            </div>
 
-                        <div class="d-flex flex-wrap gap-2">
-                            <button type="submit" class="btn btn-dark flex-fill">🛒 Añadir al carrito</button>
-                        </div>
-                    </form>
+                            <div class="d-flex flex-wrap gap-2">
+                                <button type="submit" class="btn btn-dark flex-fill">🛒 Añadir al carrito</button>
+                            </div>
+                        </form>
+                    @endif
 
                     <form method="POST" action="{{ route('favoritos.agregar', $producto->id) }}" class="mt-2">
                         @csrf
@@ -141,7 +145,12 @@
                         </div>
 
                         <div class="card-body text-center">
-                            <h6 class="mb-1">{{ $product->nombre }}</h6>
+                            <h6 class="mb-1 d-flex align-items-center justify-content-center gap-2">
+                                {{ $product->nombre }}
+                                @if($product->stock == 0)
+                                    <span class="badge bg-secondary">Sin existencias</span>
+                                @endif
+                            </h6>
 
                             @if ($enOferta)
                                 <p class="mb-1">
@@ -158,10 +167,12 @@
                     </a>
 
                     <div class="product-actions p-2">
-                        <form method="POST" action="{{ route('carrito.agregar', $product->id) }}" class="mb-2">
-                            @csrf
-                            <button type="submit" class="btn btn-dark w-100">🛒 Agregar al carrito</button>
-                        </form>
+                        @if($product->stock > 0)
+                            <form method="POST" action="{{ route('carrito.agregar', $product->id) }}" class="mb-2">
+                                @csrf
+                                <button type="submit" class="btn btn-dark w-100">🛒 Agregar al carrito</button>
+                            </form>
+                        @endif
                         <form method="POST" action="{{ route('favoritos.agregar', $product->id) }}">
                             @csrf
                             <button type="submit" class="btn btn-outline-danger w-100">❤ Agregar a favoritos</button>

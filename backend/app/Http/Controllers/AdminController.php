@@ -356,7 +356,8 @@ class AdminController extends Controller
 
         // Filtrar pedidos confirmados por fecha
         $pedidos = Pedido::with('items.producto')
-            ->where('estado', 'pago_confirmado')
+            ->where('estado', 'entregado')
+
             ->whereBetween('created_at', [$desde . ' 00:00:00', $hasta . ' 23:59:59'])
             ->get();
 
