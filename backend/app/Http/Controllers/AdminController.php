@@ -13,6 +13,12 @@ use App\Models\Pedido; // Asegúrate de que el modelo Categoria esté correctame
 use Carbon\Carbon;
 use App\Models\PedidoItem;
 use App\Models\ImagenProducto;
+use Illuminate\Support\Facades\Log;
+
+
+
+
+use App\Models\Category;
 
 class AdminController extends Controller
 {
@@ -401,4 +407,68 @@ if ($request->hasFile('imagenes_adicionales')) {
             'clientesUnicos' => $clientesUnicos,
         ]);
     }
+    //Ofertas
+    public function verOfertas(Request $request)
+{
+    $query = Product::query();
+
+    // Filtrar por código
+    if ($request->filled('codigo')) {
+        $query->where('id', $request->codigo);
+    }
+
+    // Filtrar por categoría
+    if ($request->filled('categoria_id')) {
+        $query->where('categoria_id', $request->categoria_id);
+    }
+
+    $productos = $query->get();
+    $categorias = Categoria::all();
+
+    return view('admin.ofertas', compact('productos', 'categorias'));
+}
+
+public function actualizarOferta(Request $request, $id)
+{
+    $producto = Product::findOrFail($id);
+
+    $request->validate([
+    'precio_oferta' => [
+        'nullable',
+        'numeric',
+        'min:0',
+        'regex:/^\d+(\.\d{1,2})?$/',
+        function ($attribute, $value, $fail) use ($producto) {
+            if ($value !== null && $value >= $producto->precio) {
+                $fail('⚠️ El precio de oferta debe ser menor que el precio original del producto.');
+            }
+        },
+    ],
+], [
+    'precio_oferta.numeric' => '⚠️ El precio de oferta debe ser un número válido.',
+    'precio_oferta.min' => '⚠️ No se permiten valores negativos en el precio de oferta.',
+    'precio_oferta.regex' => '⚠️ El precio de oferta solo puede tener hasta dos decimales.',
+]);
+
+
+    // Si la validación es correcta, actualizamos el precio de oferta
+    $producto->precio_oferta = $request->input('precio_oferta');
+    $producto->save();
+
+    return back()->with('success', '✅ Precio de oferta actualizado correctamente.');
+}
+public function terminarOferta($id)
+{
+    $producto = Product::findOrFail($id);
+    $producto->precio_oferta = null;
+    $producto->save();
+
+    return back()->with('success', '✅ Oferta eliminada correctamente.');
+}
+
+
+
+
+
+
 }

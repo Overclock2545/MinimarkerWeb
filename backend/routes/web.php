@@ -104,7 +104,9 @@ Route::middleware(['auth', EsAdmin::class])->group(function () {
     // Rutas para editar productos
     Route::get('/admin/productos/{id}/editar', [AdminController::class, 'formularioEditarProducto'])->name('admin.productos.editar');
     Route::put('/admin/productos/{id}', [AdminController::class, 'actualizarProducto'])->name('admin.productos.actualizar');
-    Route::delete('/admin/productos/{id}', [AdminController::class, 'eliminarProducto'])->name('admin.productos.eliminar');
+    
+Route::delete('/admin/productos/{id}', [AdminController::class, 'eliminarProducto'])->name('admin.productos.eliminar');
+
 
     // Rutas para agregar nuevos productos
     Route::get('/admin/productos/nuevo', [AdminController::class, 'formularioNuevoProducto'])->name('admin.productos.nuevo');
@@ -136,6 +138,13 @@ Route::middleware(['auth', EsAdmin::class])->group(function () {
 
     //Rutas para analisi de ventas
     Route::get('/admin/analisis', [AdminController::class, 'analisisVentas'])->name('admin.analisis');
+    //Rutas para ofertas y marketing
+    // Vista para gestionar ofertas
+    Route::get('/admin/ofertas', [App\Http\Controllers\AdminController::class, 'verOfertas'])->name('admin.ofertas');
+
+    Route::post('/admin/ofertas/{producto}', [App\Http\Controllers\AdminController::class, 'actualizarOferta'])->name('admin.ofertas.actualizar');
+    Route::post('/admin/ofertas/{id}/terminar', [AdminController::class, 'terminarOferta'])->name('admin.ofertas.terminar');
+
 
 
 });

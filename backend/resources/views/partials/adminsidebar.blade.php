@@ -23,5 +23,9 @@
         <a href="{{ route('admin.analisis') }}" class="btn btn-sm text-start text-dark" style="background-color: #e5ccf9;">
             <i class="bi bi-graph-up-arrow me-2"></i> Análisis de Ventas
         </a>
+        <a href="{{ route('admin.ofertas') }}" class="btn btn-sm text-start text-dark" style="background-color: #f5e1ff;">
+             <i class="bi bi-tags-fill me-2"></i> Ofertas y marketing
+        </a>
+
     </nav>
 </aside>
