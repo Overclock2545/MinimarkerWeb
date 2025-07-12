@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Notifications\ResetPasswordNotification;
 
+
+
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
@@ -40,10 +42,13 @@ class User extends Authenticatable
         return $this->hasMany(CarritoItem::class);
     }
 
-    public function favoritos(): BelongsToMany
-    {
-        return $this->belongsToMany(Product::class, 'favoritos')->withTimestamps();
-    }
+    public function favoritos()
+{
+    return $this->belongsToMany(\App\Models\Product::class, 'favoritos');
+}
+
+
+
 
     public function pedidos(): HasMany
     {

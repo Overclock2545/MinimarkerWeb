@@ -89,15 +89,25 @@
                             </div>
 
                             <div class="d-flex flex-wrap gap-2">
-                                <button type="submit" class="btn btn-dark flex-fill">🛒 Añadir al carrito</button>
+                                <button type="submit" class="btn btn-dark flex-fill">
+    <i class="bi bi-cart-plus-fill me-1"></i> Añadir al carrito
+</button>
                             </div>
                         </form>
                     @endif
 
                     <form method="POST" action="{{ route('favoritos.agregar', $producto->id) }}" class="mt-2">
-                        @csrf
-                        <button type="submit" class="btn btn-outline-danger w-100">❤ Agregar a favoritos</button>
-                    </form>
+    @csrf
+    <button type="submit" class="btn btn-outline-danger w-100">
+        @if(isset($favoritos) && in_array($producto->id, $favoritos))
+            <i class="bi bi-heart-fill me-1"></i> En favoritos
+        @else
+            <i class="bi bi-heart me-1"></i> Agregar a favoritos
+        @endif
+    </button>
+</form>
+
+
                 </div>
             </div>
         </div>
@@ -131,65 +141,114 @@
 
             <div class="col">
                 <div class="card product-card h-100 position-relative" style="transition: transform 0.3s ease;">
-                    <a href="{{ route('producto.ver', $product->id) }}" class="text-decoration-none text-dark">
-                        <div style="height: 200px; background-color: #fdf6ff; display: flex; align-items: center; justify-content: center; border-top-left-radius: .5rem; border-top-right-radius: .5rem;">
+                    <div style="height: 200px; background-color: #fdf6ff; display: flex; align-items: center; justify-content: center; border-top-left-radius: .5rem; border-top-right-radius: .5rem;">
+                        <a href="{{ route('producto.ver', $product->id) }}" class="d-block w-100 h-100">
                             <img src="{{ $product->imagen ? asset($product->imagen) : 'https://via.placeholder.com/150' }}"
                                  alt="{{ $product->nombre }}"
                                  style="max-height: 100%; max-width: 100%; object-fit: contain;">
-                        </div>
+                        </a>
+                    </div>
 
-                        <div class="card-body text-center position-relative" style="z-index: 2;">
-                            <h6 class="mb-1 text-center">
-    {{ $product->nombre }} 
-    @if($product->stock == 0)
-        <span class="badge bg-secondary align-text-top" style="font-size: 0.7rem; margin-left: 5px;">Sin existencias</span>
-    @endif
-</h6>
+                    <div class="card-body text-center position-relative" style="z-index: 2;">
+                        <h6 class="mb-1 text-center">
+                            {{ $product->nombre }} 
+                            @if($product->stock == 0)
+                                <span class="badge bg-secondary align-text-top" style="font-size: 0.7rem; margin-left: 5px;">Sin existencias</span>
+                            @endif
+                        </h6>
 
+                        @if ($enOferta)
+                            <p class="mb-1">
+                                <span class="badge bg-success d-block mb-1">¡En oferta!</span>
+                                <span class="text-success fw-bold">S/. {{ number_format($product->precio_oferta, 2) }}</span>
+                                <small class="text-muted text-decoration-line-through">S/. {{ number_format($product->precio, 2) }}</small>
+                            </p>
+                        @else
+                            <p class="mb-1 text-dark fw-bold">S/. {{ number_format($product->precio, 2) }}</p>
+                        @endif
 
-                            @if ($enOferta)
-                                <p class="mb-1">
-                                    <span class="badge bg-success d-block mb-1">¡En oferta!</span>
-                                    <span class="text-success fw-bold">S/. {{ number_format($product->precio_oferta, 2) }}</span>
-                                    <small class="text-muted text-decoration-line-through">S/. {{ number_format($product->precio, 2) }}</small>
-                                </p>
-                            @else
-                                <p class="mb-1 text-dark fw-bold">S/. {{ number_format($product->precio, 2) }}</p>
+                        <small class="text-muted d-block mb-2">Categoría: {{ $product->categoria->nombre ?? 'Sin categoría' }}</small>
+
+                        <div class="d-flex justify-content-center gap-2">
+                            @if($product->stock > 0)
+                                <form method="POST" action="{{ route('carrito.agregar', $product->id) }}" class="flex-grow-1" style="flex-basis: 75%;">
+                                    @csrf
+                                    <button type="submit" class="btn btn-dark w-100">
+                                        <i class="bi bi-cart-plus"></i> Agregar
+                                    </button>
+                                </form>
                             @endif
 
-                            <div class="d-flex flex-column align-items-center gap-1">
-                                <small class="text-muted">Categoría: {{ $product->categoria->nombre ?? 'Sin categoría' }}</small>
+                            <form method="POST" action="{{ route('favoritos.agregar', $product->id) }}">
+    @csrf
+    <button type="submit" class="btn btn-outline-danger" style="padding: 6px 10px;">
+        @if(Auth::check() && isset($favoritos) && in_array($product->id, $favoritos))
+            <i class="bi bi-heart-fill text-danger"></i>
+        @else
+            <i class="bi bi-heart"></i>
+        @endif
+    </button>
+</form>
 
-                                <div class="d-flex w-100 justify-content-center gap-2">
-                                    @if($product->stock > 0)
-                                        <form method="POST" action="{{ route('carrito.agregar', $product->id) }}" class="flex-grow-1" style="flex-basis: 75%;">
-                                            @csrf
-                                            <button type="submit" class="btn btn-dark w-100">🛒 Agregar</button>
-                                        </form>
-                                    @endif
 
-                                    <form method="POST" action="{{ route('favoritos.agregar', $product->id) }}">
-                                        @csrf
-                                        <button type="submit" class="btn btn-outline-danger" style="padding: 6px 10px;">
-                                            ❤
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
                         </div>
-                    </a>
+                    </div>
                 </div>
             </div>
         @endforeach
     </div>
-
-    <style>
-        .product-card:hover {
-            transform: translateY(-5px);
-        }
-    </style>
 @endif
 
+
+<style>
+    .product-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: none;
+    }
+
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .img-thumbnail:hover {
+        border-color: #9333ea !important;
+        transform: scale(1.05);
+        transition: transform 0.2s ease;
+    }
+
+    #imagenPrincipal {
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        transition: transform 0.3s ease;
+    }
+
+    #imagenPrincipal:hover {
+        transform: scale(1.03);
+    }
+
+    h2.text-center {
+        background: linear-gradient(90deg, #a855f7, #ec4899);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 10px;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-dark {
+        background-color: #4c1d95;
+        border: none;
+    }
+
+    .btn-dark:hover {
+        background-color: #6d28d9;
+    }
+    .btn i {
+    transition: transform 0.2s ease;
+}
+
+
+</style>
 
 
 @endsection

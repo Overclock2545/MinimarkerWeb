@@ -17,15 +17,18 @@
 @endif
 
 <div class="text-center my-4">
-    <h2 class="fw-bold" style="font-size: 2.2rem; color: #333;">
-        🛒 <span style="border-bottom: 3px solid #000; padding-bottom: 5px;">Tu Carrito</span>
+    <h2 class="fw-bold display-6 text-purple">
+        🛒 Tu Carrito de Compras
     </h2>
 </div>
 
 @if($carrito->isEmpty())
-    <p style="text-align: center; font-size: 18px;">Tu carrito está vacío.</p>
+    <div class="text-center mt-5">
+        <p class="fs-5 text-muted">Tu carrito está vacío.</p>
+        <i class="bi bi-cart-x" style="font-size: 3rem; color: #aaa;"></i>
+    </div>
 @else
-    <div style="display: flex; flex-direction: column; gap: 20px;">
+    <div class="container">
         @php $total = 0; @endphp
         @foreach($carrito as $item)
             @php
@@ -38,72 +41,103 @@
                 $total += $subtotal;
             @endphp
 
-            <div style="display: flex; justify-content: space-between; align-items: center; background-color: #fff0f5; padding: 15px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
-                <div style="display: flex; align-items: center; gap: 15px;">
-                    <a href="{{ route('producto.ver', $producto->id) }}">
-                        <img src="{{ $producto->imagen ?? 'https://via.placeholder.com/80' }}" alt="{{ $producto->nombre }}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 4px;">
-                    </a>
-
-                    <div>
-                        <a href="{{ route('producto.ver', $producto->id) }}" style="font-weight: bold; text-decoration: none; color: #000;">
-                            {{ $producto->nombre }}
-                            @if($producto->stock == 0)
-                                <span class="badge bg-secondary ms-2">Sin existencias</span>
-                            @endif
+            <div class="card shadow-sm mb-4 border-0" style="background-color: #fef6ff;">
+                <div class="card-body d-flex justify-content-between align-items-center flex-wrap">
+                    <div class="d-flex align-items-center gap-4 flex-wrap">
+                        <a href="{{ route('producto.ver', $producto->id) }}">
+                            <img src="{{ $producto->imagen ?? 'https://via.placeholder.com/80' }}"
+                                 alt="{{ $producto->nombre }}"
+                                 class="rounded shadow-sm"
+                                 style="width: 80px; height: 80px; object-fit: cover;">
                         </a>
+                        <div>
+                            <h5 class="mb-1">
+                                <a href="{{ route('producto.ver', $producto->id) }}" class="text-dark text-decoration-none fw-bold">
+                                    {{ $producto->nombre }}
+                                </a>
+                                @if($producto->stock == 0)
+                                    <span class="badge bg-secondary ms-2">Sin existencias</span>
+                                @endif
+                            </h5>
 
-                        {{-- Precio --}}
-                        @if($enOferta)
-                            <div>
-                                <span class="text-success fw-bold">S/. {{ number_format($producto->precio_oferta, 2) }}</span>
-                                <small class="text-muted text-decoration-line-through">S/. {{ number_format($producto->precio, 2) }}</small>
-                                <span class="badge bg-success ms-1">¡En oferta!</span>
-                            </div>
-                        @else
-                            <div class="text-dark">Precio: S/. {{ number_format($producto->precio, 2) }}</div>
-                        @endif
+                            @if($enOferta)
+                                <div>
+                                    <span class="text-success fw-bold">S/. {{ number_format($producto->precio_oferta, 2) }}</span>
+                                    <small class="text-muted text-decoration-line-through">S/. {{ number_format($producto->precio, 2) }}</small>
+                                    <span class="badge bg-success">Oferta</span>
+                                </div>
+                            @else
+                                <div class="text-dark">Precio: S/. {{ number_format($producto->precio, 2) }}</div>
+                            @endif
 
-                        {{-- Cantidad y stock --}}
-                        @if($producto->stock > 0)
-                            <div style="display: flex; align-items: center; gap: 10px; margin-top: 8px; flex-wrap: wrap;">
-                                <div style="display: flex; align-items: center; gap: 10px;">
-                                    <form action="{{ route('carrito.disminuir', $item->id) }}" method="POST" style="display:inline;">
-                                        @csrf
-                                        <button type="submit" style="background-color: #ddd; border: none; padding: 5px 10px;">-</button>
-                                    </form>
+                            @if($producto->stock > 0)
+                                <div class="mt-2 d-flex align-items-center gap-2 flex-wrap">
+<form action="{{ route('carrito.disminuir', $item->id) }}" method="POST" class="d-inline">
+    @csrf
+    <button type="submit" class="btn btn-outline-secondary btn-sm"
+        @if($item->cantidad <= 1) disabled @endif>−</button>
+</form>
+
 
                                     <span>{{ $item->cantidad }}</span>
 
-                                    <form action="{{ route('carrito.incrementar', $item->id) }}" method="POST" style="display:inline;">
+                                    <form action="{{ route('carrito.incrementar', $item->id) }}" method="POST" class="d-inline">
                                         @csrf
-                                        <button type="submit" style="background-color: #ddd; border: none; padding: 5px 10px;">+</button>
+                                        <button type="submit" class="btn btn-outline-secondary btn-sm">+</button>
                                     </form>
+
+                                    <span class="text-muted small">({{ $producto->stock }} en stock)</span>
                                 </div>
 
-                                <span class="text-muted small">({{ $producto->stock }} existencias)</span>
-                            </div>
-
-                            <div>Cantidad: {{ $item->cantidad }}</div>
-                            <div>Subtotal: S/. {{ number_format($subtotal, 2) }}</div>
-                        @else
-                            <div class="text-muted mt-2">No disponible actualmente. Elimina este producto para poder continuar con la compra.</div>
-                        @endif
+                                <div class="mt-2">Subtotal: <strong>S/. {{ number_format($subtotal, 2) }}</strong></div>
+                            @else
+                                <div class="text-muted mt-2">No disponible. Elimina este producto para continuar con la compra.</div>
+                            @endif
+                        </div>
                     </div>
+
+                    <form method="POST" action="{{ route('carrito.eliminar', $item->id) }}">
+                        @csrf
+                        <button type="submit" class="btn btn-outline-danger btn-sm">🗑 Eliminar</button>
+                    </form>
                 </div>
-                <form method="POST" action="{{ route('carrito.eliminar', $item->id) }}">
-                    @csrf
-                    <button type="submit" style="background-color: #ff5c5c; color: white; padding: 8px 14px; border: none; border-radius: 4px;">Eliminar</button>
-                </form>
             </div>
         @endforeach
 
-        <form action="{{ route('carrito.confirmar') }}" method="POST" style="text-align: center; margin-top: 20px;">
-            @csrf
-            <button class="btn btn-success">✅ Confirmar y Coordinar por WhatsApp</button>
-        </form>
-
-        <div style="text-align: right; font-size: 20px; font-weight: bold; margin-top: 20px;">
+        <div class="text-end fs-4 fw-bold text-dark mb-4">
             Total: S/. {{ number_format($total, 2) }}
+        </div>
+
+        <div class="text-center">
+            <form id="confirmarPedidoForm" action="{{ route('carrito.confirmar') }}" method="POST">
+                @csrf
+                <button type="button" class="btn btn-success btn-lg px-4" data-bs-toggle="modal" data-bs-target="#confirmarPedidoModal">
+                    ✅ Confirmar y Coordinar por WhatsApp
+                </button>
+            </form>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="confirmarPedidoModal" tabindex="-1" aria-labelledby="confirmarPedidoLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title" id="confirmarPedidoLabel">¿Confirmar Pedido?</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        El pedido será generado y se te guiará con un asesor vía <strong>WhatsApp</strong> para confirmar el pedido, acordar el pago y coordinar la entrega.
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success" form="confirmarPedidoForm">Ir a confirmar pedido</button>
+                    </div>
+
+                </div>
+            </div>
         </div>
     </div>
 @endif

@@ -287,11 +287,23 @@ class AdminController extends Controller
         return back()->with('success', '📦 Pedido marcado como entregado.');
     }
     // metodo historial de pedidos entregados
-    public function historialPedidos()
-    {
-        $pedidos = Pedido::where('estado', 'entregado')->paginate(10);
-        return view('admin.pedidos_historial', compact('pedidos'));
+    public function historialPedidos(Request $request)
+{
+    $query = Pedido::with('usuario')->where('estado', 'entregado');
+
+    if ($request->filled('codigo')) {
+        $query->where('codigo_pedido', 'like', '%' . $request->codigo . '%');
     }
+
+    if ($request->filled('fecha')) {
+        $query->whereDate('created_at', $request->fecha);
+    }
+
+    $pedidos = $query->orderBy('created_at', 'desc')->paginate(10);
+
+    return view('admin.pedidos_historial', compact('pedidos'));
+}
+
 
 
 
