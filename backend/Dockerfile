@@ -21,5 +21,8 @@ RUN a2enmod rewrite
 # Configura Apache
 COPY ./apache.conf /etc/apache2/sites-available/000-default.conf
 
+# Crea enlace simbólico
+RUN php artisan storage:link
+
 # ⚠️ Comando de arranque final
 CMD composer install && php artisan config:cache && apache2-foreground
