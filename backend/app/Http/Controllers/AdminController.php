@@ -467,6 +467,21 @@ public function terminarOferta($id)
     return back()->with('success', '✅ Oferta eliminada correctamente.');
 }
 
+public function eliminarImagenAdicional($id)
+{
+    $imagen = ImagenProducto::findOrFail($id);
+
+    if ($imagen->ruta) {
+        $ruta = str_replace('storage/', '', $imagen->ruta);
+        Storage::disk('public')->delete($ruta);
+    }
+
+    $imagen->delete();
+
+    return back()->with('success', '🗑️ Imagen eliminada correctamente.');
+}
+
+
 
 
 

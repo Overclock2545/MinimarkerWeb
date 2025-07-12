@@ -104,8 +104,10 @@ Route::middleware(['auth', EsAdmin::class])->group(function () {
     // Rutas para editar productos
     Route::get('/admin/productos/{id}/editar', [AdminController::class, 'formularioEditarProducto'])->name('admin.productos.editar');
     Route::put('/admin/productos/{id}', [AdminController::class, 'actualizarProducto'])->name('admin.productos.actualizar');
-    
-Route::delete('/admin/productos/{id}', [AdminController::class, 'eliminarProducto'])->name('admin.productos.eliminar');
+    Route::delete('/admin/productos/{id}', [AdminController::class, 'eliminarProducto'])->name('admin.productos.eliminar');
+    //Ruta para eliminar imagen de producto adicional
+    Route::delete('/admin/imagenes/{id}/eliminar', [AdminController::class, 'eliminarImagenAdicional'])->name('admin.imagen.eliminar');
+
 
 
     // Rutas para agregar nuevos productos
