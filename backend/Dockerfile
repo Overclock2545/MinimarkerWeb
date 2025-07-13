@@ -1,37 +1,36 @@
 FROM php:8.2-apache
 
-# Instala extensiones necesarias de PHP
+# Instala extensiones necesarias
 RUN apt-get update && apt-get install -y \
     libzip-dev zip unzip git curl libpng-dev libonig-dev libxml2-dev \
     && docker-php-ext-install pdo_mysql mbstring zip exif pcntl
 
-# Instala Composer desde la imagen oficial
+# Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Establece el directorio de trabajo
+# Directorio de trabajo
 WORKDIR /var/www/html
 
-# Copia el código fuente del proyecto
+# Copia todo
 COPY . .
 
-# Ajusta permisos para Laravel (especialmente para storage y cache)
+# Permisos necesarios
 RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+    && chmod -R 775 storage bootstrap/cache
 
-# Habilita mod_rewrite de Apache
+# Habilita mod_rewrite
 RUN a2enmod rewrite
 
-# Copia configuración personalizada de Apache
+# Configura Apache
 COPY ./apache.conf /etc/apache2/sites-available/000-default.conf
 
-# ⚠️ Instala dependencias de Laravel, y cachea config/rutas/vistas
-RUN composer install --no-dev --optimize-autoloader \
-    && php artisan key:generate \
-    && php artisan config:clear \
-    && php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache \
-    && php artisan storage:link
+# Instalación de dependencias
+RUN composer install --no-dev --optimize-autoloader
 
-# Inicia Apache
-CMD ["apache2-foreground"]
+# Iniciar Apache (artisans se ejecutarán cuando el contenedor esté corriendo)
+CMD bash -c "php artisan config:clear && \
+             php artisan config:cache && \
+             php artisan route:cache && \
+             php artisan view:cache && \
+             php artisan storage:link && \
+             apache2-foreground"
