@@ -16,18 +16,19 @@
     @include('partials.adminheader')
 
     <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <div class="col-md-2 col-lg-2 p-0 bg-light">
-                @include('partials.adminsidebar')
-            </div>
-
-            <!-- Contenido principal -->
-            <main class="col-md-10 col-lg-10 py-3 px-4">
-                @yield('content')
-            </main>
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-2 col-lg-2 p-0">
+            @include('partials.adminsidebar')
         </div>
+
+        <!-- Contenido -->
+        <main class="col-md-10 col-lg-10 py-3 px-4">
+            @yield('content')
+        </main>
     </div>
+</div>
+
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

@@ -3,7 +3,7 @@
     $rol = Auth::user()->rol;
 @endphp
 
-<aside class="admin-sidebar p-3" style="background-color: #d9b3ff; min-height: 100vh;">
+<div class="bg-light p-3" style="min-height: 100vh;">
     <nav class="d-flex flex-column gap-3">
 
         {{-- Solo para admin --}}
@@ -42,4 +42,4 @@
         @endif
 
     </nav>
-</aside>
+</div>
