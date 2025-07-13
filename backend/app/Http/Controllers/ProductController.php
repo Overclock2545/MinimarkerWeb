@@ -79,4 +79,11 @@ class ProductController extends Controller
 
         return [];
     }
+
+    public function mostrarOfertas()
+{
+    $productos = Product::whereNotNull('precio_oferta')->get(); // O ajusta según tu lógica
+    return view('ofertas_publicas', compact('productos'));
+}
+
 }

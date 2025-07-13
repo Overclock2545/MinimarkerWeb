@@ -13,6 +13,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\PerfilController;
 
+
 /*
 |--------------------------------------------------------------------------
 | Rutas Públicas
@@ -94,6 +95,10 @@ Route::middleware(['auth', 'verificarRol:admin'])->group(function () {
     Route::get('/admin/analisis', [AdminController::class, 'analisisVentas'])->name('admin.analisis');
     Route::get('/admin/ofertas', [AdminController::class, 'verOfertas'])->name('admin.ofertas');
     Route::post('/admin/ofertas/{producto}', [AdminController::class, 'actualizarOferta'])->name('admin.ofertas.actualizar');
+    // Banner (solo una ruta)
+Route::get('/admin/banner', [AdminController::class, 'editarBanner'])->name('admin.banner');
+Route::put('/admin/banner', [AdminController::class, 'actualizarBanner'])->name('admin.banner.actualizar');
+    Route::get('/ofertas', [ProductController::class, 'mostrarOfertas'])->name('ofertas.publicas');
     Route::post('/admin/ofertas/{id}/terminar', [AdminController::class, 'terminarOferta'])->name('admin.ofertas.terminar');
     // Usuarios
     Route::delete('/admin/usuarios/{id}', [AdminController::class, 'eliminarUsuario'])->name('admin.usuarios.eliminar');

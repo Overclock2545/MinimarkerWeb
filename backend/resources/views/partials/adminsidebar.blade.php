@@ -36,9 +36,21 @@
                 <i class="bi bi-graph-up-arrow me-2"></i> Análisis de Ventas
             </a>
 
-            <a href="{{ route('admin.ofertas') }}" class="btn btn-sm text-start text-dark shadow-sm fw-semibold" style="background-color: #f5e1ff;">
-                <i class="bi bi-tags-fill me-2"></i> Ofertas y marketing
-            </a>
+            {{-- Ofertas y marketing (submenú) --}}
+<div class="d-grid gap-2">
+    <button class="btn btn-sm text-start text-dark" style="background-color: #f5e1ff;" type="button" data-bs-toggle="collapse" data-bs-target="#submenuMarketing">
+        <i class="bi bi-tags-fill me-2"></i> Ofertas y marketing
+    </button>
+    <div class="collapse ms-3" id="submenuMarketing">
+        <a href="{{ route('admin.ofertas') }}" class="btn btn-sm text-start text-dark" style="background-color: #fbefff;">
+            <i class="bi bi-ui-checks-grid me-2"></i> Gestionar Ofertas
+        </a>
+        <a href="{{ route('admin.banner') }}" class="btn btn-sm text-start text-dark" style="background-color: #fbefff;">
+            <i class="bi bi-easel2-fill me-2"></i> Editar Banner
+        </a>
+    </div>
+</div>
+
         @endif
 
     </nav>

@@ -14,11 +14,20 @@
         </div>
 
         {{-- Baner de publicidad --}}
-        <div class="mx-3 d-none d-lg-block flex-grow-1" style="max-width: 40%;">
-            <div class="bg-white border border-purple-200 rounded-3 shadow-sm px-4 py-2 text-center" style="height: 56px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
-                <span class="text-muted fw-semibold">📢 Baner de publicidad</span>
-            </div>
-        </div>
+@if(isset($banner))
+    <div class="d-none d-lg-block flex-shrink-0" style="width: 380px; margin-left: auto; margin-right: auto;">
+        <a href="{{ route('ofertas.publicas') }}"
+           class="d-flex align-items-center justify-content-center rounded-3 shadow-sm text-white fw-semibold text-decoration-none px-3"
+           style="height: 56px; background: linear-gradient(90deg, #a78bfa, #f472b6); overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+            <span class="text-truncate w-100 text-center" style="font-size: 1rem;">
+                 {{ $banner->contenido }}
+            </span>
+        </a>
+    </div>
+@endif
+
+
+
 
         {{-- Botones de sesión y carrito --}}
         <div class="d-flex align-items-center gap-2 flex-shrink-0">

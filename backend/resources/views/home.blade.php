@@ -84,7 +84,7 @@
 </style>
 
 <h2 class="text-center mb-4">
-    {{ $titulo ?? ($producto->nombre ?? 'GRANDES OFERTAS') }}
+    {{ $titulo ?? ($producto->nombre ?? 'Bienvenido a I LIKE YOU') }}
 </h2>
 
 @if(isset($producto))
@@ -272,6 +272,6 @@
     <p class="text-center text-muted">No hay productos disponibles.</p>
 @endif
 
-{
+
 
 @endsection

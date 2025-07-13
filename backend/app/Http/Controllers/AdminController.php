@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use App\Models\PedidoItem;
 use App\Models\ImagenProducto;
 use Illuminate\Support\Facades\Log;
+use App\Models\Banner;
 
 
 
@@ -508,6 +509,33 @@ public function verPedidosUsuario($id)
     $pedidos = $query->get();
 
     return view('admin.pedidos_usuario', compact('usuario', 'pedidos'));
+}
+    public function editarBanner()
+{
+    $banner = Banner::first(); // suponiendo que hay solo uno
+    return view('admin.banner', compact('banner'));
+}
+
+    public function actualizarBanner(Request $request)
+{
+    $request->validate([
+        'contenido' => 'required|string',
+    ]);
+
+    // Suponiendo que solo hay un banner
+    $banner = Banner::first();
+    if (!$banner) {
+        // Si no hay banner aún, creamos uno
+        Banner::create([
+            'contenido' => $request->input('contenido'),
+        ]);
+    } else {
+        $banner->update([
+            'contenido' => $request->input('contenido'),
+        ]);
+    }
+
+    return redirect()->back()->with('success', 'El banner se actualizó correctamente.');
 }
 
 
