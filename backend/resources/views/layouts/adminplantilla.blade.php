@@ -17,17 +17,15 @@
 
     <div class="container-fluid">
     <div class="row">
-        <!-- Sidebar -->
-        <div class="col-md-2 col-lg-2 p-0">
+        <div class="col-md-2 col-lg-2 col-xl-2 p-0">
             @include('partials.adminsidebar')
         </div>
-
-        <!-- Contenido -->
-        <main class="col-md-10 col-lg-10 py-3 px-4">
+        <main class="col-md-10 col-lg-10 col-xl-10 py-3 px-4">
             @yield('content')
         </main>
     </div>
 </div>
+
 
 
     <!-- Bootstrap JS -->
