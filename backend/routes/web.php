@@ -57,7 +57,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/favoritos', [FavoritoController::class, 'index'])->name('favoritos');
     Route::post('/favoritos/agregar/{productId}', [FavoritoController::class, 'agregar'])->name('favoritos.agregar');
     Route::delete('/favoritos/eliminar/{product_id}', [FavoritoController::class, 'eliminar'])->name('favoritos.eliminar');
-    Route::post('/favoritos/{id}', [FavoritoController::class, 'agregar'])->name('favoritos.agregar');
 
     // Pedidos del cliente
     Route::get('/mis-pedidos', [PedidoController::class, 'misPedidos'])->name('pedidos');
@@ -120,8 +119,6 @@ Route::middleware(['auth', 'verificarRol:admin,encargado_pedidos'])->group(funct
     Route::get('/admin/usuarios/{id}/editar', [AdminController::class, 'editarUsuario'])->name('admin.usuarios.editar');
     Route::get('/admin/usuarios/{id}/pedidos', [AdminController::class, 'verPedidosUsuario'])->name('admin.usuarios.pedidos');
     Route::get('/admin/usuarios/{id}/carrito', [AdminController::class, 'verCarrito'])->name('admin.usuarios.carrito');
-    
-
 });
 
 /*
