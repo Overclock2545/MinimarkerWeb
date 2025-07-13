@@ -53,9 +53,16 @@
                 </div>
             @endauth
 
-            <a href="{{ route('carrito') }}" class="btn btn-light rounded-circle position-relative shadow-sm p-2" style="width: 48px; height: 48px;">
-                <i class="bi bi-cart-fill fs-4" style="color: #7c3aed;"></i>
-            </a>
+            @auth
+    <a href="{{ route('carrito') }}" class="btn btn-light rounded-circle position-relative shadow-sm p-2" style="width: 48px; height: 48px;">
+        <i class="bi bi-cart-fill fs-4" style="color: #7c3aed;"></i>
+    </a>
+@else
+    <button class="btn btn-light rounded-circle position-relative shadow-sm p-2" style="width: 48px; height: 48px;" data-bs-toggle="modal" data-bs-target="#loginModal">
+        <i class="bi bi-cart-fill fs-4" style="color: #7c3aed;"></i>
+    </button>
+@endauth
+
         </div>
     </div>
 </header>

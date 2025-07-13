@@ -50,7 +50,7 @@
         <th class="text-center">Código</th>
         <th class="text-center">Nombre</th>
         <th class="text-center">Precio normal</th>
-        <th class="text-center">Precio oferta</th>
+        <th class="text-center">Precio oferta y fecha de expiración</th>
         <th class="text-center">Actualizar</th>
     </tr>
 </thead>
@@ -76,6 +76,13 @@
                             @csrf
                             <input type="number" name="precio_oferta" step="0.01" class="form-control form-control-sm" style="width: 100px;" 
                                 value="{{ $producto->precio_oferta }}" placeholder="Sin oferta">
+                                <input type="hidden" name="oferta_activa" value="1">
+<input type="date" name="fecha_fin_oferta"
+       class="form-control form-control-sm ms-2"
+       style="width: 160px;"
+       value="{{ $producto->fecha_fin_oferta ? \Carbon\Carbon::parse($producto->fecha_fin_oferta)->toDateString() : '' }}">
+
+
                         </form>
                     </td>
                     <td class="text-nowrap">

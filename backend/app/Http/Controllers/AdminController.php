@@ -468,7 +468,9 @@ public function actualizarOferta(Request $request, $id)
     // Si la validación es correcta, actualizamos el precio de oferta
     $producto->precio_oferta = $request->input('precio_oferta');
     $producto->save();
-
+    $producto->oferta_activa = $request->oferta_activa;
+    $producto->fecha_fin_oferta = $request->fecha_fin_oferta;
+    $producto->save();
     return back()->with('success', '✅ Precio de oferta actualizado correctamente.');
 }
 public function terminarOferta($id)
