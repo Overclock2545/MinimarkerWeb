@@ -15,15 +15,16 @@ class Pedido extends Model
         'estado',
     ];
 
-    public function items(): HasMany
-    {
-        return $this->hasMany(PedidoItem::class);
-    }
+    public function items()
+{
+    return $this->hasMany(PedidoItem::class);
+}
+
 
     public function usuario()
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
+{
+    return $this->belongsTo(User::class, 'user_id');
+}
 
 
     //

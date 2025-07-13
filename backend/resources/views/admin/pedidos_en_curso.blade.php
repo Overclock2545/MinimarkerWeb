@@ -3,69 +3,90 @@
 @section('titulo', 'Pedidos en curso')
 
 @section('content')
-<h2 class="mb-4">🚚 Pedidos en curso</h2>
-
-@if (session('success'))
-    <div class="alert alert-success">{{ session('success') }}</div>
-@endif
-@if (session('info'))
-    <div class="alert alert-info">{{ session('info') }}</div>
-@endif
-
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Código</th>
-            <th>Cliente</th>
-            <th>Total</th>
-            <th>Fecha</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @forelse($pedidos as $pedido)
-            <tr>
-                <td>{{ $pedido->codigo_pedido }}</td>
-                <td>{{ $pedido->usuario->name }}</td>
-                <td>S/ {{ number_format($pedido->total, 2) }}</td>
-                <td>{{ $pedido->created_at->format('d/m/Y') }}</td>
-                <td>
-                    <a href="#" class="btn btn-sm btn-secondary">📄 Ver boleta</a>
-
-                    <!-- Botón que abre el modal -->
-<button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#entregarPedidoModal{{ $pedido->id }}">
-    📦 Marcar como entregado
-</button>
-
-<!-- Modal de confirmación -->
-<div class="modal fade" id="entregarPedidoModal{{ $pedido->id }}" tabindex="-1" aria-labelledby="entregarPedidoLabel{{ $pedido->id }}" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="entregarPedidoLabel{{ $pedido->id }}">¿Confirmar entrega?</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-      </div>
-      <div class="modal-body">
-        ¿Confirmas que el pedido <strong>{{ $pedido->codigo_pedido }}</strong> fue entregado al cliente?
-      </div>
-      <div class="modal-footer">
-        <form method="POST" action="{{ route('admin.pedido.entregar', $pedido->id) }}">
-            @csrf
-            <button type="submit" class="btn btn-success">Sí, entregar</button>
-        </form>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-      </div>
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h2 class="fw-bold text-primary">🚚 Pedidos en Curso</h2>
+        <p class="text-muted">Pedidos que han sido confirmados y están en camino a su destino.</p>
     </div>
-  </div>
+
+    @if (session('success'))
+        <div class="alert alert-success shadow-sm">{{ session('success') }}</div>
+    @endif
+    @if (session('info'))
+        <div class="alert alert-info shadow-sm">{{ session('info') }}</div>
+    @endif
+
+    <div class="table-responsive shadow-sm rounded">
+        <table class="table table-bordered align-middle text-center table-hover bg-white">
+            <thead class="table-light">
+                <tr>
+                    <th>Código</th>
+                    <th>Cliente</th>
+                    <th>Total</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($pedidos as $pedido)
+                    <tr>
+                        <td class="fw-semibold">{{ $pedido->codigo_pedido }}</td>
+                        <td>{{ $pedido->usuario->name }}</td>
+                        <td>S/ {{ number_format($pedido->total, 2) }}</td>
+                        <td>{{ $pedido->created_at->format('d/m/Y') }}</td>
+                        <td class="d-flex justify-content-center gap-2 flex-wrap">
+
+                            <!-- Ver boleta -->
+                            <a href="{{ route('boleta.descargar', $pedido->id) }}" class="btn btn-outline-primary btn-sm shadow-sm" target="_blank">
+                                <i class="bi bi-file-earmark-pdf me-1"></i> Ver boleta
+                            </a>
+
+                            <!-- Botón que abre el modal -->
+                            <button type="button" class="btn btn-success btn-sm shadow-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#entregarPedidoModal{{ $pedido->id }}">
+                                <i class="bi bi-box-seam me-1"></i> Marcar entregado
+                            </button>
+
+                            <!-- Modal de confirmación -->
+                            <div class="modal fade" id="entregarPedidoModal{{ $pedido->id }}" tabindex="-1" aria-labelledby="entregarPedidoLabel{{ $pedido->id }}" aria-hidden="true">
+                              <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="entregarPedidoLabel{{ $pedido->id }}">Confirmar entrega</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                  </div>
+                                  <div class="modal-body">
+                                    ¿Estás seguro que el pedido <strong>{{ $pedido->codigo_pedido }}</strong> fue entregado al cliente?
+                                  </div>
+                                  <div class="modal-footer">
+                                    <form method="POST" action="{{ route('admin.pedido.entregar', $pedido->id) }}">
+                                        @csrf
+                                        <button type="submit" class="btn btn-success">✅ Sí, entregar</button>
+                                    </form>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="5">
+                            <div class="alert alert-info m-0 text-center">
+                                🕐 Aún no hay pedidos en curso. Aquí aparecerán los que estén listos para entregar.
+                            </div>
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Paginación -->
+    <div class="d-flex justify-content-center mt-4">
+        {{ $pedidos->links() }}
+    </div>
 </div>
-
-                </td>
-            </tr>
-        @empty
-            <tr><td colspan="5">Aqui estaran los pedidos en curso a ser entregados! (Cuando halla uno...).</td></tr>
-        @endforelse
-    </tbody>
-</table>
-
-<div class="mt-3">{{ $pedidos->links() }}</div>
 @endsection

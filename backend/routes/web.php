@@ -29,6 +29,9 @@ Route::get('/inicio', function () {
 Route::get('/producto/{id}', [ProductController::class, 'mostrar'])->name('producto.ver');
 Route::get('/buscar', [ProductController::class, 'buscar'])->name('buscar.productos');
 Route::get('/categorias/id/{id}', [CategoriaController::class, 'mostrarPorId'])->name('categorias.porId');
+// boletas
+Route::get('/boleta/{id}', [PedidoController::class, 'descargarBoleta'])->name('boleta.descargar');
+
 
 /*
 |--------------------------------------------------------------------------

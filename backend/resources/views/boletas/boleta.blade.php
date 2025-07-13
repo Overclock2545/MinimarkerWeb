@@ -4,58 +4,117 @@
     <meta charset="UTF-8">
     <title>Boleta - {{ $pedido->codigo_pedido }}</title>
     <style>
-        body { font-family: Arial, sans-serif; font-size: 14px; }
-        h1, h2, h3 { margin: 0; }
-        .header { text-align: center; margin-bottom: 20px; }
-        .info { margin-bottom: 10px; }
-        .tabla { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        .tabla th, .tabla td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-        .totales { margin-top: 20px; text-align: right; }
-        .nota { font-size: 12px; color: #666; margin-top: 30px; }
+        body {
+            font-family: DejaVu Sans, sans-serif;
+            font-size: 13px;
+            margin: 30px;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #7c3aed;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+        }
+        .header img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            margin-bottom: 5px;
+        }
+        .section-title {
+            font-weight: bold;
+            margin-top: 25px;
+            margin-bottom: 5px;
+            text-decoration: underline;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8px;
+        }
+        th, td {
+            border: 1px solid #bbb;
+            padding: 6px;
+            text-align: left;
+        }
+        .totales td {
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <h2>I LIKE YOU</h2>
-    <p>Boleta de Pedido</p>
-</div>
+    <div class="header">
+        <img src="{{ public_path('images/logo.png') }}" alt="Logo">
+        <h2>I LIKE YOU (Importaciones)</h2>
+        <p>RUC: 10066737042</p>
+        <h3>BOLETA DE VENTA</h3>
+        <p><strong>N° {{ $pedido->codigo_pedido }}</strong></p>
+    </div>
 
-<div class="info">
-    <strong>Código:</strong> {{ $pedido->codigo_pedido }}<br>
-    <strong>Cliente:</strong> {{ $pedido->usuario->name }}<br>
-    <strong>Fecha:</strong> {{ $pedido->created_at->format('d/m/Y H:i') }}<br>
-    <strong>Método de pago:</strong> Coordinado por WhatsApp
-</div>
+    <p class="section-title">🧑 Datos del Cliente</p>
+    <table>
+        <tr><td><strong>Nombre:</strong></td><td>{{ $pedido->usuario->name ?? 'N/A' }}</td></tr>
+        <tr><td><strong>DNI:</strong></td><td>{{ $pedido->usuario->dni ?? 'N/A' }}</td></tr>
+        <tr><td><strong>Correo:</strong></td><td>{{ $pedido->usuario->email ?? 'N/A' }}</td></tr>
+        <tr><td><strong>Fecha de emisión:</strong></td><td>{{ $pedido->created_at->format('d/m/Y') }}</td></tr>
+    </table>
 
-<table class="tabla">
-    <thead>
-        <tr>
-            <th>Producto</th>
-            <th>Cantidad</th>
-            <th>Precio unitario</th>
-            <th>Subtotal</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach ($pedido->items as $item)
+    <p class="section-title">📦 Detalles del Pedido</p>
+    <table>
+        <thead>
             <tr>
-                <td>{{ $item->producto->nombre }}</td>
-                <td>{{ $item->cantidad }}</td>
-                <td>S/ {{ number_format($item->precio_unitario, 2) }}</td>
-                <td>S/ {{ number_format($item->subtotal, 2) }}</td>
+                <th>ID Producto</th>
+                <th>Nombre</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario</th>
+                <th>Subtotal</th>
             </tr>
-        @endforeach
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach($pedido->items as $item)
+                <tr>
+                    <td>{{ $item->producto->id ?? '—' }}</td>
+                    <td>{{ $item->producto->nombre ?? 'Producto eliminado' }}</td>
+                    <td>{{ $item->cantidad }}</td>
+                    <td>S/ {{ number_format($item->subtotal / $item->cantidad, 2) }}</td>
+                    <td>S/ {{ number_format($item->subtotal, 2) }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
 
-<div class="totales">
-    <h3>Total: S/ {{ number_format($pedido->total, 2) }}</h3>
-</div>
+    <p class="section-title">💳 Resumen de Montos</p>
+    <table>
+        <tr>
+            <td><strong>Subtotal:</strong></td>
+            <td>S/ {{ number_format($pedido->subtotal ?? $pedido->items->sum('subtotal'), 2) }}</td>
+        </tr>
+        <tr>
+            <td><strong>Descuento:</strong></td>
+            <td>S/ {{ number_format($pedido->descuento ?? 0, 2) }}</td>
+        </tr>
+        <tr>
+            <td><strong>Total a Pagar:</strong></td>
+            <td>S/ {{ number_format($pedido->total, 2) }}</td>
+        </tr>
+        <tr>
+            <td><strong>Método de Pago:</strong></td>
+            <td>{{ ucfirst($pedido->metodo_pago ?? 'Coordinado por WhatsApp') }}</td>
+        </tr>
+    </table>
 
-<div class="nota">
-    <p><strong>Nota:</strong> Documento sin valor tributario. Solo para fines informativos.</p>
-</div>
+    <div class="footer">
+        ¡Gracias por tu compra!  
+        <br>
+        I LIKE YOU (Importaciones)
+    </div>
 
 </body>
 </html>

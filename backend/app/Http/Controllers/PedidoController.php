@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Pedido;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
-
+use App\Models\Product;
 
 class PedidoController extends Controller
 {
@@ -18,51 +18,54 @@ class PedidoController extends Controller
         return view('pedidos', compact('pedidos'));
     }
 
-
     public function descargarBoleta($id)
     {
-        $pedido = Pedido::with(['items.producto', 'usuario'])
+        $pedido = Pedido::with(['items.product', 'usuario'])
             ->where('id', $id)
             ->where('user_id', Auth::id())
             ->firstOrFail();
 
-        $pdf = Pdf::loadView('boletas.boleta', compact('pedido'));
+        // Validación opcional: solo permitir boletas de pedidos pagados
+        if (!in_array($pedido->estado, ['en_curso', 'entregado'])) {
+            return redirect()->back()->with('error', 'Este pedido aún no puede generar boleta.');
+        }
+
+        $pdf = Pdf::loadView('boletas.boleta', compact('pedido'))->setPaper('A4');
 
         return $pdf->download('boleta_' . $pedido->codigo_pedido . '.pdf');
     }
 
     // Confirmar el pago (pasa de 'pendiente_pago' → 'en_curso')
-public function confirmar($id)
-{
-    $pedido = Pedido::findOrFail($id);
-    $pedido->estado = 'en_curso';
-    $pedido->save();
+    public function confirmar($id)
+    {
+        $pedido = Pedido::findOrFail($id);
+        $pedido->estado = 'en_curso';
+        $pedido->save();
 
-    return redirect()->back()->with('success', 'Pedido confirmado. Ahora está en curso.');
-}
+        return redirect()->back()->with('success', 'Pedido confirmado. Ahora está en curso.');
+    }
 
-// Mostrar pedidos en curso
-public function pedidosCurso()
-{
-    $pedidos = Pedido::where('estado', 'en_curso')->paginate(10);
-    return view('admin.pedidos_curso', compact('pedidos'));
-}
+    // Mostrar pedidos en curso
+    public function pedidosCurso()
+    {
+        $pedidos = Pedido::where('estado', 'en_curso')->paginate(10);
+        return view('admin.pedidos_curso', compact('pedidos'));
+    }
 
-// Marcar pedido como entregado (pasa de 'en_curso' → 'entregado')
-public function entregar($id)
-{
-    $pedido = Pedido::findOrFail($id);
-    $pedido->estado = 'entregado';
-    $pedido->save();
+    // Marcar pedido como entregado (pasa de 'en_curso' → 'entregado')
+    public function entregar($id)
+    {
+        $pedido = Pedido::findOrFail($id);
+        $pedido->estado = 'entregado';
+        $pedido->save();
 
-    return redirect()->back()->with('success', 'Pedido marcado como entregado.');
-}
+        return redirect()->back()->with('success', 'Pedido marcado como entregado.');
+    }
 
-// Mostrar historial (pedidos entregados)
-public function historial()
-{
-    $pedidos = Pedido::where('estado', 'entregado')->paginate(10);
-    return view('admin.pedidos_historial', compact('pedidos'));
-}
-
+    // Mostrar historial (pedidos entregados)
+    public function historial()
+    {
+        $pedidos = Pedido::where('estado', 'entregado')->paginate(10);
+        return view('admin.pedidos_historial', compact('pedidos'));
+    }
 }
