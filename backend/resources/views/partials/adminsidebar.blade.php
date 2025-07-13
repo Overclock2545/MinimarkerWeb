@@ -1,4 +1,4 @@
-<aside class="p-3 shadow-lg border-end h-100" style="background-color: #d9b3ff; min-height: 100vh; border-radius: 0 10px 10px 0;">
+<aside class="p-3 shadow-lg border-end h-100" style="background-color: #d9b3ff; min-height: 100vh;">
     <h5 class="text-center mb-4 text-dark fw-bold" style="color: #4c1d95;">Panel de Gestión</h5>
 
     @php

@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Admin - @yield('titulo')</title>
 
     <!-- Bootstrap CSS -->
@@ -16,17 +17,15 @@
     @include('partials.adminheader')
 
     <div class="container-fluid">
-    <div class="row">
-        <div class="col-md-2 col-lg-2 col-xl-2 p-0">
-            @include('partials.adminsidebar')
+        <div class="row">
+            <div class="col-md-2 col-lg-2 col-xl-2 p-0">
+                @include('partials.adminsidebar')
+            </div>
+            <main class="col-md-10 col-lg-10 col-xl-10 py-4 px-4">
+                @yield('content')
+            </main>
         </div>
-        <main class="col-md-10 col-lg-10 col-xl-10 py-3 px-4">
-            @yield('content')
-        </main>
     </div>
-</div>
-
-
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
