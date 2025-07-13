@@ -118,9 +118,16 @@ class CarritoController extends Controller
             $codigo = 'PED-' . str_pad($ultimoPedidoId + 1, 5, '0', STR_PAD_LEFT);
 
             // Calcular total
-            $total = $carritoItems->sum(function ($item) {
-                return $item->product->precio * $item->cantidad;
-            });
+// Calcular total (considerando precio de oferta si aplica)
+$total = $carritoItems->sum(function ($item) {
+    $producto = $item->product;
+    $precio = ($producto->precio_oferta && $producto->precio_oferta < $producto->precio)
+        ? $producto->precio_oferta
+        : $producto->precio;
+
+    return $precio * $item->cantidad;
+});
+
 
             // Crear pedido
             $pedido = Pedido::create([
@@ -131,19 +138,32 @@ class CarritoController extends Controller
             ]);
 
             // Crear items del pedido
-            foreach ($carritoItems as $item) {
-                $precio = $item->product->precio;
-                $cantidad = $item->cantidad;
-                $subtotal = $precio * $cantidad;
+            $descuentoTotal = 0;
 
-                PedidoItem::create([
-                    'pedido_id' => $pedido->id,
-                    'product_id' => $item->product->id,
-                    'cantidad' => $item->cantidad,
-                    'precio_unitario' => $item->product->precio,
-                    'subtotal' => $subtotal,
-                ]);
-            }
+foreach ($carritoItems as $item) {
+    $producto = $item->product;
+    $cantidad = $item->cantidad;
+
+    $precio_base = $producto->precio;
+    $precio_unitario = ($producto->precio_oferta && $producto->precio_oferta < $precio_base)
+        ? $producto->precio_oferta
+        : $precio_base;
+
+    $subtotal = $precio_unitario * $cantidad;
+
+    // Calcular ahorro por producto
+    $descuento = ($precio_base - $precio_unitario) * $cantidad;
+    $descuentoTotal += max($descuento, 0);
+
+    PedidoItem::create([
+        'pedido_id' => $pedido->id,
+        'product_id' => $producto->id,
+        'cantidad' => $cantidad,
+        'precio_unitario' => $precio_unitario,
+        'subtotal' => $subtotal,
+    ]);
+}
+
 
             // Vaciar carrito
             $user->carritoItems()->delete();

@@ -25,17 +25,26 @@ class PedidoController extends Controller
             ->where('user_id', Auth::id())
             ->firstOrFail();
 
-        // Validación opcional: solo permitir boletas de pedidos pagados
+        // Validar estado del pedido
         if (!in_array($pedido->estado, ['en_curso', 'entregado'])) {
             return redirect()->back()->with('error', 'Este pedido aún no puede generar boleta.');
         }
 
-        $pdf = Pdf::loadView('boletas.boleta', compact('pedido'))->setPaper('A4');
+        // Calcular descuento total
+        $descuentoTotal = $pedido->items->sum(function ($item) {
+            $producto = $item->product;
+            $precio_base = $producto->precio;
+            $precio_unitario = $item->precio_unitario;
+
+            return max($precio_base - $precio_unitario, 0) * $item->cantidad;
+        });
+
+        // Generar boleta PDF
+        $pdf = Pdf::loadView('boletas.boleta', compact('pedido', 'descuentoTotal'))->setPaper('A4');
 
         return $pdf->download('boleta_' . $pedido->codigo_pedido . '.pdf');
     }
 
-    // Confirmar el pago (pasa de 'pendiente_pago' → 'en_curso')
     public function confirmar($id)
     {
         $pedido = Pedido::findOrFail($id);
@@ -45,14 +54,12 @@ class PedidoController extends Controller
         return redirect()->back()->with('success', 'Pedido confirmado. Ahora está en curso.');
     }
 
-    // Mostrar pedidos en curso
     public function pedidosCurso()
     {
         $pedidos = Pedido::where('estado', 'en_curso')->paginate(10);
         return view('admin.pedidos_curso', compact('pedidos'));
     }
 
-    // Marcar pedido como entregado (pasa de 'en_curso' → 'entregado')
     public function entregar($id)
     {
         $pedido = Pedido::findOrFail($id);
@@ -62,7 +69,6 @@ class PedidoController extends Controller
         return redirect()->back()->with('success', 'Pedido marcado como entregado.');
     }
 
-    // Mostrar historial (pedidos entregados)
     public function historial()
     {
         $pedidos = Pedido::where('estado', 'entregado')->paginate(10);

@@ -52,14 +52,15 @@
                             @endswitch
                         </td>
                         <td>
-                            @if ($pedido->estado === 'pago_confirmado')
-                                <a href="{{ route('cliente.boleta', $pedido->id) }}" class="btn btn-sm btn-outline-primary">
-                                    <i class="bi bi-file-earmark-arrow-down me-1"></i>Boleta
-                                </a>
-                            @else
-                                <span class="text-muted">--</span>
-                            @endif
-                        </td>
+                            @if (in_array($pedido->estado, ['en_curso', 'entregado']))
+                            <a href="{{ route('cliente.boleta', $pedido->id) }}" class="btn btn-sm btn-outline-primary" target="_blank">
+                            <i class="bi bi-file-earmark-arrow-down me-1"></i>Ver boleta
+                            </a>
+                                @else
+                                    <span class="text-muted">--</span>
+                                @endif
+                            </td>
+
                         <td>
                             <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#modalDetalles{{ $pedido->id }}">
                                 <i class="bi bi-eye-fill me-1"></i>Ver

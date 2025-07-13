@@ -69,21 +69,34 @@
     <p class="section-title">📦 Detalles del Pedido</p>
     <table>
         <thead>
-            <tr>
-                <th>ID Producto</th>
-                <th>Nombre</th>
+            <tr style="background-color: #f3f4f6;">
+                <th>ID</th>
+                <th>Producto</th>
                 <th>Cantidad</th>
-                <th>Precio Unitario</th>
+                <th>Precio base</th>
+                <th>Precio oferta</th>
                 <th>Subtotal</th>
             </tr>
         </thead>
         <tbody>
             @foreach($pedido->items as $item)
                 <tr>
-                    <td>{{ $item->producto->id ?? '—' }}</td>
-                    <td>{{ $item->producto->nombre ?? 'Producto eliminado' }}</td>
+                    <td>{{ $item->product->id }}</td>
+                    <td>{{ $item->product->nombre }}</td>
                     <td>{{ $item->cantidad }}</td>
-                    <td>S/ {{ number_format($item->subtotal / $item->cantidad, 2) }}</td>
+                    <td>S/ {{ number_format($item->product->precio, 2) }}</td>
+                    <td>
+                        @if($item->precio_unitario < $item->product->precio)
+                            <span style="color: green;">S/ {{ number_format($item->precio_unitario, 2) }}</span><br>
+                            <small style="color: red;">
+                                (Descuento: S/ {{ number_format($item->product->precio - $item->precio_unitario, 2) }})
+                            </small>
+                        @elseif($item->precio_unitario == $item->product->precio)
+                            -
+                        @else
+                            S/ {{ number_format($item->precio_unitario, 2) }}
+                        @endif
+                    </td>
                     <td>S/ {{ number_format($item->subtotal, 2) }}</td>
                 </tr>
             @endforeach
@@ -93,19 +106,19 @@
     <p class="section-title">💳 Resumen de Montos</p>
     <table>
         <tr>
-            <td><strong>Subtotal:</strong></td>
-            <td>S/ {{ number_format($pedido->subtotal ?? $pedido->items->sum('subtotal'), 2) }}</td>
+            <td>Monto total (sin descuento):</td>
+            <td>S/ {{ number_format($pedido->total + $descuentoTotal, 2) }}</td>
         </tr>
         <tr>
-            <td><strong>Descuento:</strong></td>
-            <td>S/ {{ number_format($pedido->descuento ?? 0, 2) }}</td>
+            <td>Descuento aplicado:</td>
+            <td>- S/ {{ number_format($descuentoTotal, 2) }}</td>
         </tr>
         <tr>
-            <td><strong>Total a Pagar:</strong></td>
-            <td>S/ {{ number_format($pedido->total, 2) }}</td>
+            <td><strong>Total a pagar:</strong></td>
+            <td><strong>S/ {{ number_format($pedido->total, 2) }}</strong></td>
         </tr>
         <tr>
-            <td><strong>Método de Pago:</strong></td>
+            <td><strong>Método de pago:</strong></td>
             <td>{{ ucfirst($pedido->metodo_pago ?? 'Coordinado por WhatsApp') }}</td>
         </tr>
     </table>

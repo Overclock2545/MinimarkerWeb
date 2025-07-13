@@ -14,7 +14,8 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('perfil.actualizar') }}">
+    <form id="form-perfil" method="POST" action="{{ route('perfil.actualizar') }}">
+
         @csrf
         @method('PUT')
 
@@ -90,10 +91,11 @@
 </style>
 
 <script>
+    const form = document.getElementById('form-perfil');
     const btnEditar = document.getElementById('btn-editar');
     const btnGuardar = document.getElementById('btn-guardar');
     const btnCancelar = document.getElementById('btn-cancelar');
-    const inputs = document.querySelectorAll('input');
+    const inputs = form.querySelectorAll('input');
 
     const valoresOriginales = {};
     inputs.forEach(input => {
@@ -117,4 +119,6 @@
         btnEditar.classList.remove('d-none');
     });
 </script>
+
+
 @endsection
