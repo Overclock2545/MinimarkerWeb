@@ -19,13 +19,16 @@ class User extends Authenticatable
     protected $factory;
 
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'rol',
-        'celular',
-        'documento_identidad',
-    ];
+    'name',
+    'email',
+    'password',
+    'rol',
+    'celular',
+    'documento_identidad',
+    'email_verification_code', // ✅ nuevo campo
+    'email_verified',          // ✅ nuevo campo
+];
+
 
     protected $hidden = [
         'password',

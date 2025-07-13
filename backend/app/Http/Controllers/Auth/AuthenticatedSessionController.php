@@ -34,12 +34,22 @@ class AuthenticatedSessionController extends Controller
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
 
-            // Redirección según rol
-            if (Auth::user()->rol === 'admin') {
-                return redirect()->route('admin.panel');
-            } else {
-                return redirect()->route('inicio');
+            $user = Auth::user();
+
+            // ✅ Verifica si el correo aún no ha sido validado
+            if (!$user->email_verified) {
+                Auth::logout(); // Cierra la sesión por seguridad
+
+                session(['pendiente_verificacion_id' => $user->id]);
+
+                return redirect()->route('verificar.codigo.view')
+                    ->with('error', 'Debes verificar tu correo antes de continuar.');
             }
+
+            // ✅ Redirección por rol
+            return $user->rol === 'admin'
+                ? redirect()->route('admin.panel')
+                : redirect()->route('inicio');
         }
 
         return back()->withErrors([
@@ -55,7 +65,6 @@ class AuthenticatedSessionController extends Controller
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
         return redirect('/');

@@ -12,6 +12,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\PerfilController;
+use App\Http\Controllers\VerificacionController;
 
 
 /*
@@ -21,7 +22,8 @@ use App\Http\Controllers\PerfilController;
 */
 
 Route::get('/', fn() => Redirect::to('/inicio'));
-
+Route::get('/verificar-codigo', [VerificacionController::class, 'mostrar'])->name('verificar.codigo.view');
+Route::post('/verificar-codigo', [VerificacionController::class, 'verificar'])->name('verificar.codigo.enviar');
 Route::get('/inicio', function () {
     $products = Product::with('categoria')->get();
     return view('home', compact('products'));
@@ -103,6 +105,7 @@ Route::put('/admin/banner', [AdminController::class, 'actualizarBanner'])->name(
     // Usuarios
     Route::delete('/admin/usuarios/{id}', [AdminController::class, 'eliminarUsuario'])->name('admin.usuarios.eliminar');
     Route::put('/admin/usuarios/{id}', [AdminController::class, 'actualizarUsuario'])->name('admin.usuarios.actualizar');
+    
 });
 
 /*
