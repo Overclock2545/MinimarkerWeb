@@ -1,56 +1,53 @@
-<aside class="p-3 shadow-lg border-end h-100" style="background-color: #d9b3ff; min-height: 100vh;">
-    <h5 class="text-center mb-4 text-dark fw-bold" style="color: #4c1d95;">Panel de Gestión</h5>
+<aside class="p-3 shadow-lg border-end h-100" style="background-color: #eae4f4; min-height: 100vh;">
+    <h5 class="text-center mb-4 fw-bold" style="color: #3c096c;">Panel de Gestión</h5>
 
     @php
         use Illuminate\Support\Facades\Auth;
         $rol = Auth::user()->rol;
     @endphp
 
-    <nav class="d-grid gap-2 px-2">
+    <nav class="d-grid gap-3 px-2">
 
-        {{-- Solo para admin --}}
         @if($rol === 'admin')
-            <a href="{{ route('admin.stock') }}" class="btn btn-sm text-start text-dark shadow-sm fw-semibold" style="background-color: #ecd9ff;">
+            <a href="{{ route('admin.stock') }}" class="btn text-start fw-semibold text-dark shadow-sm border" style="background-color: #d8c7ef; border-color: #c4b3df;">
                 <i class="bi bi-tools me-2"></i> Alterar Stock
             </a>
         @endif
 
-        <a href="{{ route('admin.pedidos') }}" class="btn btn-sm text-start text-dark shadow-sm fw-semibold" style="background-color: #f0d9ff;">
+        <a href="{{ route('admin.pedidos') }}" class="btn text-start fw-semibold text-dark shadow-sm border" style="background-color: #ddc7f0; border-color: #cbb3df;">
             <i class="bi bi-clock-history me-2"></i> Pedidos Pendientes
         </a>
 
-        <a href="{{ route('admin.pedidos.curso') }}" class="btn btn-sm text-start text-dark shadow-sm fw-semibold" style="background-color: #e6ccff;">
+        <a href="{{ route('admin.pedidos.curso') }}" class="btn text-start fw-semibold text-dark shadow-sm border" style="background-color: #dac4ed; border-color: #bda8d7;">
             <i class="bi bi-truck-front-fill me-2"></i> Pedidos en curso
         </a>
 
-        <a href="{{ route('admin.pedidos.historial') }}" class="btn btn-sm text-start text-dark shadow-sm fw-semibold" style="background-color: #f3e0ff;">
+        <a href="{{ route('admin.pedidos.historial') }}" class="btn text-start fw-semibold text-dark shadow-sm border" style="background-color: #e2cff7; border-color: #d3bde7;">
             <i class="bi bi-archive-fill me-2"></i> Historial de pedidos
         </a>
 
-        <a href="/admin/usuarios" class="btn btn-sm text-start text-dark shadow-sm fw-semibold" style="background-color: #eed9f7;">
+        <a href="/admin/usuarios" class="btn text-start fw-semibold text-dark shadow-sm border" style="background-color: #d8c8eb; border-color: #bfaed5;">
             <i class="bi bi-people-fill me-2"></i> Administrar Usuarios
         </a>
 
         @if($rol === 'admin')
-            <a href="{{ route('admin.analisis') }}" class="btn btn-sm text-start text-dark shadow-sm fw-semibold" style="background-color: #e5ccf9;">
+            <a href="{{ route('admin.analisis') }}" class="btn text-start fw-semibold text-dark shadow-sm border" style="background-color: #d6c6ec; border-color: #bbaad3;">
                 <i class="bi bi-graph-up-arrow me-2"></i> Análisis de Ventas
             </a>
 
-            {{-- Ofertas y marketing (submenú) --}}
-<div class="d-grid gap-2">
-    <button class="btn btn-sm text-start text-dark" style="background-color: #f5e1ff;" type="button" data-bs-toggle="collapse" data-bs-target="#submenuMarketing">
-        <i class="bi bi-tags-fill me-2"></i> Ofertas y marketing
-    </button>
-    <div class="collapse ms-3" id="submenuMarketing">
-        <a href="{{ route('admin.ofertas') }}" class="btn btn-sm text-start text-dark" style="background-color: #fbefff;">
-            <i class="bi bi-ui-checks-grid me-2"></i> Gestionar Ofertas
-        </a>
-        <a href="{{ route('admin.banner') }}" class="btn btn-sm text-start text-dark" style="background-color: #fbefff;">
-            <i class="bi bi-easel2-fill me-2"></i> Editar Banner
-        </a>
-    </div>
-</div>
-
+            <div class="d-grid gap-2">
+                <button class="btn text-start fw-semibold text-dark shadow-sm border" style="background-color: #e0d0f4; border-color: #c6b4db;" type="button" data-bs-toggle="collapse" data-bs-target="#submenuMarketing">
+                    <i class="bi bi-tags-fill me-2"></i> Ofertas y marketing
+                </button>
+                <div class="collapse ms-3" id="submenuMarketing">
+                    <a href="{{ route('admin.ofertas') }}" class="btn btn-sm text-start text-dark fw-semibold shadow-sm border" style="background-color: #f2e4fb; border-color: #d9cae3;">
+                        <i class="bi bi-ui-checks-grid me-2"></i> Gestionar Ofertas
+                    </a>
+                    <a href="{{ route('admin.banner') }}" class="btn btn-sm text-start text-dark fw-semibold shadow-sm border" style="background-color: #f2e4fb; border-color: #d9cae3;">
+                        <i class="bi bi-easel2-fill me-2"></i> Editar Banner
+                    </a>
+                </div>
+            </div>
         @endif
 
     </nav>
