@@ -10,38 +10,23 @@
 
     <!-- Tu CSS personalizado -->
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
-
-    <style>
-        .admin-layout {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        .admin-sidebar {
-            width: 240px;
-            background-color: #f8f9fa;
-            padding: 20px;
-        }
-
-        .admin-main {
-            flex: 1;
-            padding: 20px;
-            background-color: #fff;
-        }
-    </style>
 </head>
 <body>
 
     @include('partials.adminheader')
 
-    <div class="admin-layout">
-        <div class="admin-sidebar">
-            @include('partials.adminsidebar')
-        </div>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 col-lg-2 p-0 bg-light">
+                @include('partials.adminsidebar')
+            </div>
 
-        <main class="admin-main">
-            @yield('content')
-        </main>
+            <!-- Contenido principal -->
+            <main class="col-md-10 col-lg-10 py-3 px-4">
+                @yield('content')
+            </main>
+        </div>
     </div>
 
     <!-- Bootstrap JS -->
