@@ -1,5 +1,17 @@
 <!DOCTYPE html>
 <html lang="es">
+    <style>
+.admin-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.admin-main {
+    flex: 1;
+    padding: 20px;
+}
+</style>
+
 <head>
     <meta charset="UTF-8">
     <title>Panel Admin - @yield('titulo')</title>
