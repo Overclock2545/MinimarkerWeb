@@ -35,6 +35,7 @@ Route::get('/categorias/id/{id}', [CategoriaController::class, 'mostrarPorId'])-
 // boletas
 Route::get('/boleta/{id}', [PedidoController::class, 'descargarBoleta'])->name('boleta.descargar');
 Route::get('/ofertas', [ProductController::class, 'mostrarOfertas'])->name('ofertas.publicas');
+Route::get('/categorias/id/{id}', [CategoriaController::class, 'mostrarPorId']);
 
 /*
 |--------------------------------------------------------------------------

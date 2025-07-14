@@ -9,46 +9,23 @@
         </button>
     </form>
 
-    {{-- Categorías --}}
+    {{-- Categorías dinámicas desde base de datos --}}
     <div class="d-grid gap-2 px-2">
-        @php
-            $categorias = [
-                'Accesorios Varios' => 10,
-                'Artículos de Belleza' => 5,
-                'Carteras y Morrales' => 1,
-                'Cartucheras y Monederos' => 12,
-                'Llaveros' => 7,
-                'Mochilas' => 3,
-                'Papelería Kawaii' => 4,
-                'Prendas y Calzados' => 9,
-                'Servicios' => 11,
-                'Tomatodos y Tazas' => 8,
-                'Utensilios de Cocina' => 13,
-            ];
-        @endphp
-        @foreach ($categorias as $nombre => $id)
-            <a href="{{ url('/categorias/id/' . $id) }}" 
+        @foreach ($categorias as $categoria)
+            <a href="{{ url('/categorias/id/' . $categoria->id) }}" 
                class="btn btn-sm rounded-pill text-dark shadow-sm fw-semibold"
                style="background-color: #fbe9ff; border: none; transition: background-color 0.3s ease;"
                onmouseover="this.style.backgroundColor='#e9d5ff'"
                onmouseout="this.style.backgroundColor='#fbe9ff'">
-                {{ $nombre }}
+                {{ $categoria->nombre }}
             </a>
         @endforeach
     </div>
 
     {{-- Redes sociales --}}
     <div class="d-flex justify-content-center gap-3 mt-4">
-        <a href="https://www.facebook.com/share/1Dh1tU8A4L/" target="_blank" class="text-dark fs-5">
-            <i class="bi bi-facebook"></i>
-        </a>
-
-        <a href="https://www.tiktok.com/@ilikeyouimportaciones?_t=ZM-8y0nCghyzg8&_r=1" target="_blank" class="text-dark fs-5">
-            <i class="bi bi-tiktok"></i>
-        </a>
-        
-        <a href="https://www.instagram.com/ilikeyouimportaciones?utm_source=qr&igsh=MTEwMm5xbDBpbDk5bg==" target="_blank" class="text-dark fs-5">
-            <i class="bi bi-instagram"></i>
-        </a>
+        <a href="https://www.facebook.com/share/1Dh1tU8A4L/" target="_blank" class="text-dark fs-5"><i class="bi bi-facebook"></i></a>
+        <a href="https://www.tiktok.com/@ilikeyouimportaciones?_t=ZM-8y0nCghyzg8&_r=1" target="_blank" class="text-dark fs-5"><i class="bi bi-tiktok"></i></a>
+        <a href="https://www.instagram.com/ilikeyouimportaciones?utm_source=qr&igsh=MTEwMm5xbDBpbDk5bg==" target="_blank" class="text-dark fs-5"><i class="bi bi-instagram"></i></a>
     </div>
 </aside>

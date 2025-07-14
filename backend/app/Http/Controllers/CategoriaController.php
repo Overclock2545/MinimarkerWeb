@@ -25,13 +25,16 @@ class CategoriaController extends Controller
         ]);
     }
     public function mostrarPorId($id)
-    {
-        $categoria = Categoria::findOrFail($id);
-        $productos = $categoria->productos;
+{
+    $categoria = Categoria::findOrFail($id);
+    $productos = $categoria->productos;
+    $categorias = Categoria::all(); // 👈 Añadimos esta línea
 
-        return view('home', [ // 👈 usamos la misma vista
-            'titulo' => $categoria->nombre,
-            'products' => $productos
-        ]);
-    }
+    return view('home', [
+        'titulo' => $categoria->nombre,
+        'products' => $productos,
+        'categorias' => $categorias // 👈 Pasamos esto a la vista
+    ]);
+}
+    
 }

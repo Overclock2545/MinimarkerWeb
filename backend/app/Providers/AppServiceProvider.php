@@ -6,6 +6,9 @@ use Illuminate\Pagination\Paginator;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\View;
+use App\Models\Categoria;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,14 +23,9 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
-    {
-
-            if (env('APP_ENV') === 'production') {
-        URL::forceScheme('https');
-    }
-        Paginator::useBootstrap();
-
-        //
-    }
+    public function boot()
+{
+    // Compartir categorías con todas las vistas automáticamente
+    View::share('categorias', Categoria::all());
+}
 }
