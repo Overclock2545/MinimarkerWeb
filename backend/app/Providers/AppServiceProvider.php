@@ -25,6 +25,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
 {
+                if (env('APP_ENV') === 'production') {
+        URL::forceScheme('https');
+    }
+        Paginator::useBootstrap();
     // Compartir categorías con todas las vistas automáticamente
     View::share('categorias', Categoria::all());
 }
