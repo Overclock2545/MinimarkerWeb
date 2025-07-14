@@ -34,7 +34,7 @@ Route::get('/buscar', [ProductController::class, 'buscar'])->name('buscar.produc
 Route::get('/categorias/id/{id}', [CategoriaController::class, 'mostrarPorId'])->name('categorias.porId');
 // boletas
 Route::get('/boleta/{id}', [PedidoController::class, 'descargarBoleta'])->name('boleta.descargar');
-
+Route::get('/ofertas', [ProductController::class, 'mostrarOfertas'])->name('ofertas.publicas');
 
 /*
 |--------------------------------------------------------------------------
@@ -97,10 +97,13 @@ Route::middleware(['auth', 'verificarRol:admin'])->group(function () {
     Route::get('/admin/analisis', [AdminController::class, 'analisisVentas'])->name('admin.analisis');
     Route::get('/admin/ofertas', [AdminController::class, 'verOfertas'])->name('admin.ofertas');
     Route::post('/admin/ofertas/{producto}', [AdminController::class, 'actualizarOferta'])->name('admin.ofertas.actualizar');
+    Route::post('/admin/ofertas/categoria', [AdminController::class, 'aplicarDescuentoCategoria'])->name('admin.ofertas.categoria');
+    Route::post('/admin/ofertas/categoria/terminar', [AdminController::class, 'terminarOfertasPorCategoria'])->name('admin.ofertas.terminarCategoria');
+
     // Banner (solo una ruta)
 Route::get('/admin/banner', [AdminController::class, 'editarBanner'])->name('admin.banner');
 Route::put('/admin/banner', [AdminController::class, 'actualizarBanner'])->name('admin.banner.actualizar');
-    Route::get('/ofertas', [ProductController::class, 'mostrarOfertas'])->name('ofertas.publicas');
+    
     Route::post('/admin/ofertas/{id}/terminar', [AdminController::class, 'terminarOferta'])->name('admin.ofertas.terminar');
     // Usuarios
     Route::delete('/admin/usuarios/{id}', [AdminController::class, 'eliminarUsuario'])->name('admin.usuarios.eliminar');
