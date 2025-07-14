@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Favorito;
+use App\Models\favorito;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +14,7 @@ class FavoritoController extends Controller
     // Muestra la lista de productos favoritos del usuario autenticado
     public function index()
     {
-        $favoritos = Favorito::with('producto')
+        $favoritos = favorito::with('producto')
             ->where('user_id', Auth::id())
             ->get();
         return view('favoritos', compact('favoritos'));
@@ -25,14 +25,14 @@ class FavoritoController extends Controller
     {
         $user = Auth::user();
 
-        $favorito = Favorito::where('user_id', $user->id)
+        $favorito = favorito::where('user_id', $user->id)
             ->where('product_id', $productId)
             ->first();
 
         if ($favorito) {
             $favorito->delete();
         } else {
-            Favorito::create([
+            favorito::create([
                 'user_id' => $user->id,
                 'product_id' => $productId,
             ]);
@@ -44,7 +44,7 @@ class FavoritoController extends Controller
     // Elimina un producto de los favoritos del usuario autenticado
     public function eliminar($productId)
     {
-        Favorito::where('user_id', Auth::id())
+        favorito::where('user_id', Auth::id())
             ->where('product_id', $productId)
             ->delete();
 
