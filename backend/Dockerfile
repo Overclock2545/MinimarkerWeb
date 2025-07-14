@@ -29,8 +29,7 @@ COPY ./apache.conf /etc/apache2/sites-available/000-default.conf
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
 # Comandos a ejecutar cuando el contenedor se levanta (producción)
-CMD bash -c "php artisan config:clear && \
-             php artisan key:generate --force && \
+CMD bash -c "php artisan config:clear && \           
              php artisan package:discover --ansi && \
              php artisan config:cache && \
              php artisan route:cache && \
