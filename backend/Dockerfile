@@ -6,16 +6,16 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo_mysql mbstring zip exif pcntl gd
 
-# Composer
+# Instala Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Directorio de trabajo
+# Establece el directorio de trabajo
 WORKDIR /var/www/html
 
-# Copia todo el proyecto
+# Copia el proyecto al contenedor
 COPY . .
 
-# Establece permisos necesarios
+# Asigna permisos necesarios
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 storage bootstrap/cache
 
@@ -25,14 +25,14 @@ RUN a2enmod rewrite
 # Copia configuración de Apache personalizada
 COPY ./apache.conf /etc/apache2/sites-available/000-default.conf
 
-# Instala dependencias de Composer
-RUN composer install --no-dev --optimize-autoloader
+# Instala dependencias de Composer sin ejecutar scripts (por seguridad como root)
+RUN composer install --no-dev --optimize-autoloader --no-scripts \
+    && php artisan package:discover --ansi \
+    && php artisan config:cache \
+    && php artisan route:cache \
+    && php artisan view:cache
 
-# Ejecuta comandos necesarios al levantar el contenedor
-CMD bash -c "php artisan config:clear && \
-             php artisan config:cache && \
-             php artisan route:cache && \
-             php artisan view:cache && \
-             php artisan migrate --force && \
+# Comandos al iniciar el contenedor
+CMD bash -c "php artisan migrate --force && \
              php artisan storage:link && \
              apache2-foreground"
