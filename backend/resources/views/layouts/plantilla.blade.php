@@ -87,7 +87,7 @@
               <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required>
             </div>
             <div class="mb-3">
-              <label for="password" class="form-label">Contraseña</label>
+              <label for="password" class="form-label">Contraseña (mínimo 8 caracteres)</label>
               <input id="password" type="password" class="form-control" name="password" required>
             </div>
             <div class="mb-3">

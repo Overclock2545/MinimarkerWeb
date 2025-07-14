@@ -4,37 +4,39 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rules;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\View\View;
 use App\Mail\VerificacionCodigo;
 
 class RegisteredUserController extends Controller
 {
     /**
-     * Mostrar la vista de registro.
+     * Mostrar el formulario de registro.
      */
-    public function create()
+    public function create(): View
     {
         return view('auth.register');
     }
 
     /**
-     * Procesar el registro.
+     * Procesar el registro del usuario.
      */
     public function store(Request $request): RedirectResponse
     {
-        // Validar campos
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        // Generar código de verificación (6 caracteres alfanuméricos en mayúsculas)
+        // Generar código de verificación
         $codigo = Str::upper(Str::random(6));
 
         // Crear usuario
@@ -46,14 +48,14 @@ class RegisteredUserController extends Controller
             'email_verified' => false,
         ]);
 
-        // Enviar el correo de verificación
-        Mail::to($user->email)->send(new VerificacionCodigo($codigo));
+        // Enviar correo con código usando la clase Mailable
+        Mail::to($user->email)->send(new VerificacionCodigo($codigo, $user));
 
-        // Guardar el ID del usuario en sesión para verificar luego
+        // Guardar el ID en sesión para la verificación
         session(['pendiente_verificacion_id' => $user->id]);
 
-        // Redirigir a la vista de verificación con un mensaje
+        // Redirigir a la vista donde se ingresa el código
         return redirect()->route('verificar.codigo.view')
-            ->with('success', 'Se ha enviado un código a tu correo. Por favor, verifica tu cuenta.');
+            ->with('success', 'Se ha enviado un código a tu correo. Ingresa el código para verificar tu cuenta.');
     }
 }
