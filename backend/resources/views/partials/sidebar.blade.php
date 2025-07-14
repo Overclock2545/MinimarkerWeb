@@ -39,8 +39,16 @@
 
     {{-- Redes sociales --}}
     <div class="d-flex justify-content-center gap-3 mt-4">
-        <span class="fs-5 text-muted">📷</span>
-        <span class="fs-5 text-muted">🎵</span>
-        <span class="fs-5 text-muted">📘</span>
+        <a href="https://www.facebook.com/share/1Dh1tU8A4L/" target="_blank" class="text-dark fs-5">
+            <i class="bi bi-facebook"></i>
+        </a>
+
+        <a href="https://www.tiktok.com/@ilikeyouimportaciones?_t=ZM-8y0nCghyzg8&_r=1" target="_blank" class="text-dark fs-5">
+            <i class="bi bi-tiktok"></i>
+        </a>
+        
+        <a href="https://www.instagram.com/ilikeyouimportaciones?utm_source=qr&igsh=MTEwMm5xbDBpbDk5bg==" target="_blank" class="text-dark fs-5">
+            <i class="bi bi-instagram"></i>
+        </a>
     </div>
 </aside>
