@@ -12,27 +12,29 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Establece el directorio de trabajo
 WORKDIR /var/www/html
 
-# Copia el proyecto al contenedor
+# Copia todo el proyecto
 COPY . .
 
-# Asigna permisos necesarios
+# Permisos necesarios
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 storage bootstrap/cache
 
-# Habilita mod_rewrite para Laravel
+# Habilita mod_rewrite
 RUN a2enmod rewrite
 
-# Copia configuración de Apache personalizada
+# Configuración personalizada de Apache
 COPY ./apache.conf /etc/apache2/sites-available/000-default.conf
 
-# Instala dependencias de Composer sin ejecutar scripts (por seguridad como root)
-RUN composer install --no-dev --optimize-autoloader --no-scripts \
-    && php artisan package:discover --ansi \
-    && php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache
+# Instala dependencias de Composer sin scripts
+RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# Comandos al iniciar el contenedor
-CMD bash -c "php artisan migrate --force && \
+# Comandos a ejecutar cuando el contenedor se levanta (producción)
+CMD bash -c "php artisan config:clear && \
+             php artisan key:generate --force && \
+             php artisan package:discover --ansi && \
+             php artisan config:cache && \
+             php artisan route:cache && \
+             php artisan view:cache && \
+             php artisan migrate --force && \
              php artisan storage:link && \
              apache2-foreground"
