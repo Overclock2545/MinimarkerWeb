@@ -83,7 +83,6 @@ class AdminController extends Controller
         $producto->fecha_fin_oferta = $request->fecha_fin_oferta;
         $producto->save();
 
-dd(env('CLOUDINARY_URL'));
         // Subir imagen principal del producto
 if ($request->hasFile('imagen')) {
     $imagen = $request->file('imagen');
