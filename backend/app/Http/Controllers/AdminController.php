@@ -15,6 +15,7 @@ use App\Models\PedidoItem;
 use App\Models\ImagenProducto;
 use Illuminate\Support\Facades\Log;
 use App\Models\Banner;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 
 
@@ -83,36 +84,47 @@ class AdminController extends Controller
         $producto->save();
 
 
-        // Si sube una nueva imagen
-        if ($request->hasFile('imagen')) {
-            $imagen = $request->file('imagen');
+        // Subir imagen principal del producto
+if ($request->hasFile('imagen')) {
+    $imagen = $request->file('imagen');
 
-            $nombreArchivo = Str::uuid() . '.' . $imagen->getClientOriginalExtension();
-            $ruta = $imagen->storeAs('productos', $nombreArchivo, 'public');
+    // ✅ Subir a Cloudinary en carpeta "productos"
+    $uploadResponse = Cloudinary::upload($imagen->getRealPath(), [
+        'folder' => 'productos',
+        'public_id' => (string) Str::uuid(), // Para que el nombre sea único
+        'overwrite' => true
+    ]);
 
-            // Elimina la imagen anterior si existe
-            if ($producto->imagen) {
-                $rutaVieja = str_replace('storage/', '', $producto->imagen);
-                Storage::disk('public')->delete($rutaVieja);
-            }
+    $urlImagen = $uploadResponse->getSecurePath();
 
-            // ✅ Guarda ruta correcta en BD
-            $producto->imagen = 'storage/productos/' . $nombreArchivo;
-            $producto->save();
-        }
+    // ❌ Eliminar la imagen anterior si era local (no URL externa)
+    if ($producto->imagen && !Str::startsWith($producto->imagen, 'http')) {
+        $rutaVieja = str_replace('storage/', '', $producto->imagen);
+        Storage::disk('public')->delete($rutaVieja);
+    }
 
-        // Subir imágenes adicionales
-        if ($request->hasFile('imagenes_adicionales')) {
-            foreach ($request->file('imagenes_adicionales') as $imagenExtra) {
-                $nombreArchivo = Str::uuid() . '.' . $imagenExtra->getClientOriginalExtension();
-                $ruta = $imagenExtra->storeAs('productos/adicionales', $nombreArchivo, 'public');
+    // ✅ Guardar URL en la base de datos
+    $producto->imagen = $urlImagen;
+    $producto->save();
+}
 
-                ImagenProducto::create([
-                    'product_id' => $producto->id,
-                    'ruta' => 'storage/productos/adicionales/' . $nombreArchivo,
-                ]);
-            }
-        }
+// Subir imágenes adicionales
+if ($request->hasFile('imagenes_adicionales')) {
+    foreach ($request->file('imagenes_adicionales') as $imagenExtra) {
+        $uploadResponse = Cloudinary::upload($imagenExtra->getRealPath(), [
+            'folder' => 'productos/adicionales',
+            'public_id' => (string) Str::uuid(),
+            'overwrite' => true
+        ]);
+
+        $urlAdicional = $uploadResponse->getSecurePath();
+
+        ImagenProducto::create([
+            'product_id' => $producto->id,
+            'ruta' => $urlAdicional,
+        ]);
+    }
+}
         return redirect()->route('admin.productos.gestionar')->with('success', 'Producto actualizado correctamente.');
     }
     public function eliminarProducto($id)
