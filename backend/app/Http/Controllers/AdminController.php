@@ -21,6 +21,7 @@ use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 
 
+
 use App\Models\Category;
 
 class AdminController extends Controller
@@ -89,14 +90,17 @@ if ($request->hasFile('imagen')) {
     $imagen = $request->file('imagen');
 
     // ✅ Subir a Cloudinary en carpeta "productos"
-    $uploadResponse = Cloudinary::uploadFile($imagen->getRealPath(), [
+    $uploadResponse = Cloudinary::upload($imagen->getRealPath(), [
     'folder' => 'productos',
     'public_id' => (string) Str::uuid(),
     'overwrite' => true
     ]);
 
 
-    $urlImagen = $uploadResponse->getSecurePath();
+    $urlImagen = $uploadResponse->getSecurePath();  
+    $producto->imagen = $urlImagen;
+    $producto->save();
+
 
     // ❌ Eliminar la imagen anterior si era local (no URL externa)
     if ($producto->imagen && !Str::startsWith($producto->imagen, 'http')) {
@@ -112,7 +116,7 @@ if ($request->hasFile('imagen')) {
 // Subir imágenes adicionales
 if ($request->hasFile('imagenes_adicionales')) {
     foreach ($request->file('imagenes_adicionales') as $imagenExtra) {
-        $uploadResponse = Cloudinary::uploadFile($imagen->getRealPath(), [
+        $uploadResponse = Cloudinary::upload($imagen->getRealPath(), [
         'folder' => 'productos',
         'public_id' => (string) Str::uuid(),
         'overwrite' => true
