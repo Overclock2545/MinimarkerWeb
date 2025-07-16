@@ -34,6 +34,6 @@ CMD bash -c "php artisan config:clear && \
              php artisan config:cache && \
              php artisan route:cache && \
              php artisan view:cache && \
-             php artisan migrate --force && \
              php artisan storage:link || true && \
-             apache2-foreground"
+             php artisan migrate --force && || exit 1 && \
+             apache2-foreground"  
