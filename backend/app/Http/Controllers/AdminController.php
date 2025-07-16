@@ -15,12 +15,7 @@ use App\Models\PedidoItem;
 use App\Models\ImagenProducto;
 use Illuminate\Support\Facades\Log;
 use App\Models\Banner;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
-
-
-
-
-
+use Cloudinary\Cloudinary;
 use App\Models\Category;
 
 class AdminController extends Controller
@@ -88,15 +83,23 @@ class AdminController extends Controller
 if ($request->hasFile('imagen')) {
     $imagen = $request->file('imagen');
 
-    // ✅ Subir a Cloudinary en carpeta "productos"
-    $uploadResponse = Cloudinary::uploadFile($imagen->getRealPath(), [
-    'folder' => 'productos',
-    'public_id' => (string) Str::uuid(),
-    'overwrite' => true
+    $cloudinary = new Cloudinary([
+        'cloud' => [
+            'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+            'api_key'    => env('CLOUDINARY_API_KEY'),
+            'api_secret' => env('CLOUDINARY_API_SECRET'),
+        ],
+        'url' => ['secure' => true]
     ]);
 
+    $uploadResponse = $cloudinary->uploadApi()->upload($imagen->getRealPath(), [
+        'folder' => 'productos',
+        'public_id' => (string) Str::uuid(),
+        'overwrite' => true
+    ]);
 
-    $urlImagen = $uploadResponse->getSecurePath();
+    $urlImagen = $uploadResponse['secure_url'];
+
 
     // ❌ Eliminar la imagen anterior si era local (no URL externa)
     if ($producto->imagen && !Str::startsWith($producto->imagen, 'http')) {
@@ -111,16 +114,23 @@ if ($request->hasFile('imagen')) {
 
 // Subir imágenes adicionales
 if ($request->hasFile('imagenes_adicionales')) {
-    foreach ($request->file('imagenes_adicionales') as $imagenExtra) {
-        $uploadResponse = Cloudinary::uploadFile($imagen->getRealPath(), [
-        'folder' => 'productos',
-        'public_id' => (string) Str::uuid(),
-        'overwrite' => true
-]);
+    $cloudinary = new Cloudinary([
+        'cloud' => [
+            'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+            'api_key'    => env('CLOUDINARY_API_KEY'),
+            'api_secret' => env('CLOUDINARY_API_SECRET'),
+        ],
+        'url' => ['secure' => true]
+    ]);
 
+ foreach ($request->file('imagenes_adicionales') as $imagenExtra) {
+        $uploadResponse = $cloudinary->uploadApi()->upload($imagenExtra->getRealPath(), [
+            'folder' => 'productos/adicionales',
+            'public_id' => (string) Str::uuid(),
+            'overwrite' => true
+        ]);
 
-        $urlAdicional = $uploadResponse->getSecurePath();
-
+        $urlAdicional = $uploadResponse['secure_url'];
         ImagenProducto::create([
             'product_id' => $producto->id,
             'ruta' => $urlAdicional,
