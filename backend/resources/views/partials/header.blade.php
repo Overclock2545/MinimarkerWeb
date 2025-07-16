@@ -13,18 +13,31 @@
             </a>
         </div>
 
-        {{-- Baner de publicidad --}}
-@if(isset($banner))
-    <div class="d-none d-lg-block flex-shrink-0" style="width: 380px; margin-left: auto; margin-right: auto;">
+        {{-- Banner de publicidad y banner de campaña coexistiendo --}}
+<div class="d-none d-lg-flex flex-shrink-1 flex-grow-1 justify-content-center gap-3 mx-3">
+    {{-- Banner de publicidad --}}
+    @if(isset($banner))
         <a href="{{ route('ofertas.publicas') }}"
            class="d-flex align-items-center justify-content-center rounded-3 shadow-sm text-white fw-semibold text-decoration-none px-3"
-           style="height: 56px; background: linear-gradient(90deg, #a78bfa, #f472b6); overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+           style="height: 56px; min-width: 180px; max-width: 380px; background: linear-gradient(90deg, #a78bfa, #f472b6); overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
             <span class="text-truncate w-100 text-center" style="font-size: 1rem;">
-                 {{ $banner->contenido }}
+                {{ $banner->contenido }}
             </span>
         </a>
-    </div>
-@endif
+    @endif
+
+    {{-- Banner de campaña (landing) --}}
+    @if(isset($landingPage) && $landingPage->estado)
+        <a href="{{ url('/landing') }}"
+           class="d-flex align-items-center justify-content-center rounded-3 shadow-sm text-white fw-semibold text-decoration-none px-3"
+           style="height: 56px; min-width: 180px; max-width: 380px; background: linear-gradient(90deg, #f9a8d4, #c084fc); overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+            <span class="text-truncate w-100 text-center" style="font-size: 1rem;">
+                {{ $landingPage->titulo }}
+            </span>
+        </a>
+    @endif
+</div>
+
 
 
 

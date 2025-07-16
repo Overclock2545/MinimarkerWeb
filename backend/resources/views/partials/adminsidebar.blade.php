@@ -43,9 +43,10 @@
                     <a href="{{ route('admin.ofertas') }}" class="btn btn-sm text-start text-dark fw-semibold shadow-sm border" style="background-color: #f2e4fb; border-color: #d9cae3;">
                         <i class="bi bi-ui-checks-grid me-2"></i> Gestionar Ofertas
                     </a>
-                    <a href="{{ route('admin.banner') }}" class="btn btn-sm text-start text-dark fw-semibold shadow-sm border" style="background-color: #f2e4fb; border-color: #d9cae3;">
-                        <i class="bi bi-easel2-fill me-2"></i> Editar Banner
+                    <a href="{{ route('admin.banner.selector') }}" class="btn btn-sm text-start text-dark fw-semibold shadow-sm border" style="background-color: #f2e4fb; border-color: #d9cae3;">
+                    <i class="bi bi-easel2-fill me-2"></i> Editar Banners
                     </a>
+
                 </div>
             </div>
         @endif

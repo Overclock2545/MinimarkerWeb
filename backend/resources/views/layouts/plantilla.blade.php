@@ -148,6 +148,13 @@
         forgotModal.show();
       }, { once: true });
     }
+    function mostrarLoginModal() {
+    const modalElement = document.getElementById('loginModal');
+    if (modalElement) {
+      const modal = new bootstrap.Modal(modalElement);
+      modal.show();
+    }
+  }
 
     // Prevención del bug de fondo oscuro al cerrar múltiples modales
     document.addEventListener('hidden.bs.modal', function () {

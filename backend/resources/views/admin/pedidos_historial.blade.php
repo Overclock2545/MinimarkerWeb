@@ -37,6 +37,7 @@
                     <th scope="col">Total</th>
                     <th scope="col">Fecha</th>
                     <th scope="col">Boleta</th>
+                    <th scope="col">Foto de Entrega</th>
                 </tr>
             </thead>
             <tbody>
@@ -51,10 +52,38 @@
                                 <i class="bi bi-file-earmark-pdf-fill me-1"></i> Ver boleta
                             </a>
                         </td>
+                        <td>
+                            @if($pedido->foto_entrega)
+                                <button class="btn btn-outline-dark btn-sm" data-bs-toggle="modal" data-bs-target="#fotoEntregaModal{{ $pedido->id }}">
+                                    <i class="bi bi-image me-1"></i> Ver foto
+                                </button>
+
+                                <!-- Modal de imagen -->
+                                <div class="modal fade" id="fotoEntregaModal{{ $pedido->id }}" tabindex="-1" aria-labelledby="fotoEntregaLabel{{ $pedido->id }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="fotoEntregaLabel{{ $pedido->id }}">📸 Foto de entrega - Pedido {{ $pedido->codigo_pedido }}</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                            </div>
+                                            <div class="modal-body text-center">
+                                                <img src="{{ asset($pedido->foto_entrega) }}" alt="Foto de entrega" class="img-fluid rounded shadow mb-3">
+                                                <br>
+                                                <a href="{{ asset($pedido->foto_entrega) }}" download class="btn btn-success">
+                                                    <i class="bi bi-download me-1"></i> Descargar imagen
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @else
+                                <span class="text-muted">Sin foto</span>
+                            @endif
+                        </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5">
+                        <td colspan="6">
                             <div class="alert alert-warning m-0">
                                 No se han encontrado pedidos entregados aún.
                             </div>

@@ -13,7 +13,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\VerificacionController;
-
+use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\Admin\BannerSelectorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,6 +29,7 @@ Route::get('/inicio', function () {
     $products = Product::with('categoria')->get();
     return view('home', compact('products'));
 })->name('inicio');
+Route::get('/landing', [LandingPageController::class, 'mostrar'])->name('landing.publica');
 
 Route::get('/producto/{id}', [ProductController::class, 'mostrar'])->name('producto.ver');
 Route::get('/buscar', [ProductController::class, 'buscar'])->name('buscar.productos');
@@ -101,12 +103,16 @@ Route::middleware(['auth', 'verificarRol:admin'])->group(function () {
     Route::post('/admin/ofertas/categoria', [AdminController::class, 'aplicarDescuentoCategoria'])->name('admin.ofertas.categoria');
     Route::post('/admin/ofertas/categoria/terminar', [AdminController::class, 'terminarOfertasPorCategoria'])->name('admin.ofertas.terminarCategoria');
 
-    // Banner (solo una ruta)
-Route::get('/admin/banner', [AdminController::class, 'editarBanner'])->name('admin.banner');
-Route::put('/admin/banner', [AdminController::class, 'actualizarBanner'])->name('admin.banner.actualizar');
-    
+    // Banners (solo una ruta)
+    Route::get('/admin/banner', [AdminController::class, 'editarBanner'])->name('admin.banner');
+    Route::put('/admin/banner', [AdminController::class, 'actualizarBanner'])->name('admin.banner.actualizar');
+    Route::get('/admin/banners', [BannerSelectorController::class, 'index'])->name('admin.banner.selector');
     Route::post('/admin/ofertas/{id}/terminar', [AdminController::class, 'terminarOferta'])->name('admin.ofertas.terminar');
-    // Usuarios
+    // Ruta para mostrar formulario de edición
+Route::get('/admin/landing/editar', [LandingPageController::class, 'editar'])->name('admin.landing.editar');
+
+// Ruta para guardar cambios
+Route::post('/admin/landing/actualizar', [LandingPageController::class, 'actualizar'])->name('admin.landing.actualizar');
     Route::delete('/admin/usuarios/{id}', [AdminController::class, 'eliminarUsuario'])->name('admin.usuarios.eliminar');
     Route::put('/admin/usuarios/{id}', [AdminController::class, 'actualizarUsuario'])->name('admin.usuarios.actualizar');
     
@@ -134,6 +140,8 @@ Route::middleware(['auth', 'verificarRol:admin,encargado_pedidos'])->group(funct
     Route::get('/admin/usuarios/{id}/editar', [AdminController::class, 'editarUsuario'])->name('admin.usuarios.editar');
     Route::get('/admin/usuarios/{id}/pedidos', [AdminController::class, 'verPedidosUsuario'])->name('admin.usuarios.pedidos');
     Route::get('/admin/usuarios/{id}/carrito', [AdminController::class, 'verCarrito'])->name('admin.usuarios.carrito');
+    Route::post('/admin/pedidos/{id}/entregar', [PedidoController::class, 'marcarComoEntregado'])->name('admin.pedido.entregar');
+
 });
 
 /*

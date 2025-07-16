@@ -34,41 +34,46 @@
                         <td>{{ $pedido->usuario->name }}</td>
                         <td>S/ {{ number_format($pedido->total, 2) }}</td>
                         <td>{{ $pedido->created_at->format('d/m/Y') }}</td>
-                        <td class="d-flex justify-content-center gap-2 flex-wrap">
+                        <td class="d-flex flex-column align-items-center gap-2">
 
                             <!-- Ver boleta -->
                             <a href="{{ route('boleta.descargar', $pedido->id) }}" class="btn btn-outline-primary btn-sm shadow-sm" target="_blank">
                                 <i class="bi bi-file-earmark-pdf me-1"></i> Ver boleta
                             </a>
 
-                            <!-- Botón que abre el modal -->
-                            <button type="button" class="btn btn-success btn-sm shadow-sm"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#entregarPedidoModal{{ $pedido->id }}">
-                                <i class="bi bi-box-seam me-1"></i> Marcar entregado
-                            </button>
+                            <!-- Formulario para subir foto de entrega -->
+                            <form id="form-entrega-{{ $pedido->id }}" method="POST" action="{{ route('admin.pedido.entregar', $pedido->id) }}" enctype="multipart/form-data" class="w-100">
+                                @csrf
 
-                            <!-- Modal de confirmación -->
-                            <div class="modal fade" id="entregarPedidoModal{{ $pedido->id }}" tabindex="-1" aria-labelledby="entregarPedidoLabel{{ $pedido->id }}" aria-hidden="true">
-                              <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-                                  <div class="modal-header">
-                                    <h5 class="modal-title" id="entregarPedidoLabel{{ $pedido->id }}">Confirmar entrega</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                                  </div>
-                                  <div class="modal-body">
-                                    ¿Estás seguro que el pedido <strong>{{ $pedido->codigo_pedido }}</strong> fue entregado al cliente?
-                                  </div>
-                                  <div class="modal-footer">
-                                    <form method="POST" action="{{ route('admin.pedido.entregar', $pedido->id) }}">
-                                        @csrf
-                                        <button type="submit" class="btn btn-success">✅ Sí, entregar</button>
-                                    </form>
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                  </div>
+                                <div class="mb-2">
+                                    <input type="file" name="foto_entrega" id="foto_entrega_{{ $pedido->id }}" class="form-control form-control-sm" accept="image/*" required onchange="validarImagen({{ $pedido->id }})">
+                                    <small class="text-muted">📷 Sube una foto como prueba de entrega</small>
                                 </div>
-                              </div>
-                            </div>
+
+                                <!-- Botón para confirmar entrega -->
+                                <button type="button" id="btnConfirmarEntrega_{{ $pedido->id }}" class="btn btn-success btn-sm shadow-sm w-100" data-bs-toggle="modal" data-bs-target="#entregarPedidoModal{{ $pedido->id }}" disabled>
+                                    <i class="bi bi-box-seam me-1"></i> Marcar entregado
+                                </button>
+
+                                <!-- Modal de confirmación -->
+                                <div class="modal fade" id="entregarPedidoModal{{ $pedido->id }}" tabindex="-1" aria-labelledby="entregarPedidoLabel{{ $pedido->id }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="entregarPedidoLabel{{ $pedido->id }}">Confirmar entrega</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                ¿Estás seguro que el pedido <strong>{{ $pedido->codigo_pedido }}</strong> fue entregado al cliente?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-success">✅ Sí, entregar</button>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
                         </td>
                     </tr>
                 @empty
@@ -89,4 +94,13 @@
         {{ $pedidos->links() }}
     </div>
 </div>
+
+<!-- Script para validar carga de imagen -->
+<script>
+    function validarImagen(pedidoId) {
+        const input = document.getElementById(`foto_entrega_${pedidoId}`);
+        const boton = document.getElementById(`btnConfirmarEntrega_${pedidoId}`);
+        boton.disabled = !input.files.length;
+    }
+</script>
 @endsection

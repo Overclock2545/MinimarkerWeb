@@ -9,11 +9,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Pedido extends Model
 {
     protected $fillable = [
-        'user_id',
-        'codigo_pedido',
-        'total',
-        'estado',
-    ];
+    'user_id',
+    'codigo_pedido',
+    'total',
+    'estado',
+    'foto_entrega',
+    'fecha_entregado',
+];
+
 
     public function items()
 {
