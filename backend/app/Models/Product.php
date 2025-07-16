@@ -51,4 +51,5 @@ protected $casts = [
     return $this->hasMany(ImagenProducto::class, 'product_id', 'id');
 }
 
+
 }

@@ -18,6 +18,8 @@ use App\Models\Banner;
 use Cloudinary\Cloudinary;
 use App\Models\Category;
 
+
+
 class AdminController extends Controller
 {
     public function index()
@@ -387,65 +389,98 @@ if ($request->hasFile('imagenes_adicionales')) {
 
 
     public function analisisVentas(Request $request)
-    {
-        $desde = $request->input('desde') ?? Carbon::now()->subMonth()->toDateString();
-        $hasta = $request->input('hasta') ?? Carbon::now()->toDateString();
+{
+    $desde = $request->input('desde') ?? Carbon::now()->subMonth()->toDateString();
+    $hasta = $request->input('hasta') ?? Carbon::now()->toDateString();
+    $orden = $request->input('orden', 'desc');
+    $categoria = $request->input('categoria');
 
-        // Filtrar pedidos confirmados por fecha
-        $pedidos = Pedido::with('items.producto')
-            ->where('estado', 'entregado')
+    // Pedidos actuales
+    $pedidos = Pedido::with('items.producto')
+        ->where('estado', 'entregado')
+        ->whereBetween('created_at', [$desde . ' 00:00:00', $hasta . ' 23:59:59'])
+        ->get();
 
-            ->whereBetween('created_at', [$desde . ' 00:00:00', $hasta . ' 23:59:59'])
-            ->get();
+    // Periodo anterior (comparación)
+    $rangoDias = Carbon::parse($desde)->diffInDays(Carbon::parse($hasta));
+    $desdeAnterior = Carbon::parse($desde)->subDays($rangoDias)->toDateString();
+    $hastaAnterior = Carbon::parse($hasta)->subDays($rangoDias)->toDateString();
 
-        // Agrupar productos vendidos
-        $productos = [];
+    $pedidosAnteriores = Pedido::where('estado', 'entregado')
+        ->whereBetween('created_at', [$desdeAnterior . ' 00:00:00', $hastaAnterior . ' 23:59:59'])
+        ->get();
 
-        foreach ($pedidos as $pedido) {
-            foreach ($pedido->items as $item) {
-                $id = $item->product_id;
-                if (!isset($productos[$id])) {
-                    $productos[$id] = [
-                        'nombre' => $item->producto->nombre ?? 'Producto eliminado',
-                        'cantidad_total' => 0,
-                        'suma_total' => 0,
-                        'precio_promedio' => 0,
-                    ];
-                }
+    // Agrupar productos vendidos
+    $productos = [];
 
-                $productos[$id]['cantidad_total'] += $item->cantidad;
-                $productos[$id]['suma_total'] += $item->subtotal;
+    foreach ($pedidos as $pedido) {
+        foreach ($pedido->items as $item) {
+            if (!$item->producto) continue;
+
+            if ($categoria && $item->producto->categoria_id != $categoria) continue;
+
+            $id = $item->product_id;
+
+            if (!isset($productos[$id])) {
+                $productos[$id] = [
+                    'nombre' => $item->producto->nombre ?? 'Producto eliminado',
+                    'cantidad_total' => 0,
+                    'suma_total' => 0,
+                ];
             }
-        }
 
-        // Calcular precio promedio
-        foreach ($productos as &$prod) {
-            $prod['precio_promedio'] = $prod['cantidad_total'] > 0
-                ? $prod['suma_total'] / $prod['cantidad_total']
-                : 0;
+            $productos[$id]['cantidad_total'] += $item->cantidad;
+            $productos[$id]['suma_total'] += $item->subtotal;
         }
-        $orden = $request->input('orden', 'desc'); // 'desc' por defecto
-        $productos = collect($productos)
-            ->sortBy($orden === 'asc' ? 'cantidad_total' : function ($item) {
-                return -$item['cantidad_total'];
-            })
-            ->values()
-            ->all();
-        $totalVentas = $pedidos->sum('total');
-        $totalPedidos = $pedidos->count();
-        $totalProductosVendidos = array_sum(array_column($productos, 'cantidad_total'));
-        $clientesUnicos = $pedidos->pluck('usuario_id')->unique()->count();
-
-        return view('admin.analisis', [
-            'desde' => $desde,
-            'hasta' => $hasta,
-            'productosVendidos' => $productos,
-            'totalVentas' => $totalVentas,
-            'totalPedidos' => $totalPedidos,
-            'totalProductosVendidos' => $totalProductosVendidos,
-            'clientesUnicos' => $clientesUnicos,
-        ]);
     }
+
+    // Ordenar productos por cantidad
+    $productos = collect($productos)
+        ->sortBy($orden === 'asc' ? 'cantidad_total' : function ($item) {
+            return -$item['cantidad_total'];
+        })
+        ->values()
+        ->all();
+
+    // Cálculos generales
+    $totalVentas = $pedidos->sum('total');
+    $totalVentasAnterior = $pedidosAnteriores->sum('total');
+    $variacionVentas = $totalVentasAnterior > 0
+        ? (($totalVentas - $totalVentasAnterior) / $totalVentasAnterior) * 100
+        : 0;
+
+    $totalPedidos = $pedidos->count();
+    $totalProductosVendidos = array_sum(array_column($productos, 'cantidad_total'));
+    $clientesUnicos = $pedidos->pluck('user_id')->unique()->count();
+    $ticketPromedio = $totalPedidos > 0 ? $totalVentas / $totalPedidos : 0;
+
+    // Top 5 productos más vendidos
+    $productosTop = array_slice($productos, 0, 5);
+
+    // Productos con bajo stock
+    $productosBajoStock = Product::where('stock', '<=', 5)->get();
+
+    // Categorías
+    $categorias = Categoria::all();
+
+    return view('admin.analisis', [
+        'desde' => $desde,
+        'hasta' => $hasta,
+        'categoria' => $categoria,
+        'orden' => $orden,
+        'productosVendidos' => $productos,
+        'totalVentas' => $totalVentas,
+        'totalPedidos' => $totalPedidos,
+        'totalProductosVendidos' => $totalProductosVendidos,
+        'clientesUnicos' => $clientesUnicos,
+        'ticketPromedio' => $ticketPromedio,
+        'variacionVentas' => $variacionVentas,
+        'productosTop' => $productosTop,
+        'productosBajoStock' => $productosBajoStock,
+        'categorias' => $categorias,
+    ]);
+}
+
     //Ofertas
     public function verOfertas(Request $request)
 {
