@@ -4,12 +4,17 @@
     <meta charset="UTF-8">
     <title>{{ $landing->titulo ?? 'Título de la campaña' }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
     <style>
         body {
-            background-color: {{ $landing->color_fondo ?? '#ffffff' }};
-            color: #212529;
+            background-color: {{ $landing->color_fondo ?? '#f8f9fa' }};
             font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
             position: relative;
         }
 
@@ -17,86 +22,135 @@
             position: absolute;
             top: 20px;
             right: 20px;
-            max-height: 48px;
-            opacity: 0.85;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            max-height: 60px;
             border-radius: 50%;
             background: #fff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            z-index: 1030;
+        }
+
+        .hero {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+            overflow: hidden;
         }
 
         .hero img {
             width: 100%;
-            height: auto;
-            aspect-ratio: 1200 / 360;
+            height: 100%;
             object-fit: cover;
-            display: block;
-            border-bottom: 2px solid #eee;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        .hero-text {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.55);
+            padding: 2rem 3rem;
+            border-radius: 16px;
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            max-width: 90%;
+        }
+
+        .hero-text h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-text p {
+            font-size: 1.2rem;
+            margin: 0;
+        }
+
+        .side-banner {
+            position: absolute;
+            top: 400px; /* altura de la imagen principal */
+            width: 80px;
+            height: calc(100% - 400px);
+            background-size: cover;
+            background-position: center;
+            opacity: 0.12;
+            z-index: 1;
+        }
+
+        .side-banner.left {
+            left: 0;
+            background-image: url('{{ asset('images/Bandera_Lateral.png') }}');
+        }
+
+        .side-banner.right {
+            right: 0;
+            background-image: url('{{ asset('images/Bandera_Lateral.png') }}');
         }
 
         .content {
-            max-width: 880px;
-            margin: 0 auto;
+            flex: 1;
             padding: 3rem 1.5rem;
-        }
-
-        .title {
-            font-size: 2.8rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
-
-        .subtitle {
-            font-size: 1.2rem;
-            color: #6c757d;
-            margin-bottom: 2rem;
+            max-width: 960px;
+            margin: auto;
+            position: relative;
+            z-index: 2;
         }
 
         .description {
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             line-height: 1.8;
             white-space: pre-line;
-            margin-bottom: 2.5rem;
         }
 
         .btn-landing {
-            padding: 0.75rem 2.5rem;
+            padding: 0.75rem 2rem;
             font-size: 1.1rem;
-            font-weight: 600;
             border-radius: 50px;
-            border: none;
+            font-weight: 600;
         }
 
         .video-wrapper iframe,
         .video-wrapper video {
             width: 100%;
             border-radius: 12px;
-            margin-bottom: 2rem;
+            margin: 2rem 0;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
         }
 
         .imagen-secundaria {
             width: 100%;
-            height: auto;
-            max-height: 180px;
-            object-fit: cover;
             border-radius: 12px;
             margin-top: 2rem;
             box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
         }
 
         .contador {
-            font-size: 1.15rem;
+            font-size: 1.2rem;
             font-weight: bold;
-            margin-bottom: 1.5rem;
-            color: #b91c1c;
+            color: #dc3545;
+            margin-top: 1.5rem;
         }
 
         @media (max-width: 768px) {
-            .title {
+            .hero-text {
+                padding: 1rem 1.5rem;
+            }
+
+            .hero-text h1 {
                 font-size: 2rem;
             }
-            .description {
+
+            .hero-text p {
                 font-size: 1rem;
+            }
+
+            .side-banner {
+                display: none;
             }
         }
     </style>
@@ -108,18 +162,26 @@
     @endif
 
     <div class="hero">
-        <img src="{{ $landing->imagen ? asset('storage/' . $landing->imagen) : 'https://via.placeholder.com/1200x360?text=Imagen+de+campaña' }}" alt="Imagen de campaña">
+        <img src="{{ $landing->imagen ? asset('storage/' . $landing->imagen) : 'https://via.placeholder.com/1200x400?text=Imagen+de+campaña' }}" alt="Imagen de campaña">
+
+        <div class="hero-text animate__animated animate__fadeInDown">
+            <h1>{{ $landing->titulo }}</h1>
+            @if(!empty($landing->subtitulo))
+                <p class="animate__animated animate__fadeInUp animate__delay-1s">{{ $landing->subtitulo }}</p>
+            @endif
+        </div>
     </div>
 
-    <div class="content text-center">
-        <h1 class="title">{{ $landing->titulo }}</h1>
+    <!-- Banderas laterales -->
+    <div class="side-banner left"></div>
+    <div class="side-banner right"></div>
 
-        @if(!empty($landing->subtitulo))
-            <p class="subtitle">{{ $landing->subtitulo }}</p>
-        @endif
-
+    <div class="content text-center animate__animated animate__fadeInUp animate__delay-1s">
         @if(($landing->mostrar_contador ?? false) && $landing->fecha_limite)
-            <div id="contador" class="contador">Quedan: cargando...</div>
+            <div id="contador" class="contador">
+                <i class="bi bi-clock me-2"></i>
+                Quedan: cargando...
+            </div>
         @endif
 
         <p class="description">{!! nl2br(e($landing->descripcion)) !!}</p>
@@ -138,10 +200,10 @@
             <img src="{{ asset('storage/' . $landing->imagen_secundaria) }}" class="imagen-secundaria" alt="Detalle adicional">
         @endif
 
-        <div class="text-center mt-4">
+        <div class="mt-4">
             <a href="{{ $landing->link_boton ?? url('/inicio') }}"
                class="btn btn-landing text-white shadow"
-               style="background-color: {{ $landing->color_boton ?? '#111827' }};">
+               style="background-color: {{ $landing->color_boton ?? '#0d6efd' }};">
                 {{ $landing->boton ?? 'Ver más' }}
             </a>
         </div>
@@ -159,7 +221,7 @@
                 const diferencia = fechaLimite - ahora;
 
                 if (diferencia < 0) {
-                    contador.textContent = "¡La campaña ha terminado!";
+                    contador.textContent = "⛔ ¡La campaña ha terminado!";
                     clearInterval(intervalo);
                     return;
                 }
@@ -168,7 +230,7 @@
                 const horas = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutos = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
 
-                contador.textContent = `Quedan: ${dias} días, ${horas}h, ${minutos}min`;
+                contador.textContent = `🕒 Quedan: ${dias} días, ${horas}h, ${minutos}min`;
             }, 1000);
         </script>
     @endif
