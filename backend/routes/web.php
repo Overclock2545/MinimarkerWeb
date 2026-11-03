@@ -24,7 +24,7 @@ use App\Http\Controllers\Admin\BannerSelectorController;
 
 Route::get('/', fn() => Redirect::to('/inicio'));
 Route::get('/verificar-codigo', [VerificacionController::class, 'mostrar'])->name('verificar.codigo.view');
-Route::post('/verificar-codigo', [VerificacionController::class, 'verificar'])->name('verificar.codigo.enviar');
+Route::post('/verificar-codigo', [VerificacionController::class, 'verificar'])->middleware('throttle:6,1')->name('verificar.codigo.enviar');
 Route::get('/inicio', function () {
     $products = Product::with('categoria')->get();
     return view('home', compact('products'));
@@ -35,9 +35,8 @@ Route::get('/producto/{id}', [ProductController::class, 'mostrar'])->name('produ
 Route::get('/buscar', [ProductController::class, 'buscar'])->name('buscar.productos');
 Route::get('/categorias/id/{id}', [CategoriaController::class, 'mostrarPorId'])->name('categorias.porId');
 // boletas
-Route::get('/boleta/{id}', [PedidoController::class, 'descargarBoleta'])->name('boleta.descargar');
+Route::get('/boleta/{id}', [PedidoController::class, 'descargarBoleta'])->middleware('auth')->name('boleta.descargar');
 Route::get('/ofertas', [ProductController::class, 'mostrarOfertas'])->name('ofertas.publicas');
-Route::get('/categorias/id/{id}', [CategoriaController::class, 'mostrarPorId']);
 
 /*
 |--------------------------------------------------------------------------
@@ -100,8 +99,6 @@ Route::middleware(['auth', 'verificarRol:admin'])->group(function () {
     Route::get('/admin/analisis', [AdminController::class, 'analisisVentas'])->name('admin.analisis');
     Route::get('/admin/ofertas', [AdminController::class, 'verOfertas'])->name('admin.ofertas');
     Route::post('/admin/ofertas/{producto}', [AdminController::class, 'actualizarOferta'])->name('admin.ofertas.actualizar');
-    Route::post('/admin/ofertas/categoria', [AdminController::class, 'aplicarDescuentoCategoria'])->name('admin.ofertas.categoria');
-    Route::post('/admin/ofertas/categoria/terminar', [AdminController::class, 'terminarOfertasPorCategoria'])->name('admin.ofertas.terminarCategoria');
 
     // Banners (solo una ruta)
     Route::get('/admin/banner', [AdminController::class, 'editarBanner'])->name('admin.banner');
@@ -132,11 +129,9 @@ Route::middleware(['auth', 'verificarRol:admin,encargado_pedidos'])->group(funct
     Route::get('/admin/pedidos/curso', [AdminController::class, 'pedidosEnCurso'])->name('admin.pedidos.curso');
     Route::get('/admin/pedidos/historial', [AdminController::class, 'historialPedidos'])->name('admin.pedidos.historial');
     Route::post('/admin/pedido/confirmar/{id}', [AdminController::class, 'confirmarPedido'])->name('admin.pedido.confirmar');
-    Route::post('/admin/pedido/entregar/{id}', [AdminController::class, 'entregarPedido'])->name('admin.pedido.entregar');
 
     // Usuarios (solo lectura)
     Route::get('/admin/usuarios', [AdminController::class, 'gestionarUsuarios'])->name('admin.usuarios');
-    Route::get('/admin/usuarios/{id}', [AdminController::class, 'verUsuario'])->name('admin.usuarios.ver');
     Route::get('/admin/usuarios/{id}/editar', [AdminController::class, 'editarUsuario'])->name('admin.usuarios.editar');
     Route::get('/admin/usuarios/{id}/pedidos', [AdminController::class, 'verPedidosUsuario'])->name('admin.usuarios.pedidos');
     Route::get('/admin/usuarios/{id}/carrito', [AdminController::class, 'verCarrito'])->name('admin.usuarios.carrito');

@@ -34,6 +34,7 @@ class VerificacionController extends Controller
         $user->save();
 
         Auth::login($user);
+        $request->session()->regenerate();
         session()->forget('pendiente_verificacion_id');
 
         return redirect()->route('inicio')->with('success', 'Tu cuenta ha sido verificada exitosamente.');

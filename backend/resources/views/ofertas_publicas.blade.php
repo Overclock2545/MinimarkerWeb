@@ -81,9 +81,7 @@
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
             @foreach ($productos as $product)
                 @php
-                    $enOferta = $product->oferta_activa &&
-                                is_numeric($product->precio_oferta) &&
-                                (!$product->fecha_fin_oferta || Carbon::parse($product->fecha_fin_oferta)->gte(Carbon::now()));
+                    $enOferta = $product->tieneOferta();
                     $isFavorito = in_array($product->id, $favoritos);
                 @endphp
 

@@ -1,3 +1,11 @@
+FROM node:22-alpine AS assets
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY resources ./resources
+COPY vite.config.js postcss.config.js tailwind.config.js ./
+RUN npm run build
+
 FROM php:8.2-apache
 
 # Instala extensiones necesarias de PHP
@@ -14,6 +22,7 @@ WORKDIR /var/www/html
 
 # Copia todo el proyecto Laravel al contenedor
 COPY . .
+COPY --from=assets /app/public/build ./public/build
 
 # Asigna los permisos correctos
 RUN chown -R www-data:www-data /var/www/html \
@@ -34,6 +43,5 @@ CMD bash -c "php artisan config:clear && \
              php artisan config:cache && \
              php artisan route:cache && \
              php artisan view:cache && \
-             php artisan storage:link || true && \
-             php artisan migrate --force || exit 1 && \
+             (test -L public/storage || php artisan storage:link) && \
              apache2-foreground"  

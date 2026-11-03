@@ -26,12 +26,7 @@ class ProductController extends Controller
     {
         $producto = Product::with(['categoria', 'imagenes'])->findOrFail($id);
 
-        $enOferta = $producto->oferta_activa &&
-                    is_numeric($producto->precio_oferta) &&
-                    (
-                        !$producto->fecha_fin_oferta ||
-                        Carbon::parse($producto->fecha_fin_oferta)->gte(Carbon::now())
-                    );
+        $enOferta = $producto->tieneOferta();
 
         $favoritos = $this->obtenerFavoritos();
 
@@ -82,7 +77,9 @@ class ProductController extends Controller
 
     public function mostrarOfertas()
 {
-    $productos = Product::whereNotNull('precio_oferta')->get(); // O ajusta según tu lógica
+    $productos = Product::where('oferta_activa', true)->whereNotNull('precio_oferta')
+        ->whereColumn('precio_oferta', '<', 'precio')
+        ->where(function ($query) { $query->whereNull('fecha_fin_oferta')->orWhereDate('fecha_fin_oferta', '>=', today()); })->get();
     return view('ofertas_publicas', compact('productos'));
 }
 

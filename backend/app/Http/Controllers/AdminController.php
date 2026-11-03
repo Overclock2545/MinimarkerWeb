@@ -16,6 +16,7 @@ use App\Models\ImagenProducto;
 use Illuminate\Support\Facades\Log;
 use App\Models\Banner;
 use Cloudinary\Cloudinary;
+use Illuminate\Support\Facades\DB;
 use App\Models\Category;
 
 
@@ -87,9 +88,9 @@ if ($request->hasFile('imagen')) {
 
     $cloudinary = new Cloudinary([
         'cloud' => [
-            'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
-            'api_key'    => env('CLOUDINARY_API_KEY'),
-            'api_secret' => env('CLOUDINARY_API_SECRET'),
+            'cloud_name' => config('services.cloudinary.cloud_name'),
+            'api_key'    => config('services.cloudinary.api_key'),
+            'api_secret' => config('services.cloudinary.api_secret'),
         ],
         'url' => ['secure' => true]
     ]);
@@ -118,9 +119,9 @@ if ($request->hasFile('imagen')) {
 if ($request->hasFile('imagenes_adicionales')) {
     $cloudinary = new Cloudinary([
         'cloud' => [
-            'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
-            'api_key'    => env('CLOUDINARY_API_KEY'),
-            'api_secret' => env('CLOUDINARY_API_SECRET'),
+            'cloud_name' => config('services.cloudinary.cloud_name'),
+            'api_key'    => config('services.cloudinary.api_key'),
+            'api_secret' => config('services.cloudinary.api_secret'),
         ],
         'url' => ['secure' => true]
     ]);
@@ -264,7 +265,8 @@ if ($request->hasFile('imagenes_adicionales')) {
 
     public function confirmarPedido($id)
     {
-        $pedido = Pedido::findOrFail($id);
+        return DB::transaction(function () use ($id) {
+        $pedido = Pedido::lockForUpdate()->findOrFail($id);
 
         if ($pedido->estado !== 'pendiente_pago') {
             return back()->with('info', 'Este pedido ya fue procesado.');
@@ -272,7 +274,7 @@ if ($request->hasFile('imagenes_adicionales')) {
 
         // Validar stock antes de confirmar
         foreach ($pedido->items as $item) {
-            $producto = $item->producto;
+            $producto = Product::whereKey($item->product_id)->lockForUpdate()->first();
             if (!$producto || $producto->stock < $item->cantidad) {
                 return back()->with('error', 'No hay suficiente stock para el producto: ' . ($producto->nombre ?? 'Producto eliminado'));
             }
@@ -280,7 +282,7 @@ if ($request->hasFile('imagenes_adicionales')) {
 
         // Descontar stock
         foreach ($pedido->items as $item) {
-            $producto = $item->producto;
+            $producto = Product::whereKey($item->product_id)->first();
             if ($producto) {
                 $producto->stock -= $item->cantidad;
                 $producto->save();
@@ -291,6 +293,7 @@ if ($request->hasFile('imagenes_adicionales')) {
         $pedido->save();
 
         return back()->with('success', '✅ Pedido confirmado, stock actualizado y ahora está en curso.');
+        }, 3);
     }
 
     //metodo para ver pedidos en curso
@@ -354,15 +357,15 @@ if ($request->hasFile('imagenes_adicionales')) {
     {
         $usuario = User::findOrFail($id);
 
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string',
-            'email' => 'required|email',
-            'rol' => 'required|string',
+            'email' => 'required|email|unique:users,email,' . $usuario->id,
+            'rol' => 'required|in:admin,cliente,encargado_pedidos',
             'celular' => 'nullable|string',
             'documento_identidad' => 'nullable|string',
         ]);
 
-        $usuario->update($request->all());
+        $usuario->update($validated);
 
         return redirect()->route('admin.usuarios')->with('success', 'Usuario actualizado correctamente.');
     }
@@ -537,6 +540,8 @@ public function terminarOferta($id)
 {
     $producto = Product::findOrFail($id);
     $producto->precio_oferta = null;
+    $producto->oferta_activa = false;
+    $producto->fecha_fin_oferta = null;
     $producto->save();
 
     return back()->with('success', '✅ Oferta eliminada correctamente.');

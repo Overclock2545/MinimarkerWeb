@@ -7,6 +7,17 @@ use App\Models\Categoria;
 
 class Product extends Model
 {
+    public function tieneOferta(): bool
+    {
+        return $this->oferta_activa && $this->precio_oferta !== null
+            && $this->precio_oferta >= 0 && $this->precio_oferta < $this->precio
+            && (!$this->fecha_fin_oferta || $this->fecha_fin_oferta->isToday() || $this->fecha_fin_oferta->isFuture());
+    }
+
+    public function precioActual()
+    {
+        return $this->tieneOferta() ? $this->precio_oferta : $this->precio;
+    }
     protected $table = 'product';
 
     protected $primaryKey = 'id';

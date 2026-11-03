@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('codigo_pedido')->unique();
             $table->decimal('total', 8, 2);
-            $table->enum('estado', ['pendiente_pago', 'pago_confirmado'])->default('pendiente_pago');
+            $table->string('estado')->default('pendiente_pago');
             $table->timestamps();
         });
     }

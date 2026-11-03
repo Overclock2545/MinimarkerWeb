@@ -21,9 +21,7 @@
                 @if ($favorito->producto)
                     @php
                         $product = $favorito->producto;
-                        $enOferta = $product->oferta_activa &&
-                                    is_numeric($product->precio_oferta) &&
-                                    (!$product->fecha_fin_oferta || Carbon::parse($product->fecha_fin_oferta)->gte(Carbon::now()));
+                        $enOferta = $product->tieneOferta();
                     @endphp
                     <div class="col">
                         <div class="card product-card h-100 d-flex flex-column">

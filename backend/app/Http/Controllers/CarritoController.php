@@ -8,6 +8,7 @@ use App\Models\PedidoItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class CarritoController extends Controller
 {
@@ -30,6 +31,8 @@ class CarritoController extends Controller
      */
     public function add(Request $request, $productId)
     {
+        $request->validate(['cantidad' => 'sometimes|integer|min:1|max:10000']);
+        \App\Models\Product::findOrFail($productId);
         $user = Auth::user();
 
         $item = CarritoItem::where('user_id', $user->id)
@@ -55,7 +58,7 @@ class CarritoController extends Controller
      */
     public function remove($id)
     {
-        $item = CarritoItem::findOrFail($id);
+        $item = CarritoItem::where('user_id', Auth::id())->findOrFail($id);
         $item->delete();
 
         return redirect()->back()->with('status', 'Producto eliminado del carrito.');
@@ -66,7 +69,7 @@ class CarritoController extends Controller
      */
     public function incrementar($id)
     {
-        $item = CarritoItem::findOrFail($id);
+        $item = CarritoItem::where('user_id', Auth::id())->findOrFail($id);
         $item->cantidad += 1;
         $item->save();
 
@@ -78,7 +81,7 @@ class CarritoController extends Controller
      */
     public function disminuir($id)
     {
-        $item = CarritoItem::findOrFail($id);
+        $item = CarritoItem::where('user_id', Auth::id())->findOrFail($id);
 
         if ($item->cantidad > 1) {
             $item->cantidad -= 1;
@@ -105,8 +108,8 @@ class CarritoController extends Controller
 
         // Validar stock antes de procesar
         foreach ($carritoItems as $item) {
-            if ($item->cantidad > $item->product->stock) {
-                return redirect()->back()->with('error', 'No hay suficiente stock para el producto: ' . $item->product->nombre);
+            if (!$item->product || $item->cantidad < 1 || $item->cantidad > $item->product->stock) {
+                return redirect()->back()->with('error', 'Producto no disponible o cantidad superior al stock.');
             }
         }
 
@@ -114,16 +117,13 @@ class CarritoController extends Controller
         DB::beginTransaction();
         try {
             // Generar código único
-            $ultimoPedidoId = Pedido::max('id') ?? 0;
-            $codigo = 'PED-' . str_pad($ultimoPedidoId + 1, 5, '0', STR_PAD_LEFT);
+            $codigo = 'PED-' . strtoupper((string) Str::uuid());
 
             // Calcular total
 // Calcular total (considerando precio de oferta si aplica)
 $total = $carritoItems->sum(function ($item) {
     $producto = $item->product;
-    $precio = ($producto->precio_oferta && $producto->precio_oferta < $producto->precio)
-        ? $producto->precio_oferta
-        : $producto->precio;
+    $precio = $producto->precioActual();
 
     return $precio * $item->cantidad;
 });
@@ -145,9 +145,7 @@ foreach ($carritoItems as $item) {
     $cantidad = $item->cantidad;
 
     $precio_base = $producto->precio;
-    $precio_unitario = ($producto->precio_oferta && $producto->precio_oferta < $precio_base)
-        ? $producto->precio_oferta
-        : $precio_base;
+    $precio_unitario = $producto->precioActual();
 
     $subtotal = $precio_unitario * $cantidad;
 

@@ -29,9 +29,7 @@ class AuthenticatedSessionController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        $credentials = $request->only('email', 'password');
-
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+        $request->authenticate();
             $request->session()->regenerate();
 
             $user = Auth::user();
@@ -50,11 +48,7 @@ class AuthenticatedSessionController extends Controller
             return $user->rol === 'admin'
                 ? redirect()->route('admin.panel')
                 : redirect()->route('inicio');
-        }
 
-        return back()->withErrors([
-            'email' => __('auth.failed'),
-        ]);
     }
 
     /**

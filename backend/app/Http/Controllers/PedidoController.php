@@ -21,10 +21,11 @@ class PedidoController extends Controller
 
     public function descargarBoleta($id)
     {
-        $pedido = Pedido::with(['items.product', 'usuario'])
-            ->where('id', $id)
-            ->where('user_id', Auth::id())
-            ->firstOrFail();
+        $query = Pedido::with(['items.product', 'usuario'])->where('id', $id);
+        if (!in_array(Auth::user()->rol, ['admin', 'encargado_pedidos'], true)) {
+            $query->where('user_id', Auth::id());
+        }
+        $pedido = $query->firstOrFail();
 
         if (!in_array($pedido->estado, ['en_curso', 'entregado'])) {
             return redirect()->back()->with('error', 'Este pedido aún no puede generar boleta.');
@@ -81,8 +82,12 @@ class PedidoController extends Controller
 
         $pedido = Pedido::findOrFail($id);
 
+        if ($pedido->estado !== 'en_curso') {
+            return back()->with('error', 'Solo se pueden entregar pedidos en curso.');
+        }
+
         if ($request->hasFile('foto_entrega')) {
-            $nombreImagen = 'entrega_' . time() . '.' . $request->foto_entrega->getClientOriginalExtension();
+            $nombreImagen = 'entrega_' . \Illuminate\Support\Str::uuid() . '.' . $request->foto_entrega->getClientOriginalExtension();
 
             // Guardar la imagen en storage/app/public/entregas
             $request->foto_entrega->move(public_path('entregas'), $nombreImagen);

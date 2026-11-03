@@ -8,12 +8,12 @@ class ModificarEstadoEnPedidos extends Migration
 {
     public function up()
     {
-        DB::statement("ALTER TABLE pedidos MODIFY estado ENUM('pendiente_pago', 'en_curso', 'entregado') NOT NULL DEFAULT 'pendiente_pago'");
+        // La migración inicial usa texto para admitir los estados en todos los motores.
     }
 
     public function down()
     {
         // Opcionalmente puedes volver al ENUM anterior
-        DB::statement("ALTER TABLE pedidos MODIFY estado ENUM('pendiente_pago') NOT NULL DEFAULT 'pendiente_pago'");
+        // No hay cambio de esquema que revertir.
     }
 }

@@ -4,6 +4,8 @@ namespace Tests\Feature\Auth;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use App\Mail\VerificacionCodigo;
+use Illuminate\Support\Facades\Mail;
 
 class RegistrationTest extends TestCase
 {
@@ -18,6 +20,7 @@ class RegistrationTest extends TestCase
 
     public function test_new_users_can_register(): void
     {
+        Mail::fake();
         $response = $this->post('/register', [
             'name' => 'Test User',
             'email' => 'test@example.com',
@@ -25,7 +28,9 @@ class RegistrationTest extends TestCase
             'password_confirmation' => 'password',
         ]);
 
-        $this->assertAuthenticated();
-        $response->assertRedirect(route('dashboard', absolute: false));
+        $this->assertGuest();
+        $response->assertRedirect(route('verificar.codigo.view'));
+        $this->assertDatabaseHas('users', ['email' => 'test@example.com', 'email_verified' => false]);
+        Mail::assertSent(VerificacionCodigo::class);
     }
 }

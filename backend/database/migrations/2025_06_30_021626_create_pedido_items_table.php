@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('pedido_id')->constrained('pedidos')->onDelete('cascade');
             // Se cambia la columna a string en lugar de foreignId
-            $table->string('product_id', 50);
+            $table->string('product_id', 20);
             $table->integer('cantidad');
             $table->decimal('precio_unitario', 8, 2);
             $table->timestamps();

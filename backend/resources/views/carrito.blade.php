@@ -33,9 +33,7 @@
         @foreach($carrito as $item)
             @php
                 $producto = $item->product;
-                $enOferta = $producto->oferta_activa &&
-                            is_numeric($producto->precio_oferta) &&
-                            (!$producto->fecha_fin_oferta || \Carbon\Carbon::parse($producto->fecha_fin_oferta)->gte(now()));
+                $enOferta = $producto->tieneOferta();
                 $precioUnitario = $enOferta ? $producto->precio_oferta : $producto->precio;
                 $subtotal = $precioUnitario * $item->cantidad;
                 $total += $subtotal;
