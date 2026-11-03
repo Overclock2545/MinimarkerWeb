@@ -1,38 +1,5 @@
-@extends('layouts.app')
-
-@section('content')
-  <div class="container" style="display: flex">
-    <!-- Sidebar -->
-    <aside class="sidebar" style="width: 200px; background-color: #f88fa1; padding: 20px 10px; display: flex; flex-direction: column; gap: 10px; color: #000;">
-      <h3>Nuestro catálogo</h3>
-      <input type="text" placeholder="Buscar" style="width: 100%; padding: 6px; border: none; border-radius: 4px;" />
-      <button>🔍</button>
-      <button>Escolar</button>
-      <button>Hogar</button>
-      <button>Oficina</button>
-      <button>Accesorios</button>
-      <button>Moda</button>
-      <div class="social" style="display: flex; justify-content: space-around; margin-top: 20px; font-size: 20px;">
-        <span>📷</span>
-        <span>🎵</span>
-        <span>📘</span>
-      </div>
-    </aside>
-
-    <!-- Productos de la categoría -->
-    <main style="flex-grow: 1; padding: 20px;">
-      <div class="products-title" style="text-align: center; font-size: 24px; margin-bottom: 20px;">
-        {{ $titulo }}
-      </div>
-
-      <div class="products" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
-        @foreach ($productos as $producto)
-          <div class="product-card" style="background-color: white; border-radius: 6px; padding: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center; font-size: 18px;">
-            <img src="{{ $producto->imagen ?? 'https://via.placeholder.com/150' }}" alt="{{ $producto->nombre }}" style="width: 100%; height: 200px; object-fit: cover; background-color: #eee; border-radius: 4px; margin-bottom: 8px;">
-            <div>{{ $producto->nombre }}<br><strong>S/. {{ $producto->precio }}</strong></div>
-          </div>
-        @endforeach
-      </div>
-    </main>
-  </div>
+@extends('layouts.plantilla')
+@section('titulo', $oferta['nombre'].' · B2 Solutions')
+@section('contenido')
+<section class="detail wrap"><div class="breadcrumbs"><a href="{{ route('inicio') }}">Inicio</a> / <a href="{{ route('catalogo', ['categoria'=>$clave]) }}">{{ $categoria['nombre'] }}</a> / {{ $oferta['nombre'] }}</div><div class="detail-grid"><div class="detail-art"><span>{{ $categoria['numero'] }} / {{ strtoupper($categoria['nombre']) }}</span><div>{{ $categoria['icono'] }}</div><small>UNA OPCIÓN PARA TU NEGOCIO</small></div><div class="detail-copy"><span class="eyebrow dark">INFORMACIÓN DE DEMOSTRACIÓN</span><h1>{{ $oferta['nombre'] }}</h1><p class="detail-description">{{ $oferta['detalle'] }}</p><div class="price detail-price"><small>S/</small> {{ number_format($oferta['precio'], 2) }} <span>/ {{ $oferta['periodo'] }} referencial</span></div><div class="detail-features"><h2>Características principales</h2>@foreach($categoria['atributos'] as $i => $atributo)<div><span>{{ $atributo }}</span><strong>{{ $oferta['valores'][$i] }}</strong></div>@endforeach</div><div class="notice">✳ Oferta ficticia para fines académicos. El precio y las características no constituyen una oferta comercial vigente.</div><div class="actions"><button class="btn btn-dark" type="button" data-cart-add="{{ $oferta['id'] }}">+ Añadir al carrito</button><button class="btn btn-outline" type="button" data-add="{{ $oferta['id'] }}" data-category="{{ $clave }}" data-name="{{ $oferta['nombre'] }}" aria-pressed="false">+ Añadir a comparación</button><a class="text-link" href="{{ route('catalogo', ['categoria'=>$clave]) }}">Volver al catálogo →</a></div></div></div></section>
 @endsection

@@ -23,7 +23,9 @@ class ViewServiceProvider extends ServiceProvider
     {
         // Inyectar el contenido del banner en todas las vistas que usen el header
         View::composer('partials.header', function ($view) {
-            $view->with('banner', Banner::first());
+            if (config('app.legacy_minimarket', false)) {
+                $view->with('banner', Banner::first());
+            }
         });
     }
 }

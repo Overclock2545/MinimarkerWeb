@@ -32,6 +32,9 @@ class AppServiceProvider extends ServiceProvider
         Paginator::useBootstrap();
     // Compartir categorías con todas las vistas automáticamente
     View::composer('*', function ($view) {
+        if (!config('app.legacy_minimarket', false) || str_starts_with($view->name(), 'b2.')) {
+            return;
+        }
         $view->with('categorias', Categoria::all());
         $view->with('landingPage', LandingPage::first());
     });

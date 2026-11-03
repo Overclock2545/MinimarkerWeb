@@ -10,6 +10,38 @@ use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
+    public function inicioComercial()
+    {
+        return view('home');
+    }
+
+    public function catalogoComercial(Request $request)
+    {
+        $categorias = config('catalogo_b2');
+        $activa = $request->query('categoria', 'todas');
+        abort_if($activa !== 'todas' && !isset($categorias[$activa]), 404);
+
+        return view('categorias.categoria-generica', compact('categorias', 'activa'));
+    }
+
+    public function detalleComercial(string $id)
+    {
+        foreach (config('catalogo_b2') as $clave => $categoria) {
+            foreach ($categoria['ofertas'] as $oferta) {
+                if ($oferta['id'] === $id) {
+                    return view('section', compact('categoria', 'clave', 'oferta'));
+                }
+            }
+        }
+
+        abort(404);
+    }
+
+    public function compararComercial()
+    {
+        return view('ofertas_publicas', ['categorias' => config('catalogo_b2')]);
+    }
+
     public function index()
     {
         $products = Product::with('categoria')->get();

@@ -12,6 +12,10 @@ use Illuminate\Support\Str;
 
 class CarritoController extends Controller
 {
+    public function demostracion()
+    {
+        return view('carrito', ['categorias' => config('catalogo_b2')]);
+    }
     /**
      * Mostrar los productos del carrito del usuario autenticado.
      */

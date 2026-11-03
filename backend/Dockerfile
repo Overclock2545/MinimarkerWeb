@@ -25,7 +25,8 @@ COPY . .
 COPY --from=assets /app/public/build ./public/build
 
 # Asigna los permisos correctos
-RUN chown -R www-data:www-data /var/www/html \
+RUN mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs bootstrap/cache \
+    && chown -R www-data:www-data /var/www/html \
     && chmod -R 775 storage bootstrap/cache
 
 # Habilita mod_rewrite de Apache
@@ -37,11 +38,5 @@ COPY ./apache.conf /etc/apache2/sites-available/000-default.conf
 # Instala dependencias de Composer SIN ejecutar scripts (evita errores durante build)
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# Comandos que se ejecutan al iniciar el contenedor (en tiempo de ejecución, ya con las variables cargadas)
-CMD bash -c "php artisan config:clear && \
-             php artisan package:discover --ansi && \
-             php artisan config:cache && \
-             php artisan route:cache && \
-             php artisan view:cache && \
-             (test -L public/storage || php artisan storage:link) && \
-             apache2-foreground"  
+# Preparar Laravel y configurar el puerto al iniciar.
+CMD ["bash", "docker/start.sh"]
