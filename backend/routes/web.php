@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CarritoController;
+use App\Http\Controllers\CotizacionController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
@@ -17,3 +18,7 @@ Route::withoutMiddleware([StartSession::class, ShareErrorsFromSession::class, Va
     Route::get('/comparar', [ProductController::class, 'compararComercial'])->name('comparar');
     Route::get('/carrito', [CarritoController::class, 'demostracion'])->name('carrito');
 });
+
+Route::get('/cotizacion', [CotizacionController::class, 'crear'])->name('cotizacion.crear');
+Route::post('/cotizacion', [CotizacionController::class, 'guardar'])->middleware('throttle:10,1')->name('cotizacion.guardar');
+Route::get('/propuesta/{token}', [CotizacionController::class, 'propuesta'])->name('cotizacion.propuesta');

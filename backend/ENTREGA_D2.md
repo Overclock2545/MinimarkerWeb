@@ -1,5 +1,7 @@
 # D2: web comercial y catálogo
 
+> Documento histórico del alcance D2. La implementación posterior agrega registro y recuperación de solicitudes; consulta `ENTREGA_COTIZACION.md` para el comportamiento y los requisitos vigentes.
+
 Demostración académica de B2 Solutions para MYPE. Los nueve servicios y todos sus precios y características son ficticios o referenciales. El catálogo se encuentra en `config/catalogo_b2.php` y no usa la base de datos. La selección del comparador se conserva en `sessionStorage` de la pestaña; no se envía al servidor y se pierde al cerrar la pestaña.
 
 La interfaz integra el controlador de productos, el layout y las vistas del proyecto base, adaptados al recorrido comercial B2. Las vistas anteriores del minimarket se conservan en `resources/views/legacy`; las rutas anteriores permanecen desactivadas durante D2. Las rutas históricas `/inicio`, `/producto/{id}` y `/ofertas` conducen al nuevo recorrido con identificadores de ofertas de demostración.
