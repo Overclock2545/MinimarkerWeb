@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" role="img" aria-labelledby="title description">
+  <title id="title">Arquitectura teórica de continuidad con CRM</title>
+  <desc id="description">El canal y su base propia están implementados. Una integración y un CRM corporativo aparecen como futuros y no conectados.</desc>
+  <rect width="1200" height="520" fill="#f5f8fc"/>
+  <text x="55" y="64" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#173962">Canal B2 y posible integración con CRM</text>
+  <text x="55" y="97" font-family="Arial, sans-serif" font-size="16" fill="#5b7188">Proyecto académico · datos y servicios de demostración</text>
+  <rect x="55" y="145" width="255" height="170" rx="12" fill="#ffffff" stroke="#1c6bb4" stroke-width="2"/>
+  <text x="78" y="180" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#1c6bb4">IMPLEMENTADO</text>
+  <text x="78" y="218" font-family="Arial, sans-serif" font-size="21" font-weight="700" fill="#173962">Canal web B2</text>
+  <text x="78" y="250" font-family="Arial, sans-serif" font-size="15" fill="#5b7188">Catálogo, solicitud,</text>
+  <text x="78" y="274" font-family="Arial, sans-serif" font-size="15" fill="#5b7188">propuesta y continuidad</text>
+  <rect x="375" y="145" width="255" height="170" rx="12" fill="#ffffff" stroke="#1c6bb4" stroke-width="2"/>
+  <text x="398" y="180" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#1c6bb4">IMPLEMENTADO</text>
+  <text x="398" y="218" font-family="Arial, sans-serif" font-size="21" font-weight="700" fill="#173962">Base propia</text>
+  <text x="398" y="250" font-family="Arial, sans-serif" font-size="15" fill="#5b7188">Solicitudes, contacto,</text>
+  <text x="398" y="274" font-family="Arial, sans-serif" font-size="15" fill="#5b7188">referidos y encuestas</text>
+  <path d="M310 230h57" stroke="#2879bd" stroke-width="3"/><path d="M355 222l12 8-12 8" fill="none" stroke="#2879bd" stroke-width="3"/>
+  <rect x="695" y="145" width="205" height="170" rx="12" fill="#edf1f5" stroke="#94a4b5" stroke-width="2" stroke-dasharray="7 5"/>
+  <text x="718" y="180" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#6f8194">FUTURO · TEÓRICO</text>
+  <text x="718" y="218" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#50657a">Integración</text>
+  <text x="718" y="250" font-family="Arial, sans-serif" font-size="15" fill="#6f8194">Validación y reglas</text>
+  <text x="718" y="274" font-family="Arial, sans-serif" font-size="15" fill="#6f8194">por definir</text>
+  <path d="M630 230h57" stroke="#94a4b5" stroke-width="3" stroke-dasharray="6 5"/><path d="M675 222l12 8-12 8" fill="none" stroke="#94a4b5" stroke-width="3"/>
+  <rect x="965" y="145" width="190" height="170" rx="12" fill="#edf1f5" stroke="#94a4b5" stroke-width="2" stroke-dasharray="7 5"/>
+  <text x="988" y="180" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#6f8194">NO CONECTADO</text>
+  <text x="988" y="218" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#50657a">CRM corporativo</text>
+  <text x="988" y="250" font-family="Arial, sans-serif" font-size="15" fill="#6f8194">Seguimiento futuro</text>
+  <path d="M900 230h57" stroke="#94a4b5" stroke-width="3" stroke-dasharray="6 5"/><path d="M945 222l12 8-12 8" fill="none" stroke="#94a4b5" stroke-width="3"/>
+  <text x="55" y="390" font-family="Arial, sans-serif" font-size="17" fill="#173962">No hay conexión ni envío automático al CRM.</text>
+  <text x="55" y="421" font-family="Arial, sans-serif" font-size="15" fill="#5b7188">La integración futura requiere autorización, acuerdos de datos y coordinación con el equipo responsable.</text>
+</svg>

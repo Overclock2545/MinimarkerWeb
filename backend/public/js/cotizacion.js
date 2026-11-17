@@ -1,6 +1,10 @@
 (() => {
   const form = document.getElementById('quote-form');
   if (!form) return;
+  const referral = document.getElementById('quote-referral');
+  if (referral && !referral.value) {
+    try { referral.value = sessionStorage.getItem('b2-referral') || ''; } catch (_) {}
+  }
   const catalog = JSON.parse(document.getElementById('quote-catalog').textContent);
   const offers = Object.values(catalog).flatMap(category => category.ofertas.map(offer => ({...offer, category: category.nombre, unit: category.unidad})));
   let selected = [];

@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\CotizacionController;
+use App\Http\Controllers\ContinuidadController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
@@ -22,3 +23,7 @@ Route::withoutMiddleware([StartSession::class, ShareErrorsFromSession::class, Va
 Route::get('/cotizacion', [CotizacionController::class, 'crear'])->name('cotizacion.crear');
 Route::post('/cotizacion', [CotizacionController::class, 'guardar'])->middleware('throttle:10,1')->name('cotizacion.guardar');
 Route::get('/propuesta/{token}', [CotizacionController::class, 'propuesta'])->name('cotizacion.propuesta');
+Route::post('/propuesta/{token}/contacto', [ContinuidadController::class, 'contacto'])->middleware('throttle:10,1')->name('continuidad.contacto');
+Route::post('/propuesta/{token}/encuesta', [ContinuidadController::class, 'encuesta'])->middleware('throttle:10,1')->name('continuidad.encuesta');
+Route::get('/referido/{codigo}', [ContinuidadController::class, 'referido'])->name('continuidad.referido');
+Route::get('/interno/metricas', [ContinuidadController::class, 'metricas'])->middleware('throttle:10,1')->name('continuidad.metricas');

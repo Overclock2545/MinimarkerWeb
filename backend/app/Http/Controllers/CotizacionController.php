@@ -29,6 +29,7 @@ class CotizacionController extends Controller
             'ofertas' => ['required', 'array', 'min:1', 'max:9'],
             'ofertas.*.id' => ['required', 'string', 'distinct', 'max:100'],
             'ofertas.*.cantidad' => ['required', 'integer', 'min:1', 'max:99'],
+            'referido' => ['nullable', 'string', 'regex:/\A[a-f0-9]{32}\z/'],
         ], [
             'ruc.regex' => 'El RUC debe tener 11 dígitos.',
             'telefono.regex' => 'El teléfono debe contener entre 9 y 15 dígitos.',
@@ -64,16 +65,24 @@ class CotizacionController extends Controller
 
         $token = bin2hex(random_bytes(32));
         try {
-            DB::transaction(function () use ($datos, $items, $totales, $token) {
+            $referente = !empty($datos['referido']) ? SolicitudCotizacion::where('codigo_referido', $datos['referido'])->first() : null;
+            if (!empty($datos['referido']) && !$referente) {
+                throw ValidationException::withMessages(['referido' => 'El enlace de referido no es válido.']);
+            }
+            DB::transaction(function () use ($datos, $items, $totales, $token, $referente) {
                 SolicitudCotizacion::create([
                     'codigo' => 'B2-'.strtoupper(Str::random(12)),
                     'token_hash' => hash('sha256', $token),
                     'ruc' => $datos['ruc'], 'razon_social' => trim($datos['razon_social']),
                     'contacto' => trim($datos['contacto']), 'telefono' => $datos['telefono'],
-                    'origen' => 'web', 'ofertas' => $items,
+                    'origen' => $referente ? 'referido' : 'web', 'ofertas' => $items,
+                    'codigo_referido' => bin2hex(random_bytes(16)), 'referido_por_id' => $referente?->id,
+                    'ejecutivo_demo' => config('continuidad.ejecutivo_demo'),
                     'total_mensual_centimos' => $totales['mensual'], 'total_unico_centimos' => $totales['único'],
                 ]);
             });
+        } catch (ValidationException $exception) {
+            throw $exception;
         } catch (Throwable $exception) {
             Log::error('No se pudo guardar una solicitud de cotización.', ['exception_class' => get_class($exception)]);
             return back()->withInput()->withErrors(['guardado' => 'No fue posible guardar la solicitud. Inténtalo nuevamente.']);
@@ -86,8 +95,18 @@ class CotizacionController extends Controller
     {
         abort_unless(preg_match('/\A[a-f0-9]{64}\z/', $token), 404);
         $solicitud = SolicitudCotizacion::where('token_hash', hash('sha256', $token))->firstOrFail();
+        if (!$solicitud->codigo_referido) {
+            SolicitudCotizacion::whereKey($solicitud->id)->whereNull('codigo_referido')
+                ->update(['codigo_referido' => bin2hex(random_bytes(16))]);
+            $solicitud->refresh();
+        }
 
-        return response()->view('cotizacion.propuesta', compact('solicitud'))
+        $numero = config('continuidad.whatsapp');
+        $numero = is_string($numero) && preg_match('/\A[1-9][0-9]{7,14}\z/', $numero) ? $numero : null;
+        $lineas = collect($solicitud->ofertas)->map(fn ($item) => $item['nombre'].' x '.$item['cantidad'])->implode('; ');
+        $mensaje = 'Hola, deseo consultar la propuesta de demostración '.$solicitud->codigo.'. Servicios: '.$lineas.'.';
+        $whatsapp = $numero ? 'https://wa.me/'.$numero.'?text='.rawurlencode($mensaje) : null;
+        return response()->view('cotizacion.propuesta', compact('solicitud', 'token', 'whatsapp'))
             ->header('Cache-Control', 'no-store, private')
             ->header('Referrer-Policy', 'no-referrer')
             ->header('X-Robots-Tag', 'noindex, nofollow');
