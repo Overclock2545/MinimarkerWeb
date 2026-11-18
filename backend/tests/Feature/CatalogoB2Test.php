@@ -8,7 +8,7 @@ class CatalogoB2Test extends TestCase
 {
     public function test_recorrido_de_demostracion(): void
     {
-        $this->get('/')->assertOk()->assertSee('B2 Solutions')->assertSee('Explorar catálogo');
+        $this->get('/')->assertOk()->assertSee('B2 Solutions')->assertSee('Explorar catálogo')->assertSee('Continúa después')->assertSee('Cotizar');
         $this->get('/catalogo')->assertOk()->assertSee('Conecta MYPE 25')->assertSee('Internet Negocio 600')->assertSee('Router Negocio Wi-Fi');
         $this->get('/catalogo?categoria=internet')->assertOk()->assertSee('Internet Negocio 150')->assertDontSee('Conecta MYPE 25');
         $this->get('/catalogo/conecta-25')->assertOk()->assertSee('25 GB')->assertSee('INFORMACIÓN DE DEMOSTRACIÓN', false);

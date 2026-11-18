@@ -71,4 +71,19 @@
     window.addEventListener('pageshow', refresh);
     refresh();
   }
+
+  document.querySelectorAll('[data-copy-target]').forEach(button => button.addEventListener('click', async () => {
+    const id = button.dataset.copyTarget;
+    const input = document.getElementById(id);
+    const feedback = document.querySelector(`[data-copy-feedback="${id}"]`);
+    if (!input || !feedback) return;
+    try {
+      if (!navigator.clipboard || !navigator.clipboard.writeText) throw new Error('Portapapeles no disponible');
+      await navigator.clipboard.writeText(input.value);
+      feedback.textContent = 'Enlace copiado.';
+    } catch (_) {
+      input.focus(); input.select();
+      feedback.textContent = 'Enlace seleccionado. Cópialo con el menú del navegador o con Ctrl+C.';
+    }
+  }));
 })();

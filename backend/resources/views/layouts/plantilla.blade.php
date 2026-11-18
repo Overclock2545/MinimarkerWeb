@@ -6,6 +6,7 @@
     <title>@yield('titulo', 'B2 Solutions · Conectividad para tu negocio')</title>
     <link rel="stylesheet" href="{{ asset('css/b2.css') }}">
     <link rel="stylesheet" href="{{ asset('css/experiencia.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/identidad-b2.css') }}">
     <script src="{{ asset('js/b2.js') }}" defer></script>
     <script src="{{ asset('js/carrito-b2.js') }}" defer></script>
     <script src="{{ asset('js/experiencia.js') }}" defer></script>

@@ -25,7 +25,7 @@ class ContinuidadTest extends TestCase
         $url = $this->crearSolicitud();
         $solicitud = SolicitudCotizacion::firstOrFail();
         $this->flushSession();
-        $response = $this->get($url)->assertOk()->assertSee('Abrir WhatsApp')->assertSee($solicitud->codigo);
+        $response = $this->get($url)->assertOk()->assertSee('Abrir WhatsApp')->assertSee('Prefiero una llamada')->assertSee('Guarda tu enlace privado')->assertSee('Copiar enlace')->assertSee($solicitud->codigo);
         $html = html_entity_decode($response->getContent());
         $this->assertStringContainsString('https://wa.me/51974368162?text=', $html);
         $this->assertStringContainsString(rawurlencode($solicitud->codigo), $html);
