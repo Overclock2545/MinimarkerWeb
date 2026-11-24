@@ -48,4 +48,19 @@ class AccesoB2Test extends TestCase
         $this->assertSame(160, DB::table('encuestas_demo')->count());
         $this->assertSame(80, DB::table('solicitudes_contacto_demo')->count());
     }
+
+    public function test_metricas_y_listados_tienen_totales_y_paginas_independientes(): void
+    {
+        $this->seed(DatosDemostracionB2Seeder::class);
+        $admin = B2Usuario::create(['name' => 'Admin demo', 'email' => 'admin@example.test', 'password' => 'clave-segura-123', 'rol' => 'admin']);
+        $respuesta = $this->actingAs($admin, 'b2')->get('/interno/metricas?solicitudes=2&llamadas=3&encuestas=4');
+        $respuesta->assertOk()->assertSee('Solicitudes por fecha')->assertSee('Solicitudes por origen')
+            ->assertSee('Preferencias de llamada')->assertDontSee('900000000')->assertDontSee('20000000001');
+        $respuesta->assertViewHas('totalSolicitudes', 240)->assertViewHas('totalReferidos', 60)->assertViewHas('totalLlamadas', 80);
+        $this->assertSame(2, $respuesta->viewData('solicitudesPagina')->currentPage());
+        $this->assertSame(3, $respuesta->viewData('llamadasPagina')->currentPage());
+        $this->assertSame(4, $respuesta->viewData('encuestasPagina')->currentPage());
+        $this->assertCount(10, $respuesta->viewData('solicitudesPagina')->items());
+        $this->assertCount(30, $respuesta->viewData('porFecha'));
+    }
 }

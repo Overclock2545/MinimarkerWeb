@@ -68,16 +68,31 @@ class ContinuidadController extends Controller
                 return response('Autenticación requerida.', 401, ['WWW-Authenticate' => 'Basic realm="Métricas B2"', 'Cache-Control' => 'no-store']);
             }
         }
-        $solicitudes = SolicitudCotizacion::select('id', 'created_at', 'origen', 'ofertas', 'referido_por_id')->get();
-        $porFecha = $solicitudes->groupBy(fn ($s) => $s->created_at->format('Y-m-d'))->map->count()->sortKeysDesc();
-        $porOrigen = $solicitudes->groupBy('origen')->map->count();
+        $totalSolicitudes = SolicitudCotizacion::count();
+        $totalReferidos = SolicitudCotizacion::whereNotNull('referido_por_id')->count();
+        $totalLlamadas = DB::table('solicitudes_contacto_demo')->count();
+        $promedio = DB::table('encuestas_demo')->avg('valoracion');
+        $desde = now()->startOfDay()->subDays(29);
+        $fechas = SolicitudCotizacion::where('created_at', '>=', $desde)
+            ->selectRaw('DATE(created_at) as fecha, count(*) as cantidad')
+            ->groupByRaw('DATE(created_at)')->pluck('cantidad', 'fecha');
+        $porFecha = collect(range(0, 29))->mapWithKeys(function ($i) use ($desde, $fechas) {
+            $fecha = $desde->copy()->addDays($i)->format('Y-m-d');
+            return [$fecha => (int) ($fechas[$fecha] ?? 0)];
+        });
+        $porOrigen = SolicitudCotizacion::selectRaw('origen, count(*) as cantidad')->groupBy('origen')->pluck('cantidad', 'origen');
         $porServicio = [];
-        foreach ($solicitudes as $solicitud) foreach ($solicitud->ofertas as $oferta) {
+        foreach (SolicitudCotizacion::select('id', 'ofertas')->cursor() as $solicitud) foreach (($solicitud->ofertas ?? []) as $oferta) {
             $categoria = $oferta['categoria'] ?? 'Sin categoría';
             $porServicio[$categoria] = ($porServicio[$categoria] ?? 0) + 1;
         }
         $encuestas = DB::table('encuestas_demo')->selectRaw('valoracion, count(*) as cantidad')->groupBy('valoracion')->orderBy('valoracion')->get();
-        return response()->view('metricas.index', compact('solicitudes', 'porFecha', 'porOrigen', 'porServicio', 'encuestas'))
+        $solicitudesPagina = SolicitudCotizacion::select('codigo', 'origen', 'created_at')->orderByDesc('created_at')->orderByDesc('id')->paginate(10, ['*'], 'solicitudes');
+        $llamadasPagina = DB::table('solicitudes_contacto_demo as c')->join('solicitudes_cotizacion as s', 's.id', '=', 'c.solicitud_id')
+            ->select('s.codigo', 'c.procedencia', 'c.created_at')->orderByDesc('c.created_at')->orderByDesc('c.id')->paginate(10, ['*'], 'llamadas');
+        $encuestasPagina = DB::table('encuestas_demo as e')->join('solicitudes_cotizacion as s', 's.id', '=', 'e.solicitud_id')
+            ->select('s.codigo', 'e.valoracion', 'e.created_at')->orderByDesc('e.created_at')->orderByDesc('e.id')->paginate(10, ['*'], 'encuestas');
+        return response()->view('metricas.index', compact('totalSolicitudes', 'totalReferidos', 'totalLlamadas', 'promedio', 'porFecha', 'porOrigen', 'porServicio', 'encuestas', 'solicitudesPagina', 'llamadasPagina', 'encuestasPagina'))
             ->header('Cache-Control', 'no-store, private')->header('X-Robots-Tag', 'noindex, nofollow');
     }
 }
