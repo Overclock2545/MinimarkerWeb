@@ -18,11 +18,11 @@ return [
         ],
     ],
     'equipos' => [
-        'nombre' => 'Equipos', 'unidad' => 'Equipos', 'numero' => '03', 'icono' => '▧', 'descripcion' => 'Dispositivos para acompañar tu forma de trabajar.', 'atributos' => ['Tipo', 'Característica', 'Uso'],
+        'nombre' => 'Equipos', 'unidad' => 'Equipos', 'numero' => '03', 'icono' => '▧', 'descripcion' => 'Celulares comerciales para acompañar tu forma de trabajar.', 'atributos' => ['Tipo', 'Modelo', 'Condición'],
         'ofertas' => [
-            ['id'=>'equipo-essential','nombre'=>'Equipo MYPE Essential','descripcion'=>'Un equipo móvil para las tareas del día a día.','precio'=>699.00,'periodo'=>'único','valores'=>['Móvil','128 GB','Cámara principal'],'detalle'=>'Un dispositivo de demostración para comunicación y tareas cotidianas.'],
-            ['id'=>'equipo-pro','nombre'=>'Equipo MYPE Pro','descripcion'=>'Mayor capacidad para acompañar tu jornada.','precio'=>1099.00,'periodo'=>'único','valores'=>['Móvil','256 GB','Batería de alta capacidad'],'detalle'=>'Una alternativa ficticia para comparar almacenamiento y autonomía.'],
-            ['id'=>'router-negocio','nombre'=>'Router Negocio Wi-Fi','descripcion'=>'Conectividad inalámbrica para espacios de trabajo.','precio'=>249.00,'periodo'=>'único','valores'=>['Router','Doble banda','Conectividad de oficina'],'detalle'=>'Un router referencial para evaluar conectividad inalámbrica en una oficina.'],
+            ['id'=>'equipo-essential','nombre'=>'Samsung Galaxy A15','descripcion'=>'Celular comercial para comunicación y tareas cotidianas.','precio'=>699.00,'periodo'=>'único','valores'=>['Celular','Galaxy A15','Demostración'],'detalle'=>'Modelo comercial mostrado como ejemplo. Precio y disponibilidad simulados.'],
+            ['id'=>'equipo-pro','nombre'=>'Xiaomi Redmi Note 13','descripcion'=>'Celular comercial para acompañar tu jornada.','precio'=>1099.00,'periodo'=>'único','valores'=>['Celular','Redmi Note 13','Demostración'],'detalle'=>'Modelo comercial mostrado como ejemplo. Precio y disponibilidad simulados.'],
+            ['id'=>'router-negocio','nombre'=>'Motorola Moto G54','descripcion'=>'Celular comercial para mantener a tu equipo conectado.','precio'=>249.00,'periodo'=>'único','valores'=>['Celular','Moto G54','Demostración'],'detalle'=>'Modelo comercial mostrado como ejemplo. Precio y disponibilidad simulados.'],
         ],
     ],
 ];

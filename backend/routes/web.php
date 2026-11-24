@@ -4,12 +4,13 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\CotizacionController;
 use App\Http\Controllers\ContinuidadController;
+use App\Http\Controllers\AccesoB2Controller;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 
-Route::withoutMiddleware([StartSession::class, ShareErrorsFromSession::class, ValidateCsrfToken::class])->group(function () {
+Route::group([], function () {
     Route::get('/', [ProductController::class, 'inicioComercial'])->name('inicio');
     Route::redirect('/inicio', '/');
     Route::get('/catalogo', [ProductController::class, 'catalogoComercial'])->name('catalogo');
@@ -19,6 +20,12 @@ Route::withoutMiddleware([StartSession::class, ShareErrorsFromSession::class, Va
     Route::get('/comparar', [ProductController::class, 'compararComercial'])->name('comparar');
     Route::get('/carrito', [CarritoController::class, 'demostracion'])->name('carrito');
 });
+
+Route::get('/acceso', [AccesoB2Controller::class, 'formulario'])->name('acceso');
+Route::post('/acceso', [AccesoB2Controller::class, 'ingresar'])->middleware('throttle:10,1');
+Route::get('/crear-cuenta', [AccesoB2Controller::class, 'registro'])->name('cuenta.crear');
+Route::post('/crear-cuenta', [AccesoB2Controller::class, 'crear'])->middleware('throttle:5,1');
+Route::post('/salir', [AccesoB2Controller::class, 'salir'])->name('cuenta.salir');
 
 Route::get('/cotizacion', [CotizacionController::class, 'crear'])->name('cotizacion.crear');
 Route::post('/cotizacion', [CotizacionController::class, 'guardar'])->middleware('throttle:10,1')->name('cotizacion.guardar');

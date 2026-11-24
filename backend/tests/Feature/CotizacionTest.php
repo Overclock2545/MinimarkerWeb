@@ -36,7 +36,7 @@ class CotizacionTest extends TestCase
         $this->assertSame(24900, (int) $solicitud->total_unico_centimos);
         $this->assertSame('web', $solicitud->origen);
         $this->assertNotSame(basename($url), $solicitud->token_hash);
-        $this->get($url)->assertOk()->assertSee($solicitud->codigo)->assertSee('Conecta MYPE 25')->assertSee('Router Negocio Wi-Fi')->assertDontSee('20123456789');
+        $this->get($url)->assertOk()->assertSee($solicitud->codigo)->assertSee('Conecta MYPE 25')->assertSee('Motorola Moto G54')->assertDontSee('20123456789');
         $this->get($url)->assertOk()->assertHeader('Cache-Control', 'no-store, private');
         $this->get('/propuesta/'.str_repeat('a', 64))->assertNotFound();
     }

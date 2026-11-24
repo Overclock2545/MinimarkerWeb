@@ -1,6 +1,6 @@
 # Informe y manual de demostración — B2 Solutions D4 y D5
 
-**Estado:** implementación local para demostración académica. Los servicios, precios, empresas y registros de prueba son ficticios. La base local configurada no respondió durante la revisión; las migraciones y el despliegue de Render requieren validación en el entorno real. La revisión visual en navegador y la captura de evidencias siguen pendientes.
+**Estado:** prototipo de demostración académica. Los servicios, precios, empresas y registros de prueba son ficticios. En la revisión del 23 de noviembre de 2026, Render informó que la versión correspondiente al commit `4899ace` estaba publicada y se confirmó mediante consulta de solo lectura que las dos migraciones del canal figuran aplicadas en PostgreSQL. Tras corregir la configuración de la conexión se verificó el acceso al panel de métricas con credenciales. Siguen pendientes la validación completa del recorrido en Render y la captura de evidencias actuales. Véase `REVISION_ENTREGA_FINAL.md`.
 
 ## Objetivo y alcance
 
@@ -53,7 +53,7 @@ Campos candidatos: identificador de solicitud, fecha, procedencia, referencia co
 - Pruebas automatizadas: `php artisan test --filter=CatalogoB2Test`, `--filter=CotizacionTest`, `--filter=ContinuidadTest`, y los scripts `node tests/js/*.cjs` individualmente.
 - Comprobar registro, token incorrecto, recarga, WhatsApp, contacto, encuesta, referido y acceso rechazado a métricas; usar exclusivamente datos ficticios.
 - Verificar que el número de prueba, clave interna, conexión y migraciones estén configurados en cada entorno, sin compartir secretos.
-- Pendiente: aplicar migraciones sobre la base elegida, validar MySQL o PostgreSQL real, revisar pantalla móvil y escritorio, y capturar evidencias; luego ensayar la presentación y verificar un respaldo.
+- Pendiente: validar el recorrido completo en el sitio publicado, revisar pantalla móvil y escritorio, comprobar el acceso a métricas y capturar evidencias; luego ensayar la presentación y verificar un respaldo. En la base PostgreSQL de Render se confirmó el registro de las dos migraciones del canal.
 - Alternativa local: arrancar MySQL del proyecto, aplicar las dos migraciones específicas y ejecutar `php artisan serve`. Render requiere una base persistente externa; ver `GUIA_BASE_DATOS.md`.
 
 ## Guion breve de presentación

@@ -40,9 +40,12 @@ class ContinuidadTest extends TestCase
         $this->from($url)->post($url.'/contacto', ['preferencia' => 'llamada'])->assertRedirect($url)->assertSessionHas('contacto_exito');
         $this->assertDatabaseHas('solicitudes_contacto_demo', ['preferencia' => 'llamada', 'procedencia' => 'enlace_propuesta']);
         $this->from($url)->post($url.'/encuesta', ['valoracion' => 5, 'comentario' => 'Fácil'])->assertSessionHas('encuesta_exito');
+        $fechaOriginal = \Illuminate\Support\Facades\DB::table('encuestas_demo')->value('created_at');
+        $this->travel(1)->day();
         $this->post($url.'/encuesta', ['valoracion' => 2])->assertRedirect();
         $this->assertDatabaseCount('encuestas_demo', 1);
         $this->assertDatabaseHas('encuestas_demo', ['valoracion' => 2]);
+        $this->assertSame($fechaOriginal, \Illuminate\Support\Facades\DB::table('encuestas_demo')->value('created_at'));
         $this->post($url.'/encuesta', ['valoracion' => 7])->assertSessionHasErrors('valoracion');
         $this->post('/propuesta/'.str_repeat('a', 64).'/contacto', ['preferencia' => 'llamada'])->assertNotFound();
     }

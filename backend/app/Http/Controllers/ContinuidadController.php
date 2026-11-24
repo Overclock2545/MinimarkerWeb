@@ -38,10 +38,10 @@ class ContinuidadController extends Controller
         $solicitud = $this->solicitud($token);
         $datos = $request->validate(['valoracion' => ['required', 'integer', 'between:1,5'], 'comentario' => ['nullable', 'string', 'max:500']]);
         try {
-            DB::table('encuestas_demo')->updateOrInsert(['solicitud_id' => $solicitud->id], [
-                'valoracion' => $datos['valoracion'], 'comentario' => $datos['comentario'] ?? null,
-                'updated_at' => now(), 'created_at' => now(),
-            ]);
+            DB::table('encuestas_demo')->upsert([[
+                'solicitud_id' => $solicitud->id, 'valoracion' => $datos['valoracion'],
+                'comentario' => $datos['comentario'] ?? null, 'created_at' => now(), 'updated_at' => now(),
+            ]], ['solicitud_id'], ['valoracion', 'comentario', 'updated_at']);
         } catch (Throwable $e) {
             Log::error('No se pudo guardar la encuesta.', ['exception_class' => get_class($e)]);
             return back()->withErrors(['encuesta' => 'No fue posible guardar la encuesta. Inténtalo nuevamente.']);
@@ -59,10 +59,14 @@ class ContinuidadController extends Controller
 
     public function metricas(Request $request)
     {
-        $clave = config('continuidad.metricas_clave');
-        if (!is_string($clave) || strlen($clave) < 16) abort(503, 'Configura una clave de métricas de al menos 16 caracteres.');
-        if ($request->getUser() !== 'admin' || !hash_equals($clave, (string) $request->getPassword())) {
-            return response('Autenticación requerida.', 401, ['WWW-Authenticate' => 'Basic realm="Métricas B2"', 'Cache-Control' => 'no-store']);
+        $usuario = auth('b2')->user();
+        if ($usuario && $usuario->rol !== 'admin') abort(403, 'Esta sección es solo para administradores.');
+        if (!$usuario) {
+            $clave = config('continuidad.metricas_clave');
+            if (!is_string($clave) || strlen($clave) < 16) abort(503, 'Configura una clave de métricas de al menos 16 caracteres.');
+            if ($request->getUser() !== 'admin' || !hash_equals($clave, (string) $request->getPassword())) {
+                return response('Autenticación requerida.', 401, ['WWW-Authenticate' => 'Basic realm="Métricas B2"', 'Cache-Control' => 'no-store']);
+            }
         }
         $solicitudes = SolicitudCotizacion::select('id', 'created_at', 'origen', 'ofertas', 'referido_por_id')->get();
         $porFecha = $solicitudes->groupBy(fn ($s) => $s->created_at->format('Y-m-d'))->map->count()->sortKeysDesc();
